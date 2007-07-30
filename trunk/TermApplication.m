@@ -11,8 +11,9 @@
 #import <UIKit/UIKeyboard.h>
 
 @implementation TermApplication
+NSString *sharedString;
 
-void *read_term(int fd)
+void *read_term(int fd, UITextView *view)
 {
 	char buf[255];
   int nread;
@@ -20,11 +21,19 @@ void *read_term(int fd)
     int i;
     for (i = 0; i < nread; i++) {
       putchar(buf[i]);
+      
+       	NSString* existing = [view text];
+  		NSString* out = [NSString stringWithCString:buf
+          encoding:[NSString defaultCStringEncoding]];
+        sharedString = [sharedString stringByAppendingString: out];
+        
+        
+        
    
     }
     
   }
-  printf("%s", buf);
+  
 }
 
 - (void) applicationDidFinishLaunching: (id) unused
@@ -69,13 +78,14 @@ void *read_term(int fd)
     return 1;
   }
   
-  iret1 = pthread_create( &thread1, NULL, read_term, fd);
-  pthread_join( thread1, NULL);
-  /*NSString* existing = [view text];
-  NSString* out = [NSString stringWithCString:buf
-          encoding:[NSString defaultCStringEncoding]];
+  
+  iret1 = pthread_create( &thread1, NULL, read_term, fd, view);
+  //pthread_join( thread1, NULL);
+  printf("did we get here?");
+  	NSString* existing = [view text];
+	[view setText:[existing stringByAppendingString: sharedString]]; 
           
-   [view setText:[existing stringByAppendingString: out]];*/
+   
    
     UIKeyboard* keyboard = [[UIKeyboard alloc]
         initWithFrame: CGRectMake(0.0f, 240.0, 320.0f, 480.0f)];
