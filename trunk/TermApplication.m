@@ -26,7 +26,7 @@ void *read_term(int fd, UITextView *view)
   		NSString* out = [NSString stringWithCString:buf
           encoding:[NSString defaultCStringEncoding]];
         sharedString = [sharedString stringByAppendingString: out];
-        
+        [sharedString retain];
         
         
    
@@ -97,7 +97,8 @@ void *read_term(int fd, UITextView *view)
     [mainView addSubview: view]; 
     [mainView addSubview: keyboard];
 
-    [window setContentView: mainView]; 
+    [window setContentView: mainView];
+    [sharedString retain];
 }
 
 @end
