@@ -17,7 +17,11 @@
 	UITextView* view;
 
 
-
++(UITextView*) getOutputBox
+	{
+		return view;
+	}
+	
 - (void) applicationDidFinishLaunching: (id) unused
 {
     UIWindow *window = [[UIWindow alloc] initWithContentRect: [UIHardware 
@@ -60,9 +64,6 @@
     
 }
 
-- (UITextView*) getOutputBox
-	{
-		return view;
-	}
+
 	
 @end

@@ -13,6 +13,6 @@
     
     }
     
-- (UITextView*) getOutputBox;
++(UITextView*) getOutputBox;
 
 @end

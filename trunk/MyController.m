@@ -1,4 +1,5 @@
 #import "MyController.h"
+#import "TermApplication.h"
 #import <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
 
@@ -74,7 +75,7 @@
         return;
 	else
 	{
-		[[MyController getOutputBox] setText:[NSString stringWithFormat:@"%s", buf]];
+		[[TermApplication getOutputBox] setText:[NSString stringWithFormat:@"%s", buf]];
 	}
 	return;
 	

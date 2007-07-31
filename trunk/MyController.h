@@ -11,7 +11,7 @@
 	PTYTask * SHELL;
 	int taskRunning;
 }
-- (IBAction)runTask:(id)sender;
+- (int)runBash;
 - (IBAction)EscKey:(id)sender;
 - (IBAction)CrtlKey:(id)sender;
 - (IBAction)EnterKey:(id)sender;
