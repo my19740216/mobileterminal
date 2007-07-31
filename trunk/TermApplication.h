@@ -9,6 +9,7 @@
 @interface TermApplication : UIApplication {
     UIImageAndTextTableCell *pbCell;
     UITableCell *buttonCell;
+    
 }
 
 @end
