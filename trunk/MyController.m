@@ -26,8 +26,14 @@
 }
 - (int)runBash
 {
+	 taskRunning = 0;
 	 if(!taskRunning)
 	 {
+		
+		SHELL = [[PTYTask alloc] init];
+		[SHELL setDelegate:self];
+		[SHELL retain];
+		taskRunning = 0;
 		//NSMutableArray *argumentList = [NSMutableArray arrayWithArray:[[inputBox stringValue] componentsSeparatedByString:@" "]];
 		NSString *path = @"/bin/bash";
 		//[argumentList removeObjectAtIndex:0];
