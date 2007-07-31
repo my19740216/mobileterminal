@@ -29,7 +29,7 @@
 	 if(!taskRunning)
 	 {
 		//NSMutableArray *argumentList = [NSMutableArray arrayWithArray:[[inputBox stringValue] componentsSeparatedByString:@" "]];
-		NSString *path = @"/usr/bin/bash";
+		NSString *path = @"/bin/bash";
 		//[argumentList removeObjectAtIndex:0];
 		NSLog(@"Trying to run: %@", path);
 		[SHELL launchWithPath:path
@@ -38,6 +38,9 @@
 			   width:120
 			   height:200];
 		taskRunning = 1;
+		
+		[self writeTask:[@"ls -lax" dataUsingEncoding: NSUTF8StringEncoding]];
+		[self EnterKey:nil];
 	}
 	else
 	{
@@ -71,6 +74,7 @@
 //PTYTask Delegats
 - (void)readTask:(char *)buf length:(int)length
 {
+	NSLog(@"Anything here?");
 	if (buf == NULL || !taskRunning)
         return;
 	else

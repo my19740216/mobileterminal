@@ -294,6 +294,7 @@ static int writep(int fds, char *buf, size_t len)
 				 width:(int)width
 				height:(int)height
 {
+    NSLog(@"is launchWithPath called?");
     struct termios term;
     struct winsize win;
     char ttyname[PATH_MAX];
