@@ -1,4 +1,6 @@
 #import "MyController.h"
+#import <CoreFoundation/CoreFoundation.h>
+#import <Foundation/Foundation.h>
 
 @implementation MyController
 - (IBAction)EnterKey:(id)sender
@@ -71,7 +73,7 @@
         return;
 	else
 	{
-		[outputBox setString:[NSString stringWithFormat:@"%s", buf]];
+		[[MyController getOutputBox] setText:[NSString stringWithFormat:@"%s", buf]];
 	}
 	return;
 	

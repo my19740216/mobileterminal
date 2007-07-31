@@ -4,7 +4,7 @@ LDFLAGS=-ObjC -framework CoreFoundation -framework Foundation -framework UIKit -
 
 all:	mobileTerm
 
-mobileTerm:		term.o TermApplication.o
+mobileTerm:		term.o TermApplication.o MyController.o PTYTask.o
 	$(LD) $(LDFLAGS) -o $@ $^
 
 %.o:	%.m

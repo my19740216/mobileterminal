@@ -59,4 +59,9 @@
     
 }
 
+- (UITextView*) getOutputBox
+	{
+		return view;
+	}
+	
 @end

@@ -41,8 +41,10 @@
 #import <sys/types.h>
 #import <sys/wait.h>
 #import <sys/time.h>
+#import <CoreFoundation/CoreFoundation.h>
+#import <Foundation/Foundation.h>
 
-#import <PTYTask.h>
+#import "PTYTask.h"
 
 @implementation PTYTask
 
