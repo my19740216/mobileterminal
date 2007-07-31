@@ -34,7 +34,8 @@
 
     /* Create independent threads each of which will execute function */
 
- 
+ 	MyController* Controller = [[MyController alloc] init];
+ 	[Controller runBash];
   
 
   

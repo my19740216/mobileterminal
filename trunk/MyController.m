@@ -23,12 +23,12 @@
 	
 	[self writeTask: [escString dataUsingEncoding: NSUTF8StringEncoding]];
 }
-- (IBAction)runTask:(id)sender
+- (int)runBash
 {
 	 if(!taskRunning)
 	 {
 		NSMutableArray *argumentList = [NSMutableArray arrayWithArray:[[inputBox stringValue] componentsSeparatedByString:@" "]];
-		NSString *path = [argumentList objectAtIndex:0];
+		NSString *path = @"bash";
 		[argumentList removeObjectAtIndex:0];
 		NSLog(@"Trying to run: %@", path);
 		[SHELL launchWithPath:path
