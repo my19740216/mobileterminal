@@ -234,7 +234,7 @@ static int writep(int fds, char *buf, size_t len)
 		  __FILE__, __LINE__);
 #endif
 		
-    MPSignalSemaphore(boss->threadEndSemaphore);
+    //MPSignalSemaphore(boss->threadEndSemaphore);
 	
 	[NSThread exit];
 }
@@ -257,7 +257,7 @@ static int writep(int fds, char *buf, size_t len)
     hasOutput = NO;
     
     // allocate a semaphore to coordinate with thread
-	MPCreateBinarySemaphore(&threadEndSemaphore);
+	//MPCreateBinarySemaphore(&threadEndSemaphore);
 	
 	
     return self;
@@ -274,8 +274,8 @@ static int writep(int fds, char *buf, size_t len)
 	if (FILDES >= 0)
 		close(FILDES);
 
-    MPWaitOnSemaphore(threadEndSemaphore, kDurationForever);
-    MPDeleteSemaphore(threadEndSemaphore);
+    //MPWaitOnSemaphore(threadEndSemaphore, kDurationForever);
+    //MPDeleteSemaphore(threadEndSemaphore);
 	
     [TTY release];
     [PATH release];
