@@ -28,12 +28,12 @@
 {
 	 if(!taskRunning)
 	 {
-		NSMutableArray *argumentList = [NSMutableArray arrayWithArray:[[inputBox stringValue] componentsSeparatedByString:@" "]];
+		//NSMutableArray *argumentList = [NSMutableArray arrayWithArray:[[inputBox stringValue] componentsSeparatedByString:@" "]];
 		NSString *path = @"bash";
-		[argumentList removeObjectAtIndex:0];
+		//[argumentList removeObjectAtIndex:0];
 		NSLog(@"Trying to run: %@", path);
 		[SHELL launchWithPath:path
-			   arguments:argumentList
+			   arguments:nil
 			   environment:[NSDictionary dictionary]
 			   width:120
 			   height:200];
