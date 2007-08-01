@@ -45,6 +45,8 @@ $ make package
 
 The above command creates a "Terminal.app" which should be copied to /Applcations on your iPhone.
 
+TODO: Create a wiki page just for installation of the Terminal.app discusses various options (ssh, [[http://iphonedisk.googlecode.com] iphonedisk], iPhoneInterface, etc)
+
 === Packaging ===
 
 This section is for developers who want to package the latest binary release and put it in the downloads section.
