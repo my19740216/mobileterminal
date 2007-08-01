@@ -1,4 +1,5 @@
 #summary How to build and release MobileTerminal
+#labels Featured
 
 = Introduction =
 
