@@ -1,0 +1,10 @@
+#summary How to install the Terminal.app package on your iPhone
+#labels Fea
+
+= Introduction =
+
+This page describes the process of installing Terminal.app on your iPhone.  This assumes you have already downloaded the latest mobileterminal binary, or built it from source (see Building).
+
+
+TODO: Link to jailbreak descriptions
+TODO: discusses various options for copying files over (ssh, [[http://iphonedisk.googlecode.com] iphonedisk], iPhoneInterface, etc)
