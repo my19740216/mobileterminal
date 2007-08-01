@@ -1,5 +1,5 @@
 #summary How to install the Terminal.app package on your iPhone
-#labels Fea
+#labels Featured
 
 = Introduction =
 
