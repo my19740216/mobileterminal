@@ -3,8 +3,16 @@
 
 = Introduction =
 
-This page describes the process of installing Terminal.app on your iPhone.  This assumes you have already downloaded the latest mobileterminal binary, or built it from source (see Building).
+This page describes the process of installing Terminal.app on your iPhone.  This assumes you have already downloaded the latest mobileterminal binary, or built it from source (see Building).  You should also have already probably should have installed sshd on your iphone, and have an executable /bin/sh.
 
+= Requirements =
 
-TODO: Link to jailbreak descriptions
-TODO: discusses various options for copying files over (ssh, [[http://iphonedisk.googlecode.com] iphonedisk], iPhoneInterface, etc)
+Before you can run the mobile terminal, you need to be able to copy files back and forth to your phone, and be able to set the executable bit on the terminal program (i.e. chmod +x).
+
+Most people get files on their iPhone using one or more of the following methods.  I prefer sshd and [[http://iphonedisk.google.com] iphonedisk].
+
+   * http://ellkro.jot.com/WikiHome/InstallingDropbearOSX
+   * Get the iphone-binkit from http://iphone.natetrue.com/ which includes a lot of the common unix utilities you may need, including /bin/chmod, /bin/sh, /bin/login, etc.
+   * You can use [[http://iphonedisk.googlecode.com] iphonedisk] if you have the mac os x developer tools installed and want to mount your iphone as a disk drive
+
+= Installation =
