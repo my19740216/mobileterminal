@@ -21,7 +21,7 @@ You should already have a Terminal.app (either from a binary distribution in the
 
 The objective is to copy Terminal.app and its contents to the /Applications/ folder on your iPhone.  You must also make sure that the Terminal binary inside the Terminal.app folder has the executable bit set.
 
-Here is an example of how to install Terminal.app once you have sshd working.  The default password for root on the iphone is documented elsewhere.
+Here is an example of how to install Terminal.app once you have sshd working.  The default password for root on the iphone is documented elsewhere.  You should also figure out the IP address of your iphone.  It uses DHCP so you determine its IP just like any other machine on your network (not covered here).   The IP for my iphone is 10.0.1.25 in this example.
 
 {{{
    $ scp -rp Terminal.app root@10.0.1.25:/Applications/
