@@ -11,8 +11,26 @@ Before you can run the mobile terminal, you need to be able to copy files back a
 
 Most people get files on their iPhone using one or more of the following methods.  I prefer sshd and [[http://iphonedisk.google.com] iphonedisk].
 
-   * http://ellkro.jot.com/WikiHome/InstallingDropbearOSX
-   * Get the iphone-binkit from http://iphone.natetrue.com/ which includes a lot of the common unix utilities you may need, including /bin/chmod, /bin/sh, /bin/login, etc.
-   * You can use [[http://iphonedisk.googlecode.com] iphonedisk] if you have the mac os x developer tools installed and want to mount your iphone as a disk drive
+  * http://ellkro.jot.com/WikiHome/InstallingDropbearOSX
+  * Get the iphone-binkit from http://iphone.natetrue.com/ which includes a lot of the common unix utilities you may need, including /bin/chmod, /bin/sh, /bin/login, etc.
+  * You can use [[http://iphonedisk.googlecode.com] iphonedisk] if you have the mac os x developer tools installed and want to mount your iphone as a disk drive
 
 = Installation =
+
+You should already have a Terminal.app (either from a binary distribution in the Downloads section, or built from *make* and *make package*.  Terminal.app is just a directory with multiple files including the Terminal binary itself, an Info.plist and some icons.
+
+The objective is to copy Terminal.app and its contents to the /Applications/ folder on your iPhone.  You must also make sure that the Terminal binary inside the Terminal.app folder has the executable bit set.
+
+Here is an example of how to install Terminal.app once you have sshd working.  The default password for root on the iphone is documented elsewhere.
+
+{{{
+   $ scp -rp Terminal.app root@10.0.1.25:/Applications/
+}}}
+
+If you don't have scp, and copied the files over using iphonedisk or iPhoneInterface, then you will need to manually make the Terminal binary executable.
+
+{{{
+  $ ssh root@10.0.1.25 "chmod +x /Applications/Terminal.app/Terminal"
+}}}
+
+You should also make sure that you have copied over /bin/login, /bin/sh, and whatever other unix tools you want and make sure they are also executable.  See iphone-binkit for a great binary distribution. 
