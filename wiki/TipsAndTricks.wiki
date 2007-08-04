@@ -1,0 +1,15 @@
+#summary Tips and Tricks for working with Mobile Terminal.
+
+= Introduction =
+
+This page is a collection of tips and tricks that people have found useful.  Please feel free to leave your own in the comments.
+
+
+
+= Control Characters =
+
+You can send a control-C by pressing the "bullet" key (First press ".?123", then "#+=", then the circle on the middle right), then press the C key.  This can be useful when you want to escape out of a long running program such as ping.
+
+= Common unix binaries =
+
+Get the latest iphone-binkit from http://iphone.natetrue.com which contains lots of useful unix binaries. Also there, apache, python, ruby.  Join #iphone-shell on irc.osx86.hu for more discussion.
