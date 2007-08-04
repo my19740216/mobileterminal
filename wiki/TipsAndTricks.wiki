@@ -1,4 +1,5 @@
 #summary Tips and Tricks for working with Mobile Terminal.
+#labels Featured
 
 = Introduction =
 
