@@ -9,11 +9,11 @@ This page describes the process of installing Terminal.app on your iPhone.  This
 
 Before you can run the mobile terminal, you need to be able to copy files back and forth to your phone, and be able to set the executable bit on the terminal program (i.e. chmod +x).
 
-Most people get files on their iPhone using one or more of the following methods.  I prefer sshd and [[http://iphonedisk.google.com] iphonedisk].
+Most people get files on their iPhone using one or more of the following methods.  I prefer sshd and iphonedisk.
 
   * http://ellkro.jot.com/WikiHome/InstallingDropbearOSX
   * Get the iphone-binkit from http://iphone.natetrue.com/ which includes a lot of the common unix utilities you may need, including /bin/chmod, /bin/sh, /bin/login, etc.
-  * You can use [[http://iphonedisk.googlecode.com] iphonedisk] if you have the mac os x developer tools installed and want to mount your iphone as a disk drive
+  * You can use [http://iphonedisk.googlecode.com iphonedisk] if you have the mac os x developer tools installed and want to mount your iphone as a disk drive
 
 = Installation =
 
@@ -27,7 +27,7 @@ Here is an example of how to install Terminal.app once you have sshd working.  T
    $ scp -rp Terminal.app root@10.0.1.25:/Applications/
 }}}
 
-If you don't have scp, and copied the files over using iphonedisk or iPhoneInterface, then you will need to manually make the Terminal binary executable.
+If you don't have scp, and copied the files over using iphonedisk or iPhoneInterface, then you will need to manually make the Terminal binary executable.  There currently isn't a known way to set permissions using AFC.
 
 {{{
   $ ssh root@10.0.1.25 "chmod +x /Applications/Terminal.app/Terminal"
