@@ -6,8 +6,8 @@
 This page is for developers who wish to build MobileTerminal and package it for binary distribution.  This page assumes that you have access to your iPhone and have a working [http://www.google.com/url?sa=t&ct=res&cd=1&url=http%3A%2F%2Fdeveloper.berlios.de%2Fprojects%2Fiphone-binutils%2F&ei=_rWwRsucMY24gQP8_5CuCA&usg=AFQjCNGmoQuFDFPJ8XVWAsHMwf8VYk-BoQ&sig2=kdfUORR2uWGpzwtaykEWWw iphone-binutils] toolchain.
 
 See these pages for more info on how to get prepared:
-  * TODO: Put a link to a page with jailbreak instructions.
-  * TODO: Put a link to describe how to build the toolchain.
+  * http://ellkro.jot.com/WikiHome/ToolchainInstallation -- a binary development package
+  * http://ellkro.jot.com/HowToBuildObjCApps -- build from toolchain svn, for those who would rather spend more time compiling the source of the compiler than writing apps for the iphone :-D
 
 = Details =
 
