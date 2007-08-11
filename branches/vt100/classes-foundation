@@ -1,0 +1,352 @@
+@protocol NSCoding
+@protocol NSCopying
+@protocol NSFastEnumeration
+@protocol NSKeyValueProxyCaching
+@protocol NSLocking
+@protocol NSMutableCopying
+@protocol NSObject
+@protocol NSURLAuthenticationChallengeSender <NSObject>
+@protocol NSURLDataDecoder
+@protocol NSURLDownloadDecoder
+@protocol NSURLProtocolClient <NSObject>
+ NSCFArray : NSMutableArray
+ NSPlaceholderMutableArray : NSMutableArray
+ NSPlaceholderArray : NSArray
+ NSArrayReverseEnumerator : NSEnumerator
+ NSCFArray__ : NSCFArray
+ NSMutableArray (NSMutableArray)
+ NSArray (NSArray)
+ NSCFDictionary : NSMutableDictionary
+ NSPlaceholderMutableDictionary : NSMutableDictionary
+ NSPlaceholderDictionary : NSDictionary
+ NSDictionaryObjectEnumerator : NSFastEnumerationEnumerator
+ NSCFDictionary__ : NSCFDictionary
+ NSCFDictionary (NSKeyValueObservingCustomization)
+ NSMutableDictionary (NSMutableDictionary)
+ NSDictionary (NSDictionary)
+ NSFastEnumerationEnumerator : NSEnumerator
+ NSEnumerator : NSObject <NSFastEnumeration>
+ NSMapTable1 : NSMapTable
+ NSHashTable1 : NSHashTable
+ _NSIndexSetEnumerator : NSEnumerator
+ NSMutableIndexSet : NSIndexSet
+ NSIndexSet : NSObject <NSCopying, NSMutableCopying, NSCoding>
+ NSCountedSet : NSMutableSet
+ NSCFSet : NSMutableSet
+ NSPlaceholderMutableSet : NSMutableSet
+ NSPlaceholderSet : NSSet
+ NSCFSet__ : NSCFSet
+ NSMutableSet (NSMutableSet)
+ NSSet (NSSet)
+ NSCFLocale : NSLocale
+ NSLocale : NSObject <NSCopying, NSCoding>
+ NSCFLocale__ : NSCFLocale
+ NSUserDefaults : NSObject
+ NSClassDescription : NSObject
+ NSObject (NSClassDescriptionPrimitives)
+ NSKeyValueSlowSetter : NSKeyValueSetter
+ NSKeyValueSlowGetter : NSKeyValueGetter
+ NSKeyValueNotifyingMutableCollectionGetter : NSKeyValueProxyGetter
+ NSKeyValueIvarMutableCollectionGetter : NSKeyValueProxyGetter
+ NSKeyValueSlowMutableCollectionGetter : NSKeyValueProxyGetter
+ NSKeyValueFastMutableCollection2Getter : NSKeyValueProxyGetter
+ NSKeyValueFastMutableCollection1Getter : NSKeyValueProxyGetter
+ NSKeyValueUndefinedSetter : NSKeyValueSetter
+ NSKeyValueIvarSetter : NSKeyValueSetter
+ NSKeyValueMethodSetter : NSKeyValueSetter
+ NSKeyValueUndefinedGetter : NSKeyValueGetter
+ NSKeyValueIvarGetter : NSKeyValueGetter
+ NSKeyValueCollectionGetter : NSKeyValueProxyGetter
+ NSKeyValueMethodGetter : NSKeyValueGetter
+ NSKeyValueSetter : NSKeyValueAccessor
+ NSKeyValueProxyGetter : NSKeyValueGetter
+ NSKeyValueGetter : NSKeyValueAccessor
+ NSKeyValueAccessor : NSObject
+ NSKeyValueMutatingSetMethodSet : NSKeyValueMutatingCollectionMethodSet
+ NSKeyValueNonmutatingSetMethodSet : NSKeyValueNonmutatingCollectionMethodSet
+ NSKeyValueMutatingArrayMethodSet : NSKeyValueMutatingCollectionMethodSet
+ NSKeyValueNonmutatingArrayMethodSet : NSKeyValueNonmutatingCollectionMethodSet
+ NSKeyValueMutatingCollectionMethodSet : NSObject
+ NSKeyValueNonmutatingCollectionMethodSet : NSObject
+ NSKeyValueArray : NSArray <NSKeyValueProxyCaching>
+ NSArray (NSKeyValueCodingPrivate)
+ NSObject (NSKeyValueCodingPrivate)
+ NSUserDefaults (NSKeyValueCoding)
+ NSSet (NSKeyValueCoding)
+ NSNull (NSKeyValueCoding)
+ NSMutableDictionary (NSKeyValueCoding)
+ NSDictionary (NSKeyValueCoding)
+ NSArray (NSKeyValueCoding)
+ NSObject (NSKeyValueCoding)
+ NSObject (NSKeyValueObserverNotifying)
+ NSKeyValueProxyShareKey : NSObject <NSKeyValueProxyCaching>
+ NSKeyValueSet : NSSet <NSKeyValueProxyCaching>
+ NSCFError : NSError
+ NSCFError__ : NSCFError
+ NSError : NSObject <NSCopying, NSCoding>
+ NSError (NSErrorPrivate)
+ NSDistributedNotificationCenter : NSNotificationCenter
+ NSNotificationCenter : NSObject
+ _NSLocalNotificationCenter : NSDistributedNotificationCenter
+ NSConcreteNotification : NSNotification
+ NSNotification : NSObject <NSCopying, NSCoding>
+ NSCFType : NSObject
+ NSCFType__ : NSCFType
+ NSObject (NXCompatibilityFixes)
+ NSValue (NSKindOfAdditions)
+ NSString (NSKindOfAdditions)
+ NSDate (NSKindOfAdditions)
+ NSData (NSKindOfAdditions)
+ NSNumber (NSKindOfAdditions)
+ NSSet (NSKindOfAdditions)
+ NSDictionary (NSKindOfAdditions)
+ NSArray (NSKindOfAdditions)
+ NSObject (NSKindOfAdditions)
+ NSObject (NSCFTypeIDStuff)
+ NSAutoreleasePool : NSObject
+ NSGCAutoreleasePool : NSAutoreleasePool
+ NSCoder : NSObject
+ NSAssertionHandler : NSObject
+ NSException : NSObject <NSCopying, NSCoding>
+ NSNull : NSObject <NSCopying, NSCoding>
+ NSNull__ : NSNull
+ _NSZombie
+ NSObject (NSObject) <NSObject>
+ NSProxy <NSObject>
+ NSUnarchiver : NSCoder
+ NSArchiver : NSCoder
+ NSObject (NSArchiverCallBack)
+ _NSKeyedCoderOldStyleArray : NSObject
+ NSKeyedUnarchiver : NSCoder
+ NSKeyedArchiver : NSCoder
+ NSObject (NSKeyedUnarchiverObjectSubstitution)
+ NSObject (NSKeyedArchiverObjectSubstitution)
+ NSCoder (NSKeyedGeometryCoding)
+ NSData (NSDataObjCTypeDeserialization)
+ NSMutableData (NSMutableDataObjcTypeSerialization)
+ NSPropertyListSerialization : NSObject
+ NSDeserializer : NSObject
+ NSSerializer : NSObject
+ NSMutableData (NSSerialization)
+ NSData (NSDeserialization)
+ NSBundle : NSObject
+ NSDebugString : NSString
+ NSCFData : NSMutableData
+ NSCFData__ : NSCFData
+ NSSubrangeData : NSData
+ NSConcreteMutableData : NSMutableData
+ NSMutableData : NSData
+ NSConcreteData : NSData
+ NSData : NSObject <NSCopying, NSMutableCopying, NSCoding>
+ NSConcretePipe : NSPipe
+ NSPipe : NSObject
+ NSConcreteFileHandle : NSFileHandle
+ NSNullFileHandle : NSFileHandle
+ NSFileHandle : NSObject
+ NSFileManager : NSObject
+ NSAllDescendantPathsEnumerator : NSDirectoryEnumerator
+ NSDirectoryEnumerator : NSEnumerator
+ NSFileAttributes : NSDictionary
+ _NSFileManagerInfo : NSObject
+ NSDictionary (NSFileAttributes)
+ NSFileManager (NSFileManagerInstanceAPI)
+ NSFileManager (NSFileManagerSPI)
+ NSHost : NSObject
+ NSMultiReadUniWriteLock : NSObject <NSLocking>
+ NSRecursiveLock : NSObject <NSLocking>
+ NSConditionLock : NSObject <NSLocking>
+ NSLock : NSObject <NSLocking>
+ NSCondition : NSObject <NSLocking>
+ NSPathStore2 : NSString
+ NSArray (NSArrayPathExtensions)
+ NSString (NSPathUtilities)
+ NSPort : NSObject <NSCopying, NSCoding>
+ NSProcessInfo : NSObject
+ NSRunLoop : NSObject
+ NSObject (NSDelayedPerforming)
+ NSOutputStream : NSStream
+ NSInputStream : NSStream
+ NSCFOutputStream : NSOutputStream
+ NSCFInputStream : NSInputStream
+ NSCFOutputStream__ : NSCFOutputStream
+ NSCFInputStream__ : NSCFInputStream
+ NSStream : NSObject
+ NSStream (NSSocketStreamCreationExtensions)
+ NSOutputStream (NSCFOutputStreamAdditions)
+ NSInputStream (NSCFInputStreamAdditions)
+ NSThread : NSObject
+ _NSThreadData : NSObject
+ _NSThreadPerformInfo : NSObject
+ NSObject (NSThreadPerformAdditions)
+ NSCFTimer : NSTimer
+ NSTimer : NSObject
+ NSCFTimer__ : NSCFTimer
+ NSCFString : NSMutableString
+ NSCFString__ : NSCFString
+ NSCFString (NSKeyValueObservingCustomization)
+ NSMutableString (NSCFAdditions)
+ NSString (NSCFAdditions)
+ NSCFCharacterSet : NSMutableCharacterSet
+ NSCFCharacterSet__ : NSCFCharacterSet
+ NSExpandedBuiltinCharacterSet : NSBuiltinCharacterSet
+ NSBuiltinCharacterSet : NSCharacterSet
+ NSConcreteMutableCharacterSet : NSMutableCharacterSet
+ NSImmutableStringCharacterSet : NSCharacterSet
+ NSImmutableRangeCharacterSet : NSCharacterSet
+ NSInvertedCharacterSet : NSCharacterSet
+ NSMutableCharacterSet : NSCharacterSet <NSCopying, NSMutableCopying>
+ NSCharacterSet : NSObject <NSCopying, NSMutableCopying, NSCoding>
+ NSConstantString : NSSimpleCString
+ NSPlaceholderMutableString : NSMutableString
+ NSCheapMutableString : NSMutableString
+ NSMutableString : NSString
+ NSConcreteScanner : NSScanner
+ NSScanner : NSObject <NSCopying>
+ NSSimpleCString : NSString
+ NSPlaceholderString : NSString
+ NSString : NSObject <NSCopying, NSMutableCopying, NSCoding>
+ NSString (NSExtendedStringPropertyListParsing)
+ NSString (NSStringOtherEncodings)
+ NSAboutURLProtocol : NSURLProtocol
+ NSConnectionHTTPURLProtocol : NSHTTPURLProtocol <NSURLAuthenticationChallengeSender>
+ NSData (NSURLExtras)
+ NSDataURLProtocol : NSURLProtocol
+ NSDate (NSURLExtras)
+ NSDeflateDecoder : NSObject <NSURLDataDecoder>
+ NSMutableDictionary (NSURLExtras)
+ NSDictionary (NSURLExtras)
+ NSError (NSURLExtrasInternal)
+ NSError (NSURLExtras)
+ NSFileManager (NSURLExtrasInternal)
+ NSFileManager (NSURLExtras)
+ NSFileURLProtocol : NSURLProtocol
+ NSFTPURLProtocol : NSURLProtocol
+ NSGZipDecoder : NSObject <NSURLDownloadDecoder, NSURLDataDecoder>
+ NSHTTPAuthenticator : NSObject
+ NSURLAuthenticationChallengeState : NSObject
+ NSHTTPAuthenticator (NSInternal)
+ NSHTTPConnectionCache : NSObject
+ NSHTTPCookie : NSObject
+ NSHTTPCookieStorage : NSObject
+ NSHTTPCookieStorageInternal : NSObject
+ NSHTTPCookieStorage (NSPrivate)
+ NSHTTPCookieStorage (NSHTTPLoading)
+ NSHTTPCookieStorage (NSInternal)
+ NSHTTPURLProtocol : NSURLProtocol
+ NSNetworkSettings : NSObject
+ NSNetworkSettingsInternal : NSObject
+ NSNetworkSettings (NSInternal)
+ NSString (NSURLExtrasInternal)
+ NSString (NSURLExtras)
+ NSSynchronousURLConnectionDelegate : NSObject
+ NSURL : NSObject <NSCoding, NSCopying>
+ NSURL__ : NSURL
+ NSString (NSURLUtilities)
+ NSString (NSURLPathUtilities)
+ NSURL (NSURLExtrasInternal)
+ NSURL (NSURLExtras)
+ NSURLAuthenticationChallenge : NSObject
+ NSURLAuthenticationChallengeInternal : NSObject
+ NSURLCache : NSObject
+ NSURLCacheNode : NSObject
+ NSURLCacheInternal : NSObject
+ NSCachedURLResponse : NSObject <NSCoding, NSCopying>
+ NSCachedURLResponseInternal : NSObject
+ NSURLConnectionInternal : NSObject
+ NSURLConnection : NSObject
+ _NSURLConnectionQueueElement : NSObject
+ NSURLConnectionCallbackData : NSObject
+ NSURLConnection (NSURLConnectionInternal_ClientThread)
+ NSURLConnection (NSURLConnection_Threading)
+ NSURLConnection (NSURLConnectionPrivate)
+ NSURLConnection (NSURLAuthenticationChallengeSender) <NSURLAuthenticationChallengeSender>
+ NSURLConnectionQueue : NSURLQueue
+ NSURLCredential : NSObject <NSCopying>
+ NSURLCredentialInternal : NSObject
+ NSURLCredentialStorage : NSObject
+ NSURLCredentialStorageInternal : NSObject
+ NSURLCredentialStorage (NSURLCredentialStorageInternal)
+ NSURLFileTypeMappings : NSObject
+ NSURLFileTypeMappingsInternal : NSObject
+ NSURLHostNameAddressInfo : NSObject
+ NSURLKeychainCredential : NSURLCredential
+ NSURLKeychainCredentialInternal : NSObject
+ NSURLKeychainCredentialStorage : NSObject
+ NSURLKeychainCredentialStorageInternal : NSObject
+ NSURLKeychainCredentialStorage (NSInternal)
+ NSURLKeyValuePair : NSObject
+ NSURLProtectionSpace : NSObject <NSCopying>
+ NSURLProtectionSpaceInternal : NSObject
+ NSURLProtocol : NSObject
+ NSURLProtocolInternal : NSObject
+ NSURLProtocol (NSURLProtocolPrivate)
+ NSURLQueue : NSObject
+ NSURLQueueNode : NSObject
+ NSHTTPURLRequestParameters : NSObject <NSCoding, NSCopying, NSMutableCopying>
+ NSMutableURLRequest : NSURLRequest
+ NSURLRequest : NSObject <NSCoding, NSCopying, NSMutableCopying>
+ NSURLRequestInternal : NSObject
+ _NSHTTPBodyStreamWrapper : NSObject
+ NSMutableURLRequest (NSMutableHTTPURLRequest)
+ NSURLRequest (NSHTTPURLRequest)
+ NSHTTPURLResponse : NSURLResponse
+ NSHTTPURLResponseInternal : NSObject <NSCoding>
+ NSURLResponse : NSObject <NSCoding, NSCopying>
+ NSURLResponseInternal : NSObject
+ NSURLResponse (NSURLResponsePrivate)
+ NSString (NSUserDefaults_NSURLExtras)
+ NSUserDefaults (NSUserDefaults_NSURLExtras)
+ NSAffineTransform : NSObject <NSCopying, NSCoding>
+ NSDateComponents : NSObject <NSCopying, NSCoding>
+ NSCFCalendar : NSCalendar
+ NSCalendar : NSObject <NSCopying, NSCoding>
+ NSCFCalendar__ : NSCFCalendar
+ NSCalendarDate : NSDate
+ NSDate (NSNaturalLanguageDate)
+ NSCalendarDate (NSNaturalLanguageDate)
+ NSDate (NSCalendarDateExtras)
+ NSScanner (NSRemainingString)
+ NSCFBoolean : NSNumber
+ NSCFBoolean__ : NSCFBoolean
+ NSCFNumber : NSNumber
+ NSCFNumber__ : NSCFNumber
+ NSNumber (NSCFAdditions)
+ NSCFDate : NSDate
+ NSDate : NSObject <NSCopying, NSCoding>
+ NSCFDate__ : NSCFDate
+ NSCoder (NSGeometryCoding)
+ NSTimeZoneDetailDecoder : NSObject
+ NSTimeZoneDetail : NSCFTimeZone
+ NSLocalTimeZone : NSTimeZone
+ NSCFTimeZone : NSTimeZone
+ NSTimeZone : NSObject <NSCopying, NSCoding>
+ NSCFTimeZone__ : NSCFTimeZone
+ NSValueDecoder : NSObject
+ NSPlaceholderNumber : NSPlaceholderValue
+ NSPlaceholderValue : NSNumber
+ NSNumber : NSValue
+ NSdoubleNumber : NSRefCountingNumber
+ NSfloatNumber : NSRefCountingNumber
+ NSunsignedLongLongNumber : NSRefCountingNumber
+ NSlongLongNumber : NSRefCountingNumber
+ NSunsignedIntNumber : NSRefCountingNumber
+ NSintNumber : NSRefCountingNumber
+ NSunsignedShortNumber : NSRefCountingNumber
+ NSshortNumber : NSRefCountingNumber
+ NSValue : NSObject <NSCopying, NSCoding>
+ NSConcreteValue : NSValue
+ NSRefCountingNumber : NSNumber
+ NSHTTPURLProtocol (_NSPreferredLanguageObserver)
+ NSInvocation : NSObject
+ NSMessageBuilder
+ NSMethodSignature : NSObject
+ _NSHashFunctionsEnumerator : NSHashFunctionsEnumerator
+ _NSMapTableEnumerator : NSHashFunctionsEnumerator
+ _NSMapTable : NSMapTable
+ _NSHashTable : NSHashTable
+ NSMapTable : NSObject <NSCopying, NSMutableCopying, NSCoding, NSFastEnumeration>
+ NSHashTable : NSObject <NSCopying, NSMutableCopying, NSCoding, NSFastEnumeration>
+ _NSHashFunctions : NSHashFunctions <NSFastEnumeration>
+ NSHashFunctionsEnumerator : NSEnumerator
+ NSHashFunctions : NSObject
+ NSURLConnection (NSURLConnectionInternal_LoaderThread) <NSURLProtocolClient>

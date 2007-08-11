@@ -1,8 +1,8 @@
 // Cleanup.h
 // 
 // Cleanup of UIKit headers
-#include <UIKit/UITextView.h>
-#include <UIKit/UIView.h>
+#import <UIKit/UITextView.h>
+#import <UIKit/UIView.h>
 
 @interface UITextView (CleanWarnings)
 -(UIView*) webView;

@@ -4,7 +4,6 @@
 // transition smoothly in the other direction
 #import "ShellKeyboard.h"
 
-#import <UIKit/CDStructures.h>
 #import <UIKit/UIKit.h>
 #import <UIKit/UIAnimator.h>
 #import <UIKit/UIHardware.h>

@@ -1,0 +1,50 @@
+#import <Foundation.h>
+#import "NSAttributedString-HTML.h"
+#import "TextStorageTerminal.h"
+#import "Debug.h"
+
+@implementation NSAttributedString (HTML)
+
+NSString * cssForAttributes(NSDictionary *attr) {
+    NSEnumerator *keyEnum = [attr keyEnumerator];
+    NSString *key;
+    id o;
+    NSString *display = @"", *underline = @"", *background = @"", *foreground = @"", *bold = @"", *blink = @"";
+    while ((key = [keyEnum nextObject]))
+    {
+        o = [attr objectForKey: key];
+        if ([key isEqualToString: TSTInvisibleAttribute] && o && [(NSNumber*)o intValue])
+            display = @"display: none;";
+        else if ([key isEqualToString: NSUnderlineStyleAttributeName] && o && [(NSNumber*)o intValue])
+            underline = @"text-decoration: underline;";
+        else if ([key isEqualToString: NSBackgroundColorAttributeName])
+            background = [NSString stringWithFormat: @"background-color: %@;", o];
+        else if ([key isEqualToString: NSForegroundColorAttributeName])
+            foreground = [NSString stringWithFormat: @"color: %@;", o];
+        else if ([key isEqualToString: TSTBoldAttribute] && o && [(NSNumber*)o intValue])
+            bold = @"font-weight: bold;";
+        else if ([key isEqualToString: TSTBlinkingAttribute] && o && [(NSNumber*)o intValue])
+            blink = @"text-decoration: blink;";
+    }
+    return [NSString stringWithFormat: @"%@%@%@%@%@%@", display, underline, background, foreground, bold, blink];
+}
+
+-(NSString *)html {
+    NSRange attrRange;
+    NSDictionary *attr;
+    NSString *plainstring = [self string];
+    unsigned c = [plainstring length];
+    NSMutableString *s = [NSMutableString string], *substring;
+    unsigned i = 0;
+    while (i < c)
+    {
+//        DEBUG("range: start %d length %d\n", attrRange.location, attrRange.length);
+        attr = [self attributesAtIndex:i effectiveRange:&attrRange];
+        substring = [NSMutableString stringWithString: [plainstring substringWithRange: attrRange]];
+        [substring replaceOccurrencesOfString: @"\n" withString: @"<br\>" options: 0 range: NSMakeRange(0, [substring length])];
+        [s appendFormat: @"<span style=\"%@\">%@</span>", cssForAttributes(attr), substring];
+        i = NSMaxRange(attrRange);
+    }
+    return s;// [self string];;
+}
+@end
