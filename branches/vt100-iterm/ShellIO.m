@@ -42,7 +42,7 @@
 // sends the command to the background shell.
 - (void)heartbeatCallback:(id)ignored
 {
-  NSLog(@"heartbeat");
+//  NSLog(@"heartbeat");
 
   char buf[255];
   int nread;
@@ -80,7 +80,7 @@
         [out characterAtIndex:2] == 0x08) {
       // delete sequence, don't output
       NSLog(@"Delete!");
-      out = @"\x08";
+//      out = @"\x08";
     }
 
     const char* buf =

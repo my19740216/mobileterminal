@@ -32,6 +32,7 @@ static void signal_handler(int signal) {
   win.ws_row = rows;
   win.ws_col = cols;
 
+  // We're leaing
   pid_t pid = forkpty(&_fd, NULL, NULL, &win);
   if (pid == -1) {
     perror("forkpty");

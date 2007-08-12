@@ -288,8 +288,6 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
 // gets line at specified index starting from scrollback_top
 - (screen_char_t *) getLineAtIndex: (int) theIndex
 {
-	NSLog(@"getLineAtIndex:%d", theIndex);
-	
 	screen_char_t *theLinePointer;
 	
 	if(max_scrollback_lines == 0)
@@ -952,15 +950,11 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
 		NSLog(@"%s: invalid string '%@'", __PRETTY_FUNCTION__, string);
 		return;		
 	}
-NSLog(@"a");
 	if (ascii) { 
 		unichar *sc = (unichar *) malloc(len*sizeof(unichar));
-NSLog(@"b");
 		int fg=[TERMINAL foregroundColorCode], bg=[TERMINAL backgroundColorCode];
-NSLog(@"c");
 		
 		buffer = (screen_char_t *) malloc([string length] * sizeof(screen_char_t));
-NSLog(@"d");
 		if (!buffer)
 		{
 			NSLog(@"%s: Out of memory", __PRETTY_FUNCTION__);
@@ -975,14 +969,12 @@ NSLog(@"d");
 			buffer[i].bg_color = bg;
 		}
 		
-NSLog(@"d");
 		// check for graphical characters
 		if (charset[[TERMINAL charset]]) 
 			translate(buffer,len);
 		//    NSLog(@"%d(%d):%@",[TERMINAL charset],charset[[TERMINAL charset]],string);
 		free(sc);
 	} else {
-NSLog(@"qq");
 		string = [string precomposedStringWithCanonicalMapping];
 		len=[string length];
 		buffer = (screen_char_t *) malloc( 2 * len * sizeof(screen_char_t) );
@@ -1003,7 +995,6 @@ NSLog(@"qq");
 		{
 			buffer[idx].ch = '#';
 		}
-NSLog(@"f");
 		
         if (CURSOR_X >= WIDTH) {
             if ([TERMINAL wraparoundMode]) {
@@ -1018,7 +1009,6 @@ NSLog(@"f");
                 idx=len-1;
             }
         }
-NSLog(@"g");
 		if(WIDTH - CURSOR_X <= len - idx) 
 			newx = WIDTH;
 		else 
@@ -1031,28 +1021,20 @@ NSLog(@"g");
 		}
 		
 		screenIdx = CURSOR_Y * WIDTH;
-NSLog(@"CursorY=%d", CURSOR_Y);
 		aLine = [self getLineAtScreenIndex: CURSOR_Y];
 		
-NSLog(@"r");
 	        if ([TERMINAL insertMode]) {
 			if (CURSOR_X + j < WIDTH) 
 			{
-NSLog(@"1");
 				memmove(aLine+CURSOR_X+j,aLine+CURSOR_X,(WIDTH-CURSOR_X-j)*sizeof(screen_char_t));
-NSLog(@"2");
 				memset(dirty+screenIdx+CURSOR_X,1,WIDTH-CURSOR_X);
-NSLog(@"3");
 			}
 		}
-NSLog(@"4");
 		
 		if (aLine[CURSOR_X].ch == 0xffff) {
-NSLog(@"5");
 			if (CURSOR_X>0) aLine[CURSOR_X-1].ch = '#';
 		}
 		
-NSLog(@"s");
 		// insert as many characters as we can
 		memcpy(aLine + CURSOR_X, buffer + idx, j * sizeof(screen_char_t));
 		memset(dirty+screenIdx+CURSOR_X,1,j);
@@ -1060,7 +1042,6 @@ NSLog(@"s");
 		CURSOR_X = newx;
 		idx += j;
 		
-NSLog(@"t");
 		// cut off in the middle of double width characters
 		if (CURSOR_X<WIDTH-1 && aLine[CURSOR_X].ch == 0xffff) 
 		{
@@ -2026,8 +2007,6 @@ NSLog(@"t");
 // gets line offset by specified index from specified line poiner; accounts for buffer wrap
 - (screen_char_t *) _getLineAtIndex: (int) anIndex fromLine: (screen_char_t *) aLine
 {
-	NSLog(@"_getLineAtIndex:%d", anIndex);
-
 	screen_char_t *the_line = NULL;	
 		
 	NSParameterAssert(anIndex >= 0);
