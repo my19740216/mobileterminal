@@ -92,6 +92,21 @@
 // Input from keyboard -> Shell Process
 //
 
+- (BOOL)webView:(id)fp8 shouldDeleteDOMRange:(id)fp12
+{
+  // This captures the delete button and sends it to the SubProcess.  It will
+  // get reflected on the screen when the output is read back from the
+  // SubProcess.
+  const char delete_cstr = 0x08;
+  if (write(_fd, &delete_cstr, 1) == -1) {
+   perror("write");
+   exit(1);
+  }
+  return [super webView:fp8 shouldDeleteDOMRange:fp12];
+}
+
+
+
 - (BOOL)webView:(id)fp8 shouldInsertText:(id)character replacingDOMRange:(id)fp16 givenAction:(int)fp20
 {
   debug(@"inserting.. %#x", [character characterAtIndex:0]);
