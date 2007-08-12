@@ -144,8 +144,6 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
 //+ (NSCursor *) textViewCursor;
 - (id)initWithFrame: (struct CGRect) aRect;
 - (void)dealloc;
-- (BOOL) becomeFirstResponder;
-- (BOOL) resignFirstResponder;
 /*
 - (BOOL)isFlipped;
 - (BOOL)isOpaque;
@@ -155,30 +153,11 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
 /*
 - (void)keyDown:(CGEvent *)event;
 - (BOOL) keyIsARepeat;
-- (void)mouseExited:(CGEvent *)event;
-- (void)mouseEntered:(CGEvent *)event;
-- (void)mouseDown:(CGEvent *)event;
-- (void)mouseUp:(CGEvent *)event;
-- (void)mouseDragged:(NSEvent *)event;
-- (void) otherMouseDown: (NSEvent *) event;
-- (void)otherMouseUp:(NSEvent *)event;
-- (void)otherMouseDragged:(NSEvent *)event;
-- (void)rightMouseDown:(NSEvent *)event;
-- (void)rightMouseUp:(NSEvent *)event;
-- (void)rightMouseDragged:(NSEvent *)event;
 - (NSString *) contentFromX:(int)startx Y:(int)starty ToX:(int)endx Y:(int)endy pad: (BOOL) pad;
 - (NSString *) selectedText;
 - (NSString *) selectedTextWithPad: (BOOL) pad;
 - (NSString *) content;
-- (void)copy: (id) sender;
-- (void)paste:(id)sender;
-- (void) pasteSelection: (id) sender;
-- (BOOL)validateMenuItem:(NSMenuItem *)item;
 - (void)changeFont:(id)sender;
-- (NSMenu *)menuForEvent:(NSEvent *)theEvent;
-- (void) browse:(id)sender;
-- (void) searchInBrowser:(id)sender;
-- (void) mail:(id)sender;
 
 //get/set methods
 - (NSFont *)font;
@@ -208,7 +187,6 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
 - (void)setCursorColor:(NSColor*) color;
 - (void) setSelectedTextColor: (NSColor *) aColor;
 - (void) setCursorTextColor:(NSColor*) color;
-
 
 - (NSDictionary*) markedTextAttributes;
 - (void) setMarkedTextAttributes: (NSDictionary *) attr;
@@ -241,16 +219,6 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
 - (void) setTransparency: (float) fVal;
 - (BOOL) useTransparency;
 - (void) setUseTransparency: (BOOL) flag;
-
-//
-// Drag and Drop methods for our text view
-//
-- (unsigned int) draggingEntered: (id<NSDraggingInfo>) sender;
-- (unsigned int) draggingUpdated: (id<NSDraggingInfo>) sender;
-- (void) draggingExited: (id<NSDraggingInfo>) sender;
-- (BOOL) prepareForDragOperation: (id<NSDraggingInfo>) sender;
-- (BOOL) performDragOperation: (id<NSDraggingInfo>) sender;
-- (void) concludeDragOperation: (id<NSDraggingInfo>) sender;
 
 // Cursor control
 - (void)resetCursorRects;

@@ -64,6 +64,7 @@ static void signal_handler(int signal) {
   NSLog(@"Child process id: %d\n", pid);
 
   // Future read/write operations should not block
+/*
   int flags;
   if ((flags = fcntl(_fd, F_GETFL, 0)) == -1) {
     flags = 0;
@@ -72,6 +73,7 @@ static void signal_handler(int signal) {
     perror("fcntl");
     exit(1);
   }  
+*/
   return self;
 }
 

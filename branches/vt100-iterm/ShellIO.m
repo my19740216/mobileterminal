@@ -30,61 +30,55 @@
   [SCREEN initScreenWithWidth:41 Height:19];
 
   id parent = [super initWithFrame:CGRectMake(0.0f, 0.0f, 0.0f, 0.0f)];
-  [parent startHeartbeat:@selector(heartbeatCallback:) inRunLoopMode:nil];
+
+  // Spawn a background thread that reads from the subprocess
+  [NSThread detachNewThreadSelector:@selector(startIOThread:)
+                           toTarget:self
+                         withObject:self];
   return parent;
 }
 
 // Output of shell process -> Screen
 
-// The heartbeatCallback is invoked by the UI occasionally. It does a
-// non-blocking read of the background shell process, and also checks for
-// input from the user. When it detects the user has pressed return, it
-// sends the command to the background shell.
-- (void)heartbeatCallback:(id)ignored
+// This background thread blocks until output is available from the subprocess,
+// 
+// then pushes tokens to the screen.
+- (void)startIOThread:(id)ignored
 {
-//  NSLog(@"heartbeat");
-
-  char buf[255];
+  [[NSAutoreleasePool alloc] init];
+  const int kBufSize = 1024;
+  char buf[kBufSize];
   int nread;
   while (1) {
-    nread = read(_fd, buf, 254);
+    nread = read(_fd, buf, kBufSize);
     if (nread == -1) {
-      if (errno == EAGAIN) {
-        // No input was available, try reading again on next heartbeat
-        return;
-      }
       perror("read");
       return exit(1);
     } if (nread == 0) {
-      NSLog(@"End of file from child process");
+      NSLog(@"Unexpected EOF from child process");
       return exit(1);
     }
-    buf[nread] = '\0';
-    NSString* out =
-      [[NSString stringWithCString:buf
-          encoding:[NSString defaultCStringEncoding]] retain];
-
-    const char* buf =
-      [out cStringUsingEncoding:[NSString defaultCStringEncoding]];
-    int length = [out length];
-    [TERMINAL putStreamData:buf length:length];
+    [TERMINAL putStreamData:buf length:nread];
 
     // Now that we've got the raw data from the sub process, write it to the
-    // terminal.  We get back tokens to display on the screen.
+    // terminal.  We get back tokens to display on the screen and pass the
+    // update in the main thread.
     VT100TCC token;
     while((token = [TERMINAL getNextToken]),
-          token.type != VT100_WAIT && token.type != VT100CC_NULL) {
+        token.type != VT100_WAIT && token.type != VT100CC_NULL) {
       // process token
       if (token.type != VT100_SKIP) {
         if (token.type == VT100_NOTSUPPORT) {
           NSLog(@"%s(%d):not support token", __FILE__ , __LINE__);
         } else {
           [SCREEN putToken:token];
-	}
+        }
       } 
-    } // end token processing loop
-    [_textView setNeedsDisplay];
+    }
 
+    [_textView performSelectorOnMainThread:@selector(setNeedsDisplay)
+                                withObject:nil
+                             waitUntilDone:NO];
   }
 }
 
@@ -102,7 +96,8 @@
    perror("write");
    exit(1);
   }
-  return [super webView:fp8 shouldDeleteDOMRange:fp12];
+  // See if the shell echo'd back what we just wrote
+  return NO;
 }
 
 
@@ -138,9 +133,10 @@
  
   debug(@"writing char: %#x", cmd_char);
   if (write(_fd, &cmd_char, 1) == -1) {
-   perror("write");
-   exit(1);
+    perror("write");
+    exit(1);
   }
+  // See if the shell echo'd back what we just wrote
   return NO;
 }
 

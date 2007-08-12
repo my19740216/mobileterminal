@@ -45,40 +45,16 @@ static int cacheSize;
 
 + (void) initialize
 {
-/*    
-    NSImage *ibeamImage = [[NSCursor IBeamCursor] image];
-    NSPoint hotspot = [[NSCursor IBeamCursor] hotSpot];
-    NSImage *aCursorImage = [ibeamImage copy];
-    NSImage *reverseCursorImage = [ibeamImage copy];
-    [reverseCursorImage lockFocus];
-    [[NSColor whiteColor] set];
-    NSRectFill(NSMakeRect(0,0,[reverseCursorImage size].width,[reverseCursorImage size].height));
-    [ibeamImage compositeToPoint:NSMakePoint(0,0) operation:NSCompositeDestinationIn];
-    [reverseCursorImage unlockFocus];
-    [aCursorImage lockFocus];
-    [reverseCursorImage compositeToPoint:NSMakePoint(2,0) operation:NSCompositePlusLighter];
-    [aCursorImage unlockFocus];
-    textViewCursor = [[NSCursor alloc] initWithImage:aCursorImage hotSpot:hotspot];
-    strokeWidth = [[PreferencePanel sharedInstance] strokeWidth];
-    boldStrokeWidth = [[PreferencePanel sharedInstance] boldStrokeWidth];
-    cacheSize = [[PreferencePanel sharedInstance] cacheSize];
-*/
 }
-/*
-+ (NSCursor *) textViewCursor
-{
-    return textViewCursor;
-}
-*/
 
 - (id)initWithFrame: (struct CGRect) aRect
 {
 #if DEBUG_ALLOC
-    NSLog(@"%s: 0x%x", __PRETTY_FUNCTION__, self);
+  NSLog(@"%s: 0x%x", __PRETTY_FUNCTION__, self);
 #endif
-    	
-    self = [super initWithFrame: aRect];
-    dataSource=_delegate=markedTextAttributes=NULL;
+  self = [super initWithFrame: aRect];
+  
+  dataSource=_delegate=markedTextAttributes=NULL;
    /* 
     [self setMarkedTextAttributes:
         [NSDictionary dictionaryWithObjectsAndKeys:
@@ -88,63 +64,20 @@ static int cacheSize;
             [NSNumber numberWithInt:2],NSUnderlineStyleAttributeName,
             NULL]];
 */
-	CURSOR=YES;
-	lastFindX = startX = -1;
-//    markedText=nil;
-    gettimeofday(&lastBlink, NULL);
-	//[[self window] useOptimizedDrawing:YES];
+  CURSOR=YES;
+  lastFindX = startX = -1;
+  gettimeofday(&lastBlink, NULL);
 	    	
-	// register for drag and drop
-	
-	// init the cache
-	charImages = (CharCache *)malloc(sizeof(CharCache)*cacheSize);
-	memset(charImages, 0, cacheSize*sizeof(CharCache));	
-    charWidth = 12;
-    oldCursorX = oldCursorY = -1;
-    
-//    [self setUseTransparency: YES];
-		
-    return (self);
+  memset(charImages, 0, cacheSize*sizeof(CharCache));	
+  charWidth = 12;
+  oldCursorX = oldCursorY = -1;
+  return (self);
 }
 
-- (BOOL) resignFirstResponder
+- (BOOL) canBecomeFirstResponder;
 {
-	
-	//NSLog(@"0x%x: %s", self, __PRETTY_FUNCTION__);
-		
-	return (YES);
+  return NO;
 }
-
-- (BOOL) becomeFirstResponder
-{
-	
-	//NSLog(@"0x%x: %s", self, __PRETTY_FUNCTION__);
-		
-	return (YES);
-}
-/*
-- (void)viewWillMoveToWindow:(NSWindow *)win 
-{
-    
-    //NSLog(@"0x%x: %s, will move view from %@ to %@", self, __PRETTY_FUNCTION__, [self window], win);
-    if (!win && [self window] && trackingRectTag) {
-        //NSLog(@"remove tracking");
-        [self removeTrackingRect:trackingRectTag];
-        trackingRectTag = 0;
-    }
-    [super viewWillMoveToWindow:win];
-}
-
-- (void)viewDidMoveToWindow
-{
-    //NSLog(@"0x%x: %s, moved view to %@", self, __PRETTY_FUNCTION__, [self window]);
-    if ([self window]) {
-        //NSLog(@"add tracking");
-        trackingRectTag = [self addTrackingRect:[self frame] owner: self userData: nil assumeInside: NO];
-    }
-    
-}
-*/
 
 - (void) dealloc
 {
@@ -179,9 +112,6 @@ static int cacheSize;
     [markedTextAttributes release];
 //	[markedText release];
 	
-    [self resetCharCache];
-//	free(charImages);
-	
     [super dealloc];
     
 #if DEBUG_ALLOC
@@ -210,46 +140,14 @@ static int cacheSize;
 }
 */
 
-
-- (BOOL) antiAlias
-{
-    return (antiAlias);
-}
-
-- (void) setAntiAlias: (BOOL) antiAliasFlag
-{
-#if DEBUG_METHOD_TRACE
-    NSLog(@"%s(%d):-[PTYTextView setAntiAlias: %d]",
-          __FILE__, __LINE__, antiAliasFlag);
-#endif
-    antiAlias = antiAliasFlag;
-	forceUpdate = YES;
-	[self resetCharCache];
-	[self setNeedsDisplay];
-}
-
-- (BOOL) disableBold
-{
-	return (disableBold);
-}
-
-- (void) setDisableBold: (BOOL) boldFlag
-{
-	disableBold = boldFlag;
-	forceUpdate = YES;
-	[self resetCharCache];
-	[self setNeedsDisplay];
-}
-
-
 - (BOOL) blinkingCursor
 {
-	return (blinkingCursor);
+  return (blinkingCursor);
 }
 
 - (void) setBlinkingCursor: (BOOL) bFlag
 {
-	blinkingCursor = bFlag;
+  blinkingCursor = bFlag;
 }
 
 
@@ -1885,207 +1783,7 @@ NSLog(@"line width=%d", lineWidth);
 	
 	return str;
 }
-/*
-- (IBAction) selectAll: (id) sender
-{
-	// set the selection region for the whole text
-	startX = startY = 0;
-	endX = [dataSource width] - 1;
-	endY = [dataSource numberOfLines] - 1;
-	[self _selectFromX:startX Y:startY toX:endX Y:endY];
-	[self setNeedsDisplay];
-}
-
-- (void) deselect
-{
-	if (startX>=0) {
-		startX = -1;
-		[self _selectFromX:-1 Y:0 toX:0 Y:0];
-	}
-}
-
-
-- (NSString *) selectedText
-{
-	return [self selectedTextWithPad: NO];
-}
-
-
-- (NSString *) selectedTextWithPad: (BOOL) pad
-{
-	
-#if DEBUG_METHOD_TRACE
-    NSLog(@"%s]", __PRETTY_FUNCTION__);
-#endif
-	
-	if (startX == -1) return nil;
-	[self _updateSelectionLocation];
-	if (startX == -1) return nil;
-	
-	return ([self contentFromX: startX Y: startY ToX: endX Y: endY pad: pad]);
-	
-}
-
-- (NSString *) content
-{
-	
-#if DEBUG_METHOD_TRACE
-    NSLog(@"%s(%d):-[PTYTextView copy:%@]", __FILE__, __LINE__, sender );
-#endif
-    	
-	return [self contentFromX:0 Y:0 ToX:[dataSource width]-1 Y:[dataSource numberOfLines]-1 pad: NO];
-}
-
-- (void) copy: (id) sender
-{
-    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-    NSString *copyString;
-    
-#if DEBUG_METHOD_TRACE
-    NSLog(@"%s(%d):-[PTYTextView copy:%@]", __FILE__, __LINE__, sender );
-#endif
-    
-    copyString=[self selectedText];
-    
-    if (copyString && [copyString length]>0) {
-        [pboard declareTypes: [NSArray arrayWithObject: NSStringPboardType] owner: self];
-        [pboard setString: copyString forType: NSStringPboardType];
-    }
-}
-
-- (void)paste:(id)sender
-{
-#if DEBUG_METHOD_TRACE
-    NSLog(@"%s(%d):-[PTYTextView paste:%@]", __FILE__, __LINE__, sender );
-#endif
-    
-    if ([_delegate respondsToSelector:@selector(paste:)])
-        [_delegate paste:sender];
-}
-
-- (void) pasteSelection: (id) sender
-{
-#if DEBUG_METHOD_TRACE
-    NSLog(@"%s: %@]", __PRETTY_FUNCTION__, sender );
-#endif
-    
-    if (startX >= 0 && [_delegate respondsToSelector:@selector(pasteString:)])
-        [_delegate pasteString:[self selectedText]];
-	
-}
-
-
-- (BOOL)validateMenuItem:(NSMenuItem *)item
-{
-#if DEBUG_METHOD_TRACE
-    NSLog(@"%s(%d):-[PTYTextView validateMenuItem:%@; supermenu = %@]", __FILE__, __LINE__, item, [[item menu] supermenu] );
-#endif
-    	
-    if ([item action] == @selector(paste:))
-    {
-        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-        
-        // Check if there is a string type on the pasteboard
-        return ([pboard stringForType:NSStringPboardType] != nil);
-    }
-    else if ([item action ] == @selector(cut:))
-        return NO;
-    else if ([item action]==@selector(saveDocumentAs:) ||
-			 [item action] == @selector(selectAll:) || 
-			 ([item action] == @selector(print:) && [item tag] != 1))
-    {
-        // We always validate the above commands
-        return (YES);
-    }
-    else if ([item action]==@selector(mail:) ||
-             [item action]==@selector(browse:) ||
-			 [item action]==@selector(searchInBrowser:) ||
-             [item action]==@selector(copy:) ||
-			 [item action]==@selector(pasteSelection:) || 
-			 ([item action]==@selector(print:) && [item tag] == 1)) // print selection
-    {
-        //        NSLog(@"selected range:%d",[self selectedRange].length);
-        return (startX>=0);
-    }
-    else
-        return NO;
-}
-
-- (NSMenu *)menuForEvent:(NSEvent *)theEvent
-{
-    NSMenu *cMenu;
-    
-    // Allocate a menu
-    cMenu = [[NSMenu alloc] initWithTitle:@"Contextual Menu"];
-    
-    // Menu items for acting on text selections
-    [cMenu addItemWithTitle:NSLocalizedStringFromTableInBundle(@"-> Browser",@"iTerm", [NSBundle bundleForClass: [self class]], @"Context menu")
-                     action:@selector(browse:) keyEquivalent:@""];
-    [cMenu addItemWithTitle:NSLocalizedStringFromTableInBundle(@"-> Google",@"iTerm", [NSBundle bundleForClass: [self class]], @"Context menu")
-                     action:@selector(searchInBrowser:) keyEquivalent:@""];
-    [cMenu addItemWithTitle:NSLocalizedStringFromTableInBundle(@"-> Mail",@"iTerm", [NSBundle bundleForClass: [self class]], @"Context menu")
-                     action:@selector(mail:) keyEquivalent:@""];
-    
-    // Separator
-    [cMenu addItem:[NSMenuItem separatorItem]];
-    
-    // Copy,  paste, and save
-    [cMenu addItemWithTitle:NSLocalizedStringFromTableInBundle(@"Copy",@"iTerm", [NSBundle bundleForClass: [self class]], @"Context menu")
-                     action:@selector(copy:) keyEquivalent:@""];
-    [cMenu addItemWithTitle:NSLocalizedStringFromTableInBundle(@"Paste",@"iTerm", [NSBundle bundleForClass: [self class]], @"Context menu")
-                     action:@selector(paste:) keyEquivalent:@""];
-    [cMenu addItemWithTitle:NSLocalizedStringFromTableInBundle(@"Save",@"iTerm", [NSBundle bundleForClass: [self class]], @"Context menu")
-                     action:@selector(saveDocumentAs:) keyEquivalent:@""];
-    
-    // Separator
-    [cMenu addItem:[NSMenuItem separatorItem]];
-    
-    // Select all
-    [cMenu addItemWithTitle:NSLocalizedStringFromTableInBundle(@"Select All",@"iTerm", [NSBundle bundleForClass: [self class]], @"Context menu")
-                     action:@selector(selectAll:) keyEquivalent:@""];
-    
-    
-    // Ask the delegae if there is anything to be added
-    if ([[self delegate] respondsToSelector:@selector(menuForEvent: menu:)])
-        [[self delegate] menuForEvent:theEvent menu: cMenu];
-    
-    return [cMenu autorelease];
-}
-
-- (void) mail:(id)sender
-{
-	[self _openURL: [self selectedText]];
-}
-
-- (void) browse:(id)sender
-{
-	[self _openURL: [self selectedText]];
-}
-
-- (void) searchInBrowser:(id)sender
-{
-	[self _openURL: [[NSString stringWithFormat:[[PreferencePanel sharedInstance] searchCommand], [self selectedText]] stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
-}
-*/
-
-/*
 /// NSTextInput stuff
-- (void)doCommandBySelector:(SEL)aSelector
-{
-#if DEBUG_METHOD_TRACE
-    NSLog(@"%s(%d):-[PTYTextView doCommandBySelector:...]",
-          __FILE__, __LINE__);
-#endif
-    
-#if GREED_KEYDOWN == 0
-    id delegate = [self delegate];
-    
-    if ([delegate respondsToSelector:aSelector]) {
-        [delegate performSelector:aSelector withObject:nil];
-    }
-#endif
-}
-*/
 
 - (void)insertText:(id)aString
 {

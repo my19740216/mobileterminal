@@ -17,7 +17,6 @@
 }
 
 - (id)init:(int)fd withView:(PTYTextView*)view;
-- (void)heartbeatCallback:(id)ignored;
 - (BOOL)webView:(id)fp8 shouldInsertText:(id)character
                        replacingDOMRange:(id)fp16
                              givenAction:(int)fp20;

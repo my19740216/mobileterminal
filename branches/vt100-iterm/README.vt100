@@ -1,0 +1,10 @@
+The code in this branch is based on the OS X iprogram iTerm.
+
+Heres is a rough plan for this branch:
+- Get scrolling working properly
+- Get Fix bugs, clean up all the tons of commented out features of iTerm that
+we never plan to support
+- Speed it up, use less CPU
+- use gestures for arrow keys (swipe up, down, left, right, etc)
+- Merge back into the main brach (e.g. support keyboard hiding again)
+- Continue on other features such as "<esc>", etc.
