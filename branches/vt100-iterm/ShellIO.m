@@ -63,32 +63,14 @@
     NSString* out =
       [[NSString stringWithCString:buf
           encoding:[NSString defaultCStringEncoding]] retain];
-#ifdef DEBUG
-    if ([out length] == 1) {
-      debug(@"length 1, char code %u", [out characterAtIndex:0]);
-    } else {
-      debug(@"length of %d", [out length]);
-      int i;
-      for (i = 0; i < [out length]; i++) {
-        debug(@"char %d: code %u", i, [out characterAtIndex:i]);
-      }
-    }
-#endif
-    if ([out length] == 3 &&
-        [out characterAtIndex:0] == 0x08 &&
-        [out characterAtIndex:1] == 0x20 &&
-        [out characterAtIndex:2] == 0x08) {
-      // delete sequence, don't output
-      NSLog(@"Delete!");
-//      out = @"\x08";
-    }
 
     const char* buf =
       [out cStringUsingEncoding:[NSString defaultCStringEncoding]];
     int length = [out length];
     [TERMINAL putStreamData:buf length:length];
 
-    // put junk on the screen
+    // Now that we've got the raw data from the sub process, write it to the
+    // terminal.  We get back tokens to display on the screen.
     VT100TCC token;
     while((token = [TERMINAL getNextToken]),
           token.type != VT100_WAIT && token.type != VT100CC_NULL) {
@@ -109,27 +91,6 @@
 //
 // Input from keyboard -> Shell Process
 //
-
-
-- (BOOL)webView:(id)fp8 shouldDeleteDOMRange:(id)fp12
-{
-  //debug(@"deleting  range: %i, %i", [fp12 startOffset], [fp12 endOffset]);
-
-  // TODO: There is an annoying bug here.  This writes a ^H to the subprocess
-  // then passes the delete on to the parent which removes it from the display.
-  // The delete sent to the subprocess is echo'd back in heartbeatCallback
-  // and we ignore it.  If we attempt to backspace over the start of a line,
-  // then we end up causing a bell (^G) to get echo'd back to the terminal;
-  // we don't backspace further and end up backspacing over the bells we are
-  // creating.  Ghetto!
-
-  const char delete_cstr = 0x08;
-  if (write(_fd, &delete_cstr, 1) == -1) {
-   perror("write");
-   exit(1);
-  }
-  return [super webView:fp8 shouldDeleteDOMRange:fp12];
-}
 
 - (BOOL)webView:(id)fp8 shouldInsertText:(id)character replacingDOMRange:(id)fp16 givenAction:(int)fp20
 {
