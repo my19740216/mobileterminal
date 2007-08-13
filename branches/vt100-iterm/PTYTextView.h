@@ -53,7 +53,7 @@ typedef struct
 	
 enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
 
-@interface PTYTextView : UIView
+@interface PTYTextView : UITextView
 {
     // This is a flag to let us know whether we are handling this
     // particular drag and drop operation. We are using it because

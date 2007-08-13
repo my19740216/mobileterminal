@@ -59,18 +59,16 @@ static int cacheSize;
   NSLog(@"%s: 0x%x", __PRETTY_FUNCTION__, self);
 #endif
   self = [super initWithFrame: aRect];
+  [self setEditable:NO];
+
+  // Black background
+  CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+  float backcomponents[4] = {0, 0, 0, 0};
+  [self setBackgroundColor: CGColorCreate(colorSpace, backcomponents)];
   
   dataSource = nil;
   markedTextAttributes = nil;
-   /* 
-    [self setMarkedTextAttributes:
-        [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSColor yellowColor], NSBackgroundColorAttributeName,
-            [NSColor blackColor], NSForegroundColorAttributeName,
-            //nafont, NSFontAttributeName,
-            [NSNumber numberWithInt:2],NSUnderlineStyleAttributeName,
-            NULL]];
-*/
+
   CURSOR=YES;
   lastFindX = startX = -1;
   gettimeofday(&lastBlink, NULL);
@@ -157,26 +155,6 @@ static int cacheSize;
   blinkingCursor = bFlag;
 }
 
-
-- (NSDictionary*) markedTextAttributes
-{
-#if DEBUG_METHOD_TRACE
-    NSLog(@"%s(%d):-[PTYTextView selectedTextAttributes]",
-          __FILE__, __LINE__);
-#endif
-    return markedTextAttributes;
-}
-
-- (void) setMarkedTextAttributes: (NSDictionary *) attr
-{
-#if DEBUG_METHOD_TRACE
-    NSLog(@"%s(%d):-[PTYTextView setSelectedTextAttributes:%@]",
-          __FILE__, __LINE__,attr);
-#endif
-    [markedTextAttributes release];
-    [attr retain];
-    markedTextAttributes=attr;
-}
 
 /*
 - (void) setFGColor:(NSColor*)color
@@ -324,31 +302,6 @@ static int cacheSize;
     
 }
 
-- (NSColor *) selectionColor
-{
-#if DEBUG_METHOD_TRACE
-    NSLog(@"%s(%d):-[PTYTextView selectionColor]",
-          __FILE__, __LINE__);
-#endif
-    
-    return selectionColor;
-}
-
-- (void) setSelectionColor: (NSColor *) aColor
-{
-#if DEBUG_METHOD_TRACE
-    NSLog(@"%s(%d):-[PTYTextView setSelectionColor:%@]",
-          __FILE__, __LINE__,aColor);
-#endif
-    
-    [selectionColor release];
-    [aColor retain];
-    selectionColor=aColor;
-	forceUpdate = YES;
-	[self setNeedsDisplay];
-}
-
-
 - (NSFont *)font
 {
     return font;
@@ -376,16 +329,6 @@ static int cacheSize;
     [nafont release];
     [naFont retain];
     nafont=naFont;
-    [self setMarkedTextAttributes:
-        [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSColor yellowColor], NSBackgroundColorAttributeName,
-            [NSColor blackColor], NSForegroundColorAttributeName,
-            nafont, NSFontAttributeName,
-            [NSNumber numberWithInt:2],NSUnderlineStyleAttributeName,
-            NULL]];
-	[self resetCharCache];
-	forceUpdate = YES;
-	[self setNeedsDisplay];
 }
 
 - (void)changeFont:(id)fontManager
@@ -903,8 +846,9 @@ return;
     curY+=lineHeight;
   }
 
+  // TODO: Font should be configurable
   [out_hack drawInRect:rect 
-    withStyle:@"font-family:CourierNewBold; font-size: 12px; color: white;"];
+    withStyle:@"font-family:CourierNewBold; font-size: 12px; color:white;"];
 
 
   // Double check if dataSource is still available
@@ -1013,7 +957,7 @@ if([self hasMarkedText]) {
 
 forceUpdate=NO;
 [dataSource releaseLock];
-
+  return [super drawRect:rect];
 }
 /*
 - (void)keyDown:(NSEvent *)event
