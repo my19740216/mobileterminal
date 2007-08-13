@@ -1,10 +1,14 @@
 The code in this branch is based on the OS X iprogram iTerm.
 
 Heres is a rough plan for this branch:
-- Get scrolling working properly
+- Get scrolling working properly (assigned to allen.porter)
+- Need a cursor (underline, box .. it should blink :) )
 - Get Fix bugs, clean up all the tons of commented out features of iTerm that
-we never plan to support
-- Speed it up, use less CPU
-- use gestures for arrow keys (swipe up, down, left, right, etc)
+we never plan to support (mose events, etc)
+- use gestures for arrow keys (swipe up, down, left, right, etc)?
+- UI Layer on top of the terminal
+  - Special keys, ESC, TAB
+  - Preferences
+  - See design spec on code project
 - Merge back into the main brach (e.g. support keyboard hiding again)
-- Continue on other features such as "<esc>", etc.
+- Color
