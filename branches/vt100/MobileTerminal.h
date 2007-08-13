@@ -9,6 +9,8 @@
   SubProcess* _shellProcess;
   ShellView* _view;
   CharacterLineFilter *filter;
+  NSMutableString *scrollback;
+  int scrollbackbytes;
 }
 
 @end

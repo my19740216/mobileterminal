@@ -27,7 +27,8 @@
 UIApplication *UIApp;
 
 - (void) terminalScreen: (TextStorageTerminal *)terminal scrollsOffText: (NSAttributedString *)text {
-
+    [scrollback appendString: [text html]];
+    scrollbackbytes += [text length];
 }
 
 - (void) terminalScreen: (TextStorageTerminal *)terminal sendsReportData: (NSData *)data {
@@ -66,16 +67,16 @@ UIApplication *UIApp;
     //}
 //
     filter = [filter processData: [_shellProcess availableData]];
-
-    //fflush(stdout);fflush(stderr);
+    [[[_view terminal] textStorage] ensureRow: [[_view terminal] rows]-1 hasColumn:1];
+    NSString *terminalHTML = [NSString stringWithFormat: @"%@%@", scrollback, [[_view terminal] html]];
     [[[_view _webView] webView] moveToEndOfDocument:self];
     [_view stopCapture];
-    [_view setHTML: [[_view terminal] html]];
+    [_view setHTML: terminalHTML];
     [_view startCapture];
     NSRange aRange;
     int x, y;
-    [[_view terminal] cursorLocationX: &x Y: &y];
-    aRange.location = [[[_view terminal] textStorage] ensureRow: y hasColumn: x]+5;
+    //[[_view terminal] cursorLocationX: &x Y: &y];
+    aRange.location = [[_view text] length];//[[[_view terminal] textStorage] ensureRow: y hasColumn: x] + scrollbackbytes;
     aRange.length = 0;
     [_view setSelectionRange:aRange];
     [_view scrollToMakeCaretVisible:YES];
@@ -93,6 +94,9 @@ UIApplication *UIApp;
   [_shellProcess setEnvironment: [NSDictionary dictionaryWithObjectsAndKeys:
                                     @"xterm-color", @"TERM",
                                     nil]];
+  scrollback = [[NSMutableString alloc] init];
+  scrollbackbytes = 0;
+
   UIWindow *window = [[UIWindow alloc] initWithContentRect: [UIHardware 
     fullScreenApplicationContentRect]];
   [window orderFront: self];
