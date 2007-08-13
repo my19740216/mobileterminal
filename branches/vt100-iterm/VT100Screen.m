@@ -24,8 +24,8 @@
  */
 
 // Debug option
-#define DEBUG_ALLOC           1 
-#define DEBUG_METHOD_TRACE    1
+#define DEBUG_ALLOC           0
+#define DEBUG_METHOD_TRACE    0
 
 #import "VT100Screen.h"
 #import "charmaps.h"

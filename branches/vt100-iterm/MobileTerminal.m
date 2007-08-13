@@ -22,8 +22,8 @@
 
 - (void) applicationDidFinishLaunching: (id) unused
 {
-  // Terminal size based on the font size below
-  SubProcess* shellProcess = [[SubProcess alloc] initWithWidth:43 Height:17];
+  SubProcess* shellProcess =
+    [[SubProcess alloc] initWithWidth:TERMINAL_WIDTH Height:TERMINAL_HEIGHT];
 
   UIWindow *window = [[UIWindow alloc] initWithContentRect: [UIHardware 
     fullScreenApplicationContentRect]];
@@ -36,7 +36,9 @@
 
   UIImage *theDefault = [[UIImage alloc]initWithContentsOfFile:defaultPath];
   UIImage *bar = [[UIImage alloc]initWithContentsOfFile:barPath];
-  UIImageView *barView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 405.0f, 320.0f, 480.0f)];
+  UIImageView *barView =
+    [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 405.0f, 320.0f,
+                                                  480.0f)];
   UIImageView *workaround = [[UIImageView alloc] init];
   [workaround setImage:theDefault];
   [barView setImage:bar];
@@ -47,8 +49,6 @@
  
   ShellKeyboard* keyboard = [[ShellKeyboard alloc]
     initWithFrame: CGRectMake(0.0f, 245.0, 320.0f, 480.0f)];
-//  [keyboard show:view];
-//  [view setKeyboard:keyboard];
 
   // Captures keyboard input, but isn't shown
   UIView* input =

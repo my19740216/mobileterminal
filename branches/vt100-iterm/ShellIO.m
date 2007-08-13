@@ -24,8 +24,7 @@
   [_textView setDataSource:SCREEN];
   [TERMINAL setScreen:SCREEN];
   [SCREEN setTerminal:TERMINAL];
-// TODO: ugly, heights and widths allllll over the place
-  [SCREEN initScreenWithWidth:43 Height:17];
+  [SCREEN initScreenWithWidth:TERMINAL_WIDTH Height:TERMINAL_HEIGHT];
 
   id parent = [super initWithFrame:CGRectMake(0.0f, 0.0f, 0.0f, 0.0f)];
 

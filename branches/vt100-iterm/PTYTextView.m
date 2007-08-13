@@ -23,13 +23,13 @@
  **  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#define DEBUG_ALLOC           1 
-#define DEBUG_METHOD_TRACE    1
-#define GREED_KEYDOWN         1
+#define DEBUG_ALLOC           0 
+#define DEBUG_METHOD_TRACE    0
 
 #import "PTYTextView.h"
 #import "VT100Screen.h"
 #import <UIKit/NSString-UIStringDrawing.h>
+#import "Common.h"
 
 #include <sys/time.h>
 
@@ -65,7 +65,7 @@ static int cacheSize;
 
   // Black background
   CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-  float backcomponents[4] = {0.7, 0.7, 0, 0};
+  float backcomponents[4] = {0.0, 0.7, 0, 0};
   [self setBackgroundColor: CGColorCreate(colorSpace, backcomponents)];
   
   dataSource = nil;
@@ -89,63 +89,32 @@ static int cacheSize;
 - (void) dealloc
 {
 #if DEBUG_ALLOC
-    NSLog(@"%s: 0x%x", __PRETTY_FUNCTION__, self);
+  NSLog(@"%s: 0x%x", __PRETTY_FUNCTION__, self);
 #endif
-   /* 
-	int i;
-	if(mouseDownEvent != nil)
-    {
-		[mouseDownEvent release];
-		mouseDownEvent = nil;
-    }
-	 
-    //NSLog(@"remove tracking");
-    if(trackingRectTag)
-		[self removeTrackingRect:trackingRectTag];
-	
-    [[NSNotificationCenter defaultCenter] removeObserver:self];    
-    for(i=0;i<16;i++) {
-        [colorTable[i] release];
-    }
-    [defaultFGColor release];
-    [defaultBGColor release];
-    [defaultBoldColor release];
-    [selectionColor release];
-	[defaultCursorColor release];
-*/
-	
-//    [font release];
-//	[nafont release];
-    [markedTextAttributes release];
-//	[markedText release];
-	
-    [super dealloc];
-    
+  /* 
+     [defaultFGColor release];
+     [defaultBGColor release];
+     [defaultBoldColor release];
+     [selectionColor release];
+     [defaultCursorColor release];
+   */
+
+  //    [font release];
+  //	[nafont release];
+  [markedTextAttributes release];
+  //	[markedText release];
+
+  [super dealloc];
+
 #if DEBUG_ALLOC
-    NSLog(@"%s: 0x%x, done", __PRETTY_FUNCTION__, self);
+  NSLog(@"%s: 0x%x, done", __PRETTY_FUNCTION__, self);
 #endif
 }
-/*
-- (BOOL)shouldDrawInsertionPoint
-{
-#if 0 // DEBUG_METHOD_TRACE
-    NSLog(@"%s(%d):-[PTYTextView shouldDrawInsertionPoint]",
-          __FILE__, __LINE__);
-#endif
-    return NO;
-}
-*/
 
 - (BOOL)isFlipped
 {
     return YES;
 }
-/*
-- (BOOL)isOpaque
-{
-    return YES;
-}
-*/
 
 - (BOOL) blinkingCursor
 {
@@ -156,7 +125,6 @@ static int cacheSize;
 {
   blinkingCursor = bFlag;
 }
-
 
 /*
 - (void) setFGColor:(NSColor*)color
@@ -511,13 +479,6 @@ static int cacheSize;
     CURSOR=YES;
 }
 
-- (struct CGSize)contentSize
-{
-  NSLog(@"contentSize!");
-
-  return CGSizeMake(12 * [dataSource numberOfLines], 320);
-}
-
 - (void)drawRect:(CGRect)rect
 {
 #if DEBUG_METHOD_TRACE
@@ -570,7 +531,7 @@ static int cacheSize;
 
   // TODO: Font should be configurable
   [terminal_output drawInRect:rect 
-    withStyle:@"font-family:CourierNewBold; font-size: 12px; color:white;"];
+    withStyle:TERMINAL_FONT];
 
   [dataSource releaseLock];
 }
