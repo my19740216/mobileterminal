@@ -21,6 +21,7 @@
 
 #import "TextStorageTerminal.h"
 #import "NSTextStorageTerminal.h"
+#import "NSAttributedString-HTML.h"
 
 @implementation TextStorageTerminal
 
@@ -76,7 +77,14 @@ static NSString *   sColors[8] = {
 - (NSString *)html
 {
     int cursorIndex = [content ensureRow: cursorRow hasColumn: cursorColumn];
-    NSString *stringBefore, *stringAfter, *background, *foreground, *cursorChar;
+    NSString *stringBefore = nil, *stringAfter = nil, *background = nil, *foreground = nil, *cursorChar = nil;
+
+    stringBefore = [[content attributedSubstringFromRange: NSMakeRange(0, cursorIndex)] html];
+    stringAfter = [[content attributedSubstringFromRange: NSMakeRange(cursorIndex+1, [content length]-cursorIndex-1)] html];
+    //cursorChar = [[content attributedSubstringFromRange: NSMakeRange(cursorIndex, 1)] string]; 
+    cursorChar = @"&nbsp;";
+    background = @"00FF00";
+    foreground = @"000000";
 
     return [NSString stringWithFormat: @"%@<span style=\"background-color:#%@;color:#%@;\">%@</span>%@", stringBefore, background, foreground, cursorChar, stringAfter];
 }

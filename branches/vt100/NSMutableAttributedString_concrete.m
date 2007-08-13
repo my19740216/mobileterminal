@@ -9,7 +9,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 // Original - Christopher Lloyd <cjwl@objc.net>
 #import "NSMutableAttributedString_concrete.h"
 #import "NSMutableString_proxyToMutableAttributedString.h"
-#import <Foundation.h>
+#import <Foundation/Foundation.h>
 #import "Debug.h"
 
 @implementation NSMutableAttributedString_concrete

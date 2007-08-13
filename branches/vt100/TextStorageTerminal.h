@@ -20,7 +20,7 @@
 //
 
 //#import <Cocoa/Cocoa.h>
-#import <Foundation.h>
+#import <Foundation/Foundation.h>
 #import "NSAttributedString.h"
 #import "NSTextStorage.h"
 #import "Debug.h"

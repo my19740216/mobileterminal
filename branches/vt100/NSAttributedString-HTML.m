@@ -1,4 +1,4 @@
-#import <Foundation.h>
+#import <Foundation/Foundation.h>
 #import "NSAttributedString-HTML.h"
 #import "TextStorageTerminal.h"
 #import "Debug.h"
@@ -17,8 +17,11 @@ NSString * cssForAttributes(NSDictionary *attr) {
             display = @"display: none;";
         else if ([key isEqualToString: NSUnderlineStyleAttributeName] && o && [(NSNumber*)o intValue])
             underline = @"text-decoration: underline;";
-        else if ([key isEqualToString: NSBackgroundColorAttributeName])
-            background = [NSString stringWithFormat: @"background-color: #%@;", o];
+        else if ([key isEqualToString: NSBackgroundColorAttributeName]) {
+            // don't paint the background if it's black 'cause it will cover up our shiny background graphic!
+            if (![o isEqualToString: @"000000"])
+                background = [NSString stringWithFormat: @"background-color: #%@;", o];
+        }
         else if ([key isEqualToString: NSForegroundColorAttributeName])
             foreground = [NSString stringWithFormat: @"color: #%@;", o];
         else if ([key isEqualToString: TSTBoldAttribute] && o && [(NSNumber*)o intValue])
@@ -42,6 +45,7 @@ NSString * cssForAttributes(NSDictionary *attr) {
         attr = [self attributesAtIndex:i effectiveRange:&attrRange];
         substring = [NSMutableString stringWithString: [plainstring substringWithRange: attrRange]];
         [substring replaceOccurrencesOfString: @"\n" withString: @"<br\>" options: 0 range: NSMakeRange(0, [substring length])];
+        [substring replaceOccurrencesOfString: @"  " withString: @"&nbsp;&nbsp;" options: 0 range: NSMakeRange(0, [substring length])];
         [s appendFormat: @"<span style=\"%@\">%@</span>", cssForAttributes(attr), substring];
         i = NSMaxRange(attrRange);
     }

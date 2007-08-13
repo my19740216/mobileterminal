@@ -8,7 +8,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 // Original - Christopher Lloyd <cjwl@objc.net>
 #import "NSRangeEntries.h"
-#import <Foundation.h>
+#import <Foundation/Foundation.h>
 
 /* this could be improved with more merging of adjacent entries after insert/remove */
 

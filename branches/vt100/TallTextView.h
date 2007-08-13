@@ -25,7 +25,7 @@
     A TallTextView is a view that presents a large amount of text, changeable only by appending at the end. The text can be selected, copied, printed, searched, and of course displayed.
 */
 
-#import <Foundation.h>
+#import <Foundation/Foundation.h>
 #import "NSAttributedString.h"
 #import "NSMutableAttributedString.h"
 

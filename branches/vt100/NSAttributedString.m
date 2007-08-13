@@ -10,7 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #import "NSAttributedString.h"
 #import "NSMutableAttributedString.h"
 #import "NSAttributedString_placeholder.h"
-#import <Foundation.h>
+#import <Foundation/Foundation.h>
 
 NSString *NSBackgroundColorAttributeName = @"bgcolor";
 NSString *NSForegroundColorAttributeName = @"fgcolor";

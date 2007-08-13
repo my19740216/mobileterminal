@@ -70,7 +70,7 @@ UIApplication *UIApp;
     //fflush(stdout);fflush(stderr);
     [[[_view _webView] webView] moveToEndOfDocument:self];
     [_view stopCapture];
-    [_view setHTML: [[[_view terminal] textStorage] html]];
+    [_view setHTML: [[_view terminal] html]];
     [_view startCapture];
     NSRange aRange;
     int x, y;
