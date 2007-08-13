@@ -1,17 +1,12 @@
 // -*- mode:objc -*-
-// $Id: PTYTextView.h,v 1.66 2007/01/10 07:42:05 yfabian Exp $
-//
 /*
  **  PTYTextView.h
  **
- **  Copyright (c) 2002, 2003
+ **  Copyright (c) 2002, 2003, 2007
  **
  **  Author: Fabian, Ujwal S. Setlur
  **	     Initial code by Kiichi Kusama
- **
- **  Project: iTerm
- **
- **  Description: NSTextView subclass. The view object for the VT100 screen.
+ **          Ported to MobileTerminal (from iTerm) by Allen Porter
  **
  **  This program is free software; you can redistribute it and/or modify
  **  it under the terms of the GNU General Public License as published by
@@ -40,6 +35,9 @@
 #define MARGIN  5
 #define VMARGIN 5
 
+// Hack for UIKit non-breaking spaces
+#define NO_BREAK_SPACE 0x00A0
+
 typedef enum { CURSOR_UNDERLINE, CURSOR_VERTICAL, CURSOR_BOX } ITermCursorType;
 
 @class VT100Screen;
@@ -55,7 +53,7 @@ typedef struct
 	
 enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
 
-@interface PTYTextView : UITextView
+@interface PTYTextView : UIView
 {
     // This is a flag to let us know whether we are handling this
     // particular drag and drop operation. We are using it because
@@ -225,6 +223,7 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
 */
 
 // Scrolling control
+/*
 - (CGRect)adjustScroll:(CGRect)proposedVisibleRect;
 - (void) scrollLineUp: (id) sender;
 - (void) scrollLineDown: (id) sender;
@@ -233,62 +232,18 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
 - (void) scrollHome;
 - (void) scrollEnd;
 - (void) scrollToSelection;
-
-// NSTextInput
-
-- (void)insertText:(id)aString;
-/*
-- (void)setMarkedText:(id)aString selectedRange:(NSRange)selRange;
-- (void)unmarkText;
-- (BOOL)hasMarkedText;
-- (NSRange)markedRange;
-- (NSRange)selectedRange;
-- (NSArray *)validAttributesForMarkedText;
-- (NSAttributedString *)attributedSubstringFromRange:(NSRange)theRange;
-- (void)doCommandBySelector:(SEL)aSelector;
-- (unsigned int)characterIndexForPoint:(NSPoint)thePoint;
-- (long)conversationIdentifier;
-- (NSRect)firstRectForCharacterRange:(NSRange)theRange;
-
-	// service stuff
-- (id)validRequestorForSendType:(NSString *)sendType returnType:(NSString *)returnType;
-- (BOOL)writeSelectionToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types;
-- (BOOL)readSelectionFromPasteboard:(NSPasteboard *)pboard;	
-
 */
-- (void)resetCharCache;
 
 @end
 
 //
 // private methods
 //
+
+/*
 @interface PTYTextView (Private)
 
-//- (unsigned int) _checkForSupportedDragTypes:(id <NSDraggingInfo>) sender;
-
 - (void) _scrollToLine:(int)line;
-- (void) _selectFromX:(int)startx Y:(int)starty toX:(int)endx Y:(int)endy;
-//- (void) _updateSelectionLocation;
-/*
-- (NSString *) _getWordForX: (int) x 
-					y: (int) y 
-			   startX: (int *) startx 
-			   startY: (int *) starty 
-				 endX: (int *) endx 
-				 endY: (int *) endy;
-*/
-//- (NSString *) _getURLForX: (int) x y: (int) y;
-//- (void) _renderChar:(NSImage *)image withChar:(unichar) carac withColor:(NSColor*)color withBGColor:(NSColor*)bgColor; // withFont:(NSFont*)aFont bold:(int)bold;
-//- (UIImage *) _getCharImage:(unichar) code color:(unsigned int)fg bgColor:(unsigned int)bg doubleWidth:(BOOL) dw;
-- (void) _drawCharacter:(unichar)c fgColor:(int)fg bgColor:(int)bg AtX:(float)X Y:(float)Y doubleWidth:(BOOL) dw;
-- (BOOL) _isBlankLine: (int) y;
-- (void) _clearCacheForColor:(int)colorIndex;
-- (void) _clearCacheForBGColor:(int)colorIndex;
-- (BOOL) _findString: (NSString *) aString forwardDirection: (BOOL) direction ignoringCase: (BOOL) ignoreCase wrapping: (BOOL) wrapping;
-//- (BOOL) _findMatchingParenthesis: (NSString *) parenthesis withX:(int)X Y:(int)Y;
-//- (BOOL) _mouseDownOnSelection: (NSEvent *) theEvent;
-//- (void) _dragText: (NSString *) aString forEvent: (NSEvent *) theEvent;
 
 @end
-
+*/

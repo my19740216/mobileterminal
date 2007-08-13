@@ -1,16 +1,12 @@
 // -*- mode:objc -*-
-// $Id: VT100Screen.h,v 1.34 2007/01/17 07:31:20 yfabian Exp $
 /*
  **  VT100Screen.h
  **
- **  Copyright (c) 2002, 2003
+ **  Copyright (c) 2002, 2003, 2007
  **
  **  Author: Fabian, Ujwal S. Setlur
  **	     Initial code by Kiichi Kusama
- **
- **  Project: iTerm
- **
- **  Description: Implements the VT100 screen.
+ **          Ported to MobileTerminal (from iTerm) by Allen Porter
  **
  **  This program is free software; you can redistribute it and/or modify
  **  it under the terms of the GNU General Public License as published by
@@ -156,10 +152,6 @@ typedef struct screen_char_t
 
 // internal
 - (void)setString:(NSString *)s ascii:(BOOL)ascii;
-- (void)setStringToX:(int)x
-				   Y:(int)y
-			  string:(NSString *)string
-			   ascii:(BOOL)ascii;
 - (void)setNewLine;
 - (void)deleteCharacters:(int)n;
 - (void)backSpace;

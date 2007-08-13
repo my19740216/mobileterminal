@@ -1,17 +1,12 @@
 // -*- mode:objc -*-
-// $Id: VT100Screen.m,v 1.280 2007/04/11 23:15:41 yfabian Exp $
-//
 /*
  **  VT100Screen.m
  **
- **  Copyright (c) 2002, 2003
+ **  Copyright (c) 2002, 2003, 2007
  **
  **  Author: Fabian, Ujwal S. Setlur
  **	     Initial code by Kiichi Kusama
- **
- **  Project: iTerm
- **
- **  Description: Implements the VT100 screen.
+ **          Ported to MobileTerminal (from iTerm) by Allen Porter
  **
  **  This program is free software; you can redistribute it and/or modify
  **  it under the terms of the GNU General Public License as published by
@@ -1081,27 +1076,6 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
 #endif
 }
         
-- (void)setStringToX:(int)x
-				   Y:(int)y
-			  string:(NSString *)string 
-			   ascii:(BOOL)ascii
-{
-    int sx, sy;
-
-#if DEBUG_METHOD_TRACE
-    NSLog(@"%s(%d):-[VT100Screen setStringToX:%d Y:%d string:%@]",
-          __FILE__, __LINE__, x, y, string);
-#endif
-
-    sx = CURSOR_X;
-    sy = CURSOR_Y;
-    CURSOR_X = x;
-    CURSOR_Y = y;
-    [self setString:string ascii:ascii]; 
-    CURSOR_X = sx;
-    CURSOR_Y = sy;
-}
-
 - (void)setNewLine
 {
 	screen_char_t *aLine;

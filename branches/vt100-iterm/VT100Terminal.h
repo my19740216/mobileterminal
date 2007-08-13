@@ -1,16 +1,12 @@
 // -*- mode:objc -*-
-// $Id: VT100Terminal.h,v 1.28 2007/02/12 20:21:45 yfabian Exp $
 /*
  **  VT100Terminal.h
  **
- **  Copyright (c) 2002, 2003
+ **  Copyright (c) 2002, 2003, 2007
  **
  **  Author: Fabian, Ujwal S. Setlur
  **	     Initial code by Kiichi Kusama
- **
- **  Project: iTerm
- **
- **  Description: Implements the model class VT100 terminal.
+ **          Ported to MobileTerminal (from iTerm) by Allen Porter
  **
  **  This program is free software; you can redistribute it and/or modify
  **  it under the terms of the GNU General Public License as published by
