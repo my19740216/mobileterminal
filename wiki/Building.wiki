@@ -47,6 +47,20 @@ The above command creates a "Terminal.app" which should be copied to /Applcation
 
 See the Installation page for more details on how to install the Terminal.app on your phone.
 
+==== Build Errors ===
+
+You may run into build errors caused by differences in the UIKit headers included in the toolchain and the UIKit headers of the developers.  The UIKit headers in the current toolchain include files which do not exist.  They can safely be commented out, or an empty file can be created in their place.  For example, some headers might have a line like:
+
+{{{
+#import "NSString.h"
+}}}
+
+Which causes a build error because that file was not included in the UIKit header directory.  You can "touch NSString.h" in your UIKit include directory, or simply comment out the line in the offending header file.
+
+{{{
+//#import "NSString.h"
+}}}
+
 === Packaging ===
 
 This section is for mobileterminal developers who want to package the latest binary release and put it in the Downloads section.
