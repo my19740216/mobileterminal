@@ -20,7 +20,7 @@ static void signal_handler(int signal) {
   exit(1);
 }
 
-- (id)initWithRows:(int)rows columns:(int)cols
+- (id)initWithWidth:(int)width Height:(int)height
 {
   _fd = 0;
 
@@ -29,8 +29,8 @@ static void signal_handler(int signal) {
   signal(SIGCHLD, &signal_handler);
 
   struct winsize win;
-  win.ws_row = rows;
-  win.ws_col = cols;
+  win.ws_col = width;
+  win.ws_row = height;
 
   // We're leaing
   pid_t pid = forkpty(&_fd, NULL, NULL, &win);

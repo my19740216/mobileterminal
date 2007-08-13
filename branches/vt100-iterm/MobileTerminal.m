@@ -23,7 +23,7 @@
 - (void) applicationDidFinishLaunching: (id) unused
 {
   // Terminal size based on the font size below
-  SubProcess* shellProcess = [[SubProcess alloc] initWithRows:19 columns:41];
+  SubProcess* shellProcess = [[SubProcess alloc] initWithWidth:43 Height:17];
 
   UIWindow *window = [[UIWindow alloc] initWithContentRect: [UIHardware 
     fullScreenApplicationContentRect]];

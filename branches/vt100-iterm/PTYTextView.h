@@ -44,117 +44,106 @@ typedef enum { CURSOR_UNDERLINE, CURSOR_VERTICAL, CURSOR_BOX } ITermCursorType;
 
 typedef struct 
 {
-	int code;
-	unsigned int color;
-	unsigned int bgColor;
-	UIImage *image;
-	int count;
+  int code;
+  unsigned int color;
+  unsigned int bgColor;
+  UIImage *image;
+  int count;
 } CharCache;
 	
 enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
 
 @interface PTYTextView : UITextView
 {
-    // This is a flag to let us know whether we are handling this
-    // particular drag and drop operation. We are using it because
-    // the prepareDragOperation and performDragOperation of the
-    // parent NSTextView class return "YES" even if the parent
-    // cannot handle the drag type. To make matters worse, the
-    // concludeDragOperation does not have any return value.
-    // This all results in the inability to test whether the
-    // parent could handle the drag type properly. Is this a Cocoa
-    // implementation bug?
-    // Fortunately, the draggingEntered and draggingUpdated methods
-    // seem to return a real status, based on which we can set this flag.
-    BOOL bExtendedDragNDrop;
+  // This is a flag to let us know whether we are handling this
+  // particular drag and drop operation. We are using it because
+  // the prepareDragOperation and performDragOperation of the
+  // parent NSTextView class return "YES" even if the parent
+  // cannot handle the drag type. To make matters worse, the
+  // concludeDragOperation does not have any return value.
+  // This all results in the inability to test whether the
+  // parent could handle the drag type properly. Is this a Cocoa
+  // implementation bug?
+  // Fortunately, the draggingEntered and draggingUpdated methods
+  // seem to return a real status, based on which we can set this flag.
+  BOOL bExtendedDragNDrop;
 
-    // anti-alias flag
-    BOOL antiAlias;
-	
-	// option to not render in bold
-	BOOL disableBold;
+  // anti-alias flag
+  BOOL antiAlias;
 
-	// NSTextInput support
-    BOOL IM_INPUT_INSERT;
-    NSRange IM_INPUT_SELRANGE;
-    NSRange IM_INPUT_MARKEDRANGE;
-    NSDictionary *markedTextAttributes;
-//    NSAttributedString *markedText;
-	
-    BOOL CURSOR;
-	BOOL forceUpdate;
-	
-    // geometry
-	float lineHeight;
-    float lineWidth;
-	float charWidth;
-	float charWidthWithoutSpacing, charHeightWithoutSpacing;
-	int numberOfLines;
-   /* 
-    NSColor* colorTable[16];
-    NSColor* defaultFGColor;
-    NSColor* defaultBGColor;
-    NSColor* defaultBoldColor;
-	NSColor* defaultCursorColor;
-	NSColor* selectionColor;
-	NSColor* selectedTextColor;
-	NSColor* cursorTextColor;
-*/
-	
-	// transparency
-	float transparency;
-    BOOL useTransparency;
-	
-    // data source
-    VT100Screen *dataSource;
-//    id _delegate;
-	
-    //selection
-    int startX, startY, endX, endY;
-	BOOL mouseDown;
-	BOOL mouseDragged;
-    char selectMode;
-	BOOL mouseDownOnSelection;
-	//NSEvent *mouseDownEvent;
-		
-	//find support
-	int lastFindX, lastFindY;
-	
-	BOOL reportingMouseDown;
-	
-	//cache
-	CharCache	*charImages;
-	
-	// blinking cursor
-	BOOL blinkingCursor;
-	BOOL showCursor;
-	BOOL blinkShow;
-    struct timeval lastBlink;
-    int oldCursorX, oldCursorY;
-	
-	// trackingRect tab
-	//NSTrackingRectTag trackingRectTag;
-	
-	BOOL keyIsARepeat;
-    
+  // option to not render in bold
+  BOOL disableBold;
+
+  // NSTextInput support
+  BOOL IM_INPUT_INSERT;
+  NSRange IM_INPUT_SELRANGE;
+  NSRange IM_INPUT_MARKEDRANGE;
+  NSDictionary *markedTextAttributes;
+  //    NSAttributedString *markedText;
+
+  BOOL CURSOR;
+  BOOL forceUpdate;
+
+  // geometry
+  float lineHeight;
+  float lineWidth;
+  float charWidth;
+  float charWidthWithoutSpacing, charHeightWithoutSpacing;
+  int numberOfLines;
+  /* 
+     NSColor* colorTable[16];
+     NSColor* defaultFGColor;
+     NSColor* defaultBGColor;
+     NSColor* defaultBoldColor;
+     NSColor* defaultCursorColor;
+     NSColor* selectionColor;
+     NSColor* selectedTextColor;
+     NSColor* cursorTextColor;
+   */
+
+  // transparency
+  float transparency;
+  BOOL useTransparency;
+
+  // data source
+  VT100Screen *dataSource;
+  //    id _delegate;
+
+  //selection
+  int startX, startY, endX, endY;
+  BOOL mouseDown;
+  BOOL mouseDragged;
+  char selectMode;
+  BOOL mouseDownOnSelection;
+  //NSEvent *mouseDownEvent;
+
+  //find support
+  int lastFindX, lastFindY;
+
+  BOOL reportingMouseDown;
+
+  //cache
+  CharCache	*charImages;
+
+  // blinking cursor
+  BOOL blinkingCursor;
+  BOOL showCursor;
+  BOOL blinkShow;
+  struct timeval lastBlink;
+  int oldCursorX, oldCursorY;
+
+  // trackingRect tab
+  //NSTrackingRectTag trackingRectTag;
+
+  BOOL keyIsARepeat;
+
 }
 
 //+ (NSCursor *) textViewCursor;
 - (id)initWithFrame: (struct CGRect) aRect;
 - (void)dealloc;
-/*
-- (BOOL)isFlipped;
-- (BOOL)isOpaque;
-- (BOOL)shouldDrawInsertionPoint;
-*/
 - (void)drawRect:(CGRect)rect;
 /*
-- (void)keyDown:(CGEvent *)event;
-- (BOOL) keyIsARepeat;
-- (NSString *) contentFromX:(int)startx Y:(int)starty ToX:(int)endx Y:(int)endy pad: (BOOL) pad;
-- (NSString *) selectedText;
-- (NSString *) selectedTextWithPad: (BOOL) pad;
-- (NSString *) content;
 - (void)changeFont:(id)sender;
 
 //get/set methods
@@ -185,65 +174,22 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
 - (void)setCursorColor:(NSColor*) color;
 - (void) setSelectedTextColor: (NSColor *) aColor;
 - (void) setCursorTextColor:(NSColor*) color;
-
-- (NSDictionary*) markedTextAttributes;
-- (void) setMarkedTextAttributes: (NSDictionary *) attr;
 */
 
 - (VT100Screen*) dataSource;
 - (void) setDataSource: (VT100Screen*) aDataSource;
-//- (id) delegate;
-//- (void) setDelegate: (id) delegate;
-- (float) lineHeight;
-- (void) setLineHeight: (float) aLineHeight;
-- (float) lineWidth;
-- (void) setLineWidth: (float) aLineWidth;
-- (float) charWidth;
-- (void) setCharWidth: (float) width;
 
 - (void) refresh;
-- (void) setFrameSize: (NSSize) aSize;
-- (void) setForceUpdate: (BOOL) flag;
 - (void) showCursor;
 - (void) hideCursor;
 
 // selection
 /*
-- (IBAction) selectAll: (id) sender;
-- (void) deselect;
-
 // transparency
 - (float) transparency;
 - (void) setTransparency: (float) fVal;
 - (BOOL) useTransparency;
 - (void) setUseTransparency: (BOOL) flag;
-
-// Cursor control
-- (void)resetCursorRects;
-*/
-
-// Scrolling control
-/*
-- (CGRect)adjustScroll:(CGRect)proposedVisibleRect;
-- (void) scrollLineUp: (id) sender;
-- (void) scrollLineDown: (id) sender;
-- (void) scrollPageUp: (id) sender;
-- (void) scrollPageDown: (id) sender;
-- (void) scrollHome;
-- (void) scrollEnd;
-- (void) scrollToSelection;
 */
 
 @end
-
-//
-// private methods
-//
-
-/*
-@interface PTYTextView (Private)
-
-- (void) _scrollToLine:(int)line;
-
-@end
-*/

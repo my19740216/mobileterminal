@@ -181,11 +181,11 @@ typedef struct screen_char_t
 - (int) cursorX;
 - (int) cursorY;
 
-- (void)updateScreen;
-- (int) numberOfLines;
-
 - (void)resetDirty;
 - (void)setDirty;
+
+- (void)updateScreen;
+- (int) numberOfLines;
 
 // print to ansi...
 - (BOOL) printToAnsi;

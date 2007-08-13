@@ -904,44 +904,43 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
     int fg=[TERMINAL foregroundColorCode], bg=[TERMINAL backgroundColorCode];
 
     buffer = (screen_char_t *) malloc([string length] * sizeof(screen_char_t));
-    if (!buffer)
-    {
+    if (!buffer) {
       NSLog(@"%s: Out of memory", __PRETTY_FUNCTION__);
       return;		
     }
 
     [string getCharacters: sc];
     int i;
-    for(i=0;i<len;i++) {
-      buffer[i].ch=sc[i];
+    for (i = 0; i < len; i++) {
+      buffer[i].ch = sc[i];
       buffer[i].fg_color = fg;
       buffer[i].bg_color = bg;
     }
 
     // check for graphical characters
-    if (charset[[TERMINAL charset]]) 
+    if (charset[[TERMINAL charset]])  {
       translate(buffer,len);
-    //    NSLog(@"%d(%d):%@",[TERMINAL charset],charset[[TERMINAL charset]],string);
+    }
+//    NSLog(@"%d(%d):%@",[TERMINAL charset],charset[[TERMINAL charset]],string);
     free(sc);
   } else {
     string = [string precomposedStringWithCanonicalMapping];
     len=[string length];
     buffer = (screen_char_t *) malloc( 2 * len * sizeof(screen_char_t) );
-    if (!buffer)
-    {
+    if (!buffer) {
       NSLog(@"%s: Out of memory", __PRETTY_FUNCTION__);
       return;		
     }
-
-    padString(string, buffer, [TERMINAL foregroundColorCode], [TERMINAL backgroundColorCode], &len, [TERMINAL encoding]);
+    padString(string, buffer, [TERMINAL foregroundColorCode],
+              [TERMINAL backgroundColorCode], &len, [TERMINAL encoding]);
   }
 
   if (len < 1) 
     return;
 
-  for(idx = 0; idx < len;) {
-    if (buffer[idx].ch == 0xffff) // cut off in the middle of double width characters
-    {
+  for (idx = 0; idx < len;) {
+    // cut off in the middle of double width characters
+    if (buffer[idx].ch == 0xffff) {
       buffer[idx].ch = '#';
     }
 
@@ -973,8 +972,7 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
     aLine = [self getLineAtScreenIndex: CURSOR_Y];
 
     if ([TERMINAL insertMode]) {
-      if (CURSOR_X + j < WIDTH) 
-      {
+      if (CURSOR_X + j < WIDTH) {
         memmove(aLine+CURSOR_X+j,aLine+CURSOR_X,(WIDTH-CURSOR_X-j)*sizeof(screen_char_t));
         memset(dirty+screenIdx+CURSOR_X,1,WIDTH-CURSOR_X);
       }
@@ -992,13 +990,11 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
     idx += j;
 
     // cut off in the middle of double width characters
-    if (CURSOR_X<WIDTH-1 && aLine[CURSOR_X].ch == 0xffff) 
-    {
+    if (CURSOR_X<WIDTH-1 && aLine[CURSOR_X].ch == 0xffff) {
       aLine[CURSOR_X].ch = '#';
     }
 
-    if (idx<len && buffer[idx].ch == 0xffff) 
-    {
+    if (idx<len && buffer[idx].ch == 0xffff) {
       if (CURSOR_X>0) aLine[CURSOR_X-1].ch = '#';
     }
 
@@ -1775,8 +1771,8 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
 
 - (void)setDirty
 {
-  //	memset(dirty,1,WIDTH*HEIGHT*sizeof(char));
-  [display setForceUpdate: YES];
+  //   memset(dirty,1,WIDTH*HEIGHT*sizeof(char));
+  [display setNeedsDisplay];
 }
 
 // resize-related

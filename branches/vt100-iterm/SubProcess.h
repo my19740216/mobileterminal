@@ -6,7 +6,7 @@
   int _fd;
 }
 
-- (id)initWithRows:(int)rows columns:(int)cols;
+- (id)initWithWidth:(int)width Height:(int)height;
 - (int)fileDescriptor;
 - (void)dealloc;
 
