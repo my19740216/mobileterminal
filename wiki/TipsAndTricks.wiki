@@ -17,4 +17,11 @@ You can send a control-C by pressing the "bullet" key (First press ".?123", then
 
 == Common unix binaries ==
 
-Get the latest iphone-binkit from http://iphone.natetrue.com which contains lots of useful unix binaries. Also there, apache, python, ruby.  Join #iphone-shell on irc.osx86.hu for more discussion.
+Get the latest iphone-binkit from http://iphone.natetrue.com which contains lots of useful unix binaries. Also there ssh, apache, python, ruby.  Join #iphone-shell on irc.osx86.hu for more discussion.
+
+For some tips on setting up and using sshd and an ssh client see:
+
+http://www.thebends.org/~allen/code/iphone-apps/binary/openssh-4.6p1/README
+
+Binary packages:
+http://www.thebends.org/~allen/code/iphone-apps/binary/openssh-4.6p1-iphone-binary.tar.gz
