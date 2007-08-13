@@ -136,7 +136,6 @@ typedef struct screen_char_t
 - (screen_char_t *) getLineAtIndex: (int) theIndex;
 - (screen_char_t *) getLineAtScreenIndex: (int) theIndex;
 - (char *) dirty;
-- (NSString *) getLineString: (screen_char_t *) theLine;
 
 // lock
 - (void) acquireLock;
@@ -197,10 +196,6 @@ typedef struct screen_char_t
 - (int)changeSize;
 - (int)newWidth;
 - (int)newHeight;
-- (void) resetChangeSize;
-- (NSString *) newWinTitle;
-- (NSString *) newIconTitle;
-- (void) resetChangeTitle;
 - (void) updateBell;
 - (void) setBell;
 - (int) scrollUpLines;

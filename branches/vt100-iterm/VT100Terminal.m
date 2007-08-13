@@ -1568,7 +1568,7 @@ autorelease]; */
     } else {
       sprintf(str, KEY_FUNCTION_FORMAT, no + 14);
     }
-  } else if (no <=35)
+  } else if (no <=35) {
     if (key_strings[TERMINFO_KEY_F0+no]) {
       return [NSData dataWithBytes:key_strings[TERMINFO_KEY_F0+no]
         length:strlen(key_strings[TERMINFO_KEY_F0+no])];
