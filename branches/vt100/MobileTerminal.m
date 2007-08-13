@@ -75,7 +75,7 @@ UIApplication *UIApp;
     NSRange aRange;
     int x, y;
     [[_view terminal] cursorLocationX: &x Y: &y];
-    aRange.location = [[[_view terminal] textStorage] ensureRow: y hasColumn: x];
+    aRange.location = [[[_view terminal] textStorage] ensureRow: y hasColumn: x]+5;
     aRange.length = 0;
     [_view setSelectionRange:aRange];
     [_view scrollToMakeCaretVisible:YES];
@@ -83,18 +83,16 @@ UIApplication *UIApp;
 
 - (void) applicationDidFinishLaunching: (id) unused
 {
+  const int rows = 15, cols = 45;
   // Terminal size based on the font size below
   _shellProcess = [[SubProcess alloc] init];
-  [_shellProcess setRows:17 columns:41];
+  [_shellProcess setRows:rows columns:cols];
   [_shellProcess setDelegate: self];
   [_shellProcess setExecutablePath: @"/bin/login"];
   [_shellProcess setArguments: [NSArray arrayWithObjects: @"login", @"-p", @"-f", @"root", nil]];
   [_shellProcess setEnvironment: [NSDictionary dictionaryWithObjectsAndKeys:
-                                    @"ansi", @"TERM",
+                                    @"xterm-color", @"TERM",
                                     nil]];
-  [_shellProcess launchTask];
-  
-  
   UIWindow *window = [[UIWindow alloc] initWithContentRect: [UIHardware 
     fullScreenApplicationContentRect]];
   [window orderFront: self];
@@ -125,11 +123,10 @@ UIApplication *UIApp;
   // Don't change the font size or style without updating the window size below
   [view setTextSize:11];
   [view setTextFont:@"Monaco"];
-  int rows = 16, cols = 45;
   [view setRows: rows cols: cols];
   [[view terminal] setDelegate: self];
   
-  filter = [[ANSIDefaultLineFilter alloc] initWithTerminal: [view terminal]];
+  filter = [[XTermDefaultLineFilter alloc] initWithTerminal: [view terminal]];
 
   [view setTextColor: CGColorCreate( colorSpace, textcomponents)];
   [view setBackgroundColor: CGColorCreate( colorSpace, backcomponents)];
@@ -165,6 +162,7 @@ UIApplication *UIApp;
   [view becomeFirstResponder];
   [window setContentView: mainView];
 
+  [_shellProcess launchTask];
   [self dataArrivedFromPty: _shellProcess]; 
 }
 

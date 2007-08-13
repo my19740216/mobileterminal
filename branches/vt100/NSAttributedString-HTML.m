@@ -18,9 +18,9 @@ NSString * cssForAttributes(NSDictionary *attr) {
         else if ([key isEqualToString: NSUnderlineStyleAttributeName] && o && [(NSNumber*)o intValue])
             underline = @"text-decoration: underline;";
         else if ([key isEqualToString: NSBackgroundColorAttributeName])
-            background = [NSString stringWithFormat: @"background-color: %@;", o];
+            background = [NSString stringWithFormat: @"background-color: #%@;", o];
         else if ([key isEqualToString: NSForegroundColorAttributeName])
-            foreground = [NSString stringWithFormat: @"color: %@;", o];
+            foreground = [NSString stringWithFormat: @"color: #%@;", o];
         else if ([key isEqualToString: TSTBoldAttribute] && o && [(NSNumber*)o intValue])
             bold = @"font-weight: bold;";
         else if ([key isEqualToString: TSTBlinkingAttribute] && o && [(NSNumber*)o intValue])
@@ -34,17 +34,18 @@ NSString * cssForAttributes(NSDictionary *attr) {
     NSDictionary *attr;
     NSString *plainstring = [self string];
     unsigned c = [plainstring length];
-    NSMutableString *s = [NSMutableString string], *substring;
+    NSMutableString *s = [NSMutableString stringWithString: @""], *substring;
     unsigned i = 0;
     while (i < c)
     {
-//        DEBUG("range: start %d length %d\n", attrRange.location, attrRange.length);
+//      DEBUG("range: start %d length %d\n", attrRange.location, attrRange.length);
         attr = [self attributesAtIndex:i effectiveRange:&attrRange];
         substring = [NSMutableString stringWithString: [plainstring substringWithRange: attrRange]];
         [substring replaceOccurrencesOfString: @"\n" withString: @"<br\>" options: 0 range: NSMakeRange(0, [substring length])];
         [s appendFormat: @"<span style=\"%@\">%@</span>", cssForAttributes(attr), substring];
         i = NSMaxRange(attrRange);
     }
+    [s appendString: @""];
     return s;// [self string];;
 }
 @end

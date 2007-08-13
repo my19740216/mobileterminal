@@ -10,6 +10,7 @@
 #import <UIKit/UIScroller.h>
 #import <UIKit/UITransformAnimation.h>
 #import <UIKit/UIView-Geometry.h>
+#import <UIKit/UIView-Rendering.h>
 #import "Common.h"
 
 //
@@ -56,7 +57,7 @@
   [translate setStartTransform: CGAffineTransformMake(1,0,0,1,0,0)];
   [translate setEndTransform: trans];
   [[[UIAnimator alloc] init] addAnimation:translate withDuration:.5 start:YES];
-
+  
   _hidden = NO;
 }
 

@@ -801,6 +801,7 @@ extern NSString * const TSScreenScrolledNotification;
 */
 - (void) resetAll: (BOOL) hard;
 
+- (NSString *)html;
 @end
 
 /** TextStorageTerminal delegate informal protocol.

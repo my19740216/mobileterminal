@@ -73,6 +73,13 @@ static NSString *   sColors[8] = {
 	return sColors[code];
 }
 
+- (NSString *)html
+{
+    int cursorIndex = [content ensureRow: cursorRow hasColumn: cursorColumn];
+    NSString *stringBefore, *stringAfter, *background, *foreground, *cursorChar;
+
+    return [NSString stringWithFormat: @"%@<span style=\"background-color:#%@;color:#%@;\">%@</span>%@", stringBefore, background, foreground, cursorChar, stringAfter];
+}
 
 - (id) init
 {
