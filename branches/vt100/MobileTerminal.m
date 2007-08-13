@@ -83,7 +83,7 @@ UIApplication *UIApp;
 
 - (void) applicationDidFinishLaunching: (id) unused
 {
-  const int rows = 15, cols = 45;
+  const int rows = 15, cols = 44;
   // Terminal size based on the font size below
   _shellProcess = [[SubProcess alloc] init];
   [_shellProcess setRows:rows columns:cols];
