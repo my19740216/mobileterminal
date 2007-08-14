@@ -33,6 +33,9 @@
 
 #include <sys/time.h>
 
+#define MARGIN 5
+#define VMARGIN 5
+
 //static NSCursor* textViewCursor =  nil;
 //static float strokeWidth, boldStrokeWidth;
 static int cacheSize;
@@ -512,26 +515,45 @@ static int cacheSize;
     startLineIndex = 0;
   }
 
-  NSString* terminal_output = @"";
+  CGContextRef context = UICurrentContext();
+  float w = rect.size.width - MARGIN;
+  float h = rect.size.height - VMARGIN;
+  lineHeight = h / HEIGHT;
+  charWidth = w / WIDTH;
+  CGContextSelectFont(context, "CourierNewBold", lineHeight,
+                      kCGEncodingMacRoman);
+  CGContextSetRGBFillColor(context, 1, 1, 1, 1);
+  CGContextSetTextDrawingMode(context, kCGTextFill);
+  CGAffineTransform myTextTransform;
+  // Flip text, for some reason its written upside down by default
+  myTextTransform = CGAffineTransformMake(1, 0, 0, -1, 0, h/30);
+  CGContextSetTextMatrix(context, myTextTransform);
   for (i = startLineIndex; i < numLines; ++i) {
     screen_char_t *theLine = [dataSource getLineAtIndex:i];
     for (j = 0; j < WIDTH; j++) {
-      // Multiple spaces in UIKit string drawing are
-      // truncated, so we replace a space character with a
-      // special non-breaking space.
-      unichar c = theLine[j].ch;
-      if (c == ' ') {
-        c = NO_BREAK_SPACE;
+      char c = 0xff & theLine[j].ch;
+      if (c == 0) {
+        c = ' ';
       }
-      terminal_output = [terminal_output stringByAppendingString:[NSString stringWithCharacters:&c length:1]];
+
+
+      CGContextShowTextAtPoint(context, j * charWidth,
+                               (i - startLineIndex + 1) * lineHeight, &c, 1);
     }
-    const unichar c = '\n';
-    terminal_output = [terminal_output stringByAppendingString:[NSString stringWithCharacters:&c length:1]];
   }
 
-  // TODO: Font should be configurable
-  [terminal_output drawInRect:rect 
-    withStyle:TERMINAL_FONT];
+  // Fill a rectangle with the cursor.
+  if (CURSOR) {
+    int x1 = [dataSource cursorX]-1;
+    int y1 = [dataSource cursorY]-1;
+    CGRect cursorBox = CGRectMake(x1 * charWidth + 1,
+                                  y1 * lineHeight + VMARGIN,
+                                  charWidth - 1,
+                                  lineHeight - VMARGIN / 2);
+    CGContextSetRGBFillColor(context, 1, 1, 1, 1);
+    CGContextSetAlpha(context, 0.5);
+    CGContextFillRect(context, cursorBox);
+  }
 
   [dataSource releaseLock];
 }
