@@ -16,6 +16,7 @@ Tap once on the screen to hide the keyboard.  Tap once more to bring it back up.
 You can send a control-C by pressing the "bullet" key (First press ".?123", then "#+=", then the circle on the middle right), then press the C key.  This can be useful when you want to escape out of a long running program such as ping.
 
 Escape is control-[, which may come in handy with vi.
+Tab is control-I (yay tab completion).
 
 == Common unix binaries ==
 
