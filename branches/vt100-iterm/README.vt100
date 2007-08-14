@@ -2,9 +2,9 @@ The code in this branch is based on the OS X iprogram iTerm.
 
 Heres is a rough plan for this branch:
 - Allow scrollback
-- Fix scollin in vim (scroll down a bunch, then back up; its broken)
+- Fix scolling in vim (scroll down a bunch, then back up; its broken)
 - Get Fix bugs, clean up all the tons of commented out features of iTerm that
-we never plan to support (mose events, etc)
+we never plan to support (mouse events, etc)
 - Merge back into the main brach (e.g. support keyboard hiding again)
 - use gestures for arrow keys (swipe up, down, left, right, etc)?
 - UI Layer on top of the terminal (maybe this stuff can wait until its in the
