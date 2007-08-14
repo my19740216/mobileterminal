@@ -31,79 +31,79 @@ enum { NO_CHANGE, CHANGE, CHANGE_PIXEL };
 
 typedef struct screen_char_t
 {
-	unichar ch;    // the actual character
-	unsigned int bg_color; // background color
-	unsigned int fg_color; // foreground color
+  unichar ch;    // the actual character
+  unsigned int bg_color; // background color
+  unsigned int fg_color; // foreground color
 } screen_char_t;
 
 #define TABWINDOW	300
 
 @interface VT100Screen : NSObject
 {
-    int WIDTH; // width of screen
-    int HEIGHT; // height of screen
-    int CURSOR_X;
-    int CURSOR_Y;
-    int SAVE_CURSOR_X;
-    int SAVE_CURSOR_Y;
-    int SCROLL_TOP;
-    int SCROLL_BOTTOM;
-    BOOL tabStop[TABWINDOW];
-    
-    VT100Terminal *TERMINAL;
-    int charset[4], saveCharset[4];
-    BOOL blinkShow;
-	BOOL PLAYBELL;
-	BOOL SHOWBELL;
+  int WIDTH; // width of screen
+  int HEIGHT; // height of screen
+  int CURSOR_X;
+  int CURSOR_Y;
+  int SAVE_CURSOR_X;
+  int SAVE_CURSOR_Y;
+  int SCROLL_TOP;
+  int SCROLL_BOTTOM;
+  BOOL tabStop[TABWINDOW];
 
-    
-    BOOL blinkingCursor;
-    PTYTextView *display;
-	
-	// single buffer that holds both scrollback and screen contents
-	screen_char_t *buffer_lines;
-	// buffer holding flags for each char on whether it needs to be redrawn
-	char *dirty;
-	// a single default line
-	screen_char_t *default_line;
-	// temporary buffer to store main buffer in SAVE_BUFFER/RESET_BUFFER mode
-	screen_char_t *temp_buffer;
-	
-	// pointer to last line in buffer
-	screen_char_t *last_buffer_line;
-	// pointer to first screen line
-	screen_char_t *screen_top;
-	//pointer to first scrollback line
-	screen_char_t *scrollback_top;
-	
-	// default line stuff
-	char default_bg_code;
-	char default_fg_code;
-	int default_line_width;
-
-	//scroll back stuff
-	BOOL dynamic_scrollback_size;
-	// max size of scrollback buffer
-    unsigned int  max_scrollback_lines;
-	// current number of lines in scrollback buffer
-	unsigned int current_scrollback_lines;
-		
-	
-	// print to ansi...
-	BOOL printToAnsi;		// YES=ON, NO=OFF, default=NO;
-	NSMutableString *printToAnsiString;
-	
-	NSLock *screenLock;
+  VT100Terminal *TERMINAL;
+  int charset[4], saveCharset[4];
+  BOOL blinkShow;
+  BOOL PLAYBELL;
+  BOOL SHOWBELL;
 
 
-	// UI related
-	int changeSize;
-	int newWidth,  newHeight;
-	NSString *newWinTitle;
-	NSString *newIconTitle;
-	BOOL bell;
-	int scrollUpLines;
-	BOOL printPending;
+  BOOL blinkingCursor;
+  PTYTextView *display;
+
+  // single buffer that holds both scrollback and screen contents
+  screen_char_t *buffer_lines;
+  // buffer holding flags for each char on whether it needs to be redrawn
+  char *dirty;
+  // a single default line
+  screen_char_t *default_line;
+  // temporary buffer to store main buffer in SAVE_BUFFER/RESET_BUFFER mode
+  screen_char_t *temp_buffer;
+
+  // pointer to last line in buffer
+  screen_char_t *last_buffer_line;
+  // pointer to first screen line
+  screen_char_t *screen_top;
+  //pointer to first scrollback line
+  screen_char_t *scrollback_top;
+
+  // default line stuff
+  char default_bg_code;
+  char default_fg_code;
+  int default_line_width;
+
+  //scroll back stuff
+  BOOL dynamic_scrollback_size;
+  // max size of scrollback buffer
+  unsigned int  max_scrollback_lines;
+  // current number of lines in scrollback buffer
+  unsigned int current_scrollback_lines;
+
+
+  // print to ansi...
+  BOOL printToAnsi;		// YES=ON, NO=OFF, default=NO;
+  NSMutableString *printToAnsiString;
+
+  NSLock *screenLock;
+
+
+  // UI related
+  int changeSize;
+  int newWidth,  newHeight;
+  NSString *newWinTitle;
+  NSString *newIconTitle;
+  BOOL bell;
+  int scrollUpLines;
+  BOOL printPending;
 }
 
 

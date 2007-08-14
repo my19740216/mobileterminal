@@ -260,50 +260,50 @@ typedef enum {
 
 @interface VT100Terminal : NSObject
 {
-    NSString          *termType;
-    NSStringEncoding  ENCODING;
-    VT100Screen       *SCREEN;
-	NSLock			  *streamLock;
+  NSString          *termType;
+  NSStringEncoding  ENCODING;
+  VT100Screen       *SCREEN;
+  NSLock			  *streamLock;
 
-	unsigned char     *STREAM;
-	int				  current_stream_length;
-	int				  total_stream_length;
-	
-    BOOL LINE_MODE;			// YES=Newline, NO=Line feed
-    BOOL CURSOR_MODE;		// YES=Application, NO=Cursor
-    BOOL ANSI_MODE;			// YES=ANSI, NO=VT52
-    BOOL COLUMN_MODE;		// YES=132 Column, NO=80 Column
-    BOOL SCROLL_MODE;		// YES=Smooth, NO=Jump
-    BOOL SCREEN_MODE;		// YES=Reverse, NO=Normal
-    BOOL ORIGIN_MODE;		// YES=Relative, NO=Absolute
-    BOOL WRAPAROUND_MODE;	// YES=On, NO=Off
-    BOOL AUTOREPEAT_MODE;	// YES=On, NO=Off
-    BOOL INTERLACE_MODE;	// YES=On, NO=Off
-    BOOL KEYPAD_MODE;		// YES=Application, NO=Numeric
-    BOOL INSERT_MODE;		// YES=Insert, NO=Replace
-    int  CHARSET;			// G0...G3
-    BOOL XON;				// YES=XON, NO=XOFF
-    BOOL numLock;			// YES=ON, NO=OFF, default=YES;
-	mouseMode MOUSE_MODE;
-    
-    int FG_COLORCODE;
-    int BG_COLORCODE;
-    int	bold, under, blink, reversed, highlight;
+  unsigned char     *STREAM;
+  int				  current_stream_length;
+  int				  total_stream_length;
 
-    int saveBold, saveUnder, saveBlink, saveReversed, saveHighlight;
-    int saveCHARSET;
-    
-    BOOL TRACE;
+  BOOL LINE_MODE;			// YES=Newline, NO=Line feed
+  BOOL CURSOR_MODE;		// YES=Application, NO=Cursor
+  BOOL ANSI_MODE;			// YES=ANSI, NO=VT52
+  BOOL COLUMN_MODE;		// YES=132 Column, NO=80 Column
+  BOOL SCROLL_MODE;		// YES=Smooth, NO=Jump
+  BOOL SCREEN_MODE;		// YES=Reverse, NO=Normal
+  BOOL ORIGIN_MODE;		// YES=Relative, NO=Absolute
+  BOOL WRAPAROUND_MODE;	// YES=On, NO=Off
+  BOOL AUTOREPEAT_MODE;	// YES=On, NO=Off
+  BOOL INTERLACE_MODE;	// YES=On, NO=Off
+  BOOL KEYPAD_MODE;		// YES=Application, NO=Numeric
+  BOOL INSERT_MODE;		// YES=Insert, NO=Replace
+  int  CHARSET;			// G0...G3
+  BOOL XON;				// YES=XON, NO=XOFF
+  BOOL numLock;			// YES=ON, NO=OFF, default=YES;
+  mouseMode MOUSE_MODE;
 
-    BOOL strictAnsiMode;
-    BOOL allowColumnMode;
-	
-	BOOL allowKeypadMode;
-    
-    unsigned int streamOffset;
-    
-    //terminfo
-    char  *key_strings[TERMINFO_KEYS];
+  int FG_COLORCODE;
+  int BG_COLORCODE;
+  int	bold, under, blink, reversed, highlight;
+
+  int saveBold, saveUnder, saveBlink, saveReversed, saveHighlight;
+  int saveCHARSET;
+
+  BOOL TRACE;
+
+  BOOL strictAnsiMode;
+  BOOL allowColumnMode;
+
+  BOOL allowKeypadMode;
+
+  unsigned int streamOffset;
+
+  //terminfo
+  char  *key_strings[TERMINFO_KEYS];
 }
 
 + (void)initialize;

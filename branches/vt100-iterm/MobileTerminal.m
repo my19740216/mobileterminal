@@ -1,4 +1,4 @@
-// MobileTerminal.m
+
 #import "MobileTerminal.h"
 
 #import <Foundation/Foundation.h>

@@ -23,8 +23,8 @@
  **  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#define DEBUG_ALLOC           0 
-#define DEBUG_METHOD_TRACE    0
+#define DEBUG_ALLOC           1 
+#define DEBUG_METHOD_TRACE    1
 
 #import "PTYTextView.h"
 #import "VT100Screen.h"
@@ -32,23 +32,6 @@
 #import "Common.h"
 
 #include <sys/time.h>
-
-#define MARGIN 5
-#define VMARGIN 5
-
-//static NSCursor* textViewCursor =  nil;
-//static float strokeWidth, boldStrokeWidth;
-static int cacheSize;
-
-
-@implementation NSString (UIWebViewAdditions)
-- (id)_uikit_stringByTrimmingWhitespaceAndNewlines;     // IMP=0x324367f4
-{
-  NSLog(@"asked for the string!!!");
-  exit(1);
-}
-@end
-
 
 @implementation PTYTextView
 
@@ -66,20 +49,61 @@ static int cacheSize;
   [self displayScrollerIndicators];
   [self setAllowsRubberBanding:YES];
 
-  // Black background
   CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-  float backcomponents[4] = {0.0, 0.7, 0, 0};
-  [self setBackgroundColor: CGColorCreate(colorSpace, backcomponents)];
+
+  // System 7.5 colors, why not?
+  float darkBlack[] = { 0, 0, 0, 1 };
+  colorTable[0] = CGColorCreate(colorSpace, darkBlack);
+  float darkRed[] = { 0.67, 0, 0, 1 };
+  colorTable[1] = CGColorCreate(colorSpace, darkRed);
+  float darkGreen[] = { 0, 0.67, 0, 1 };
+  colorTable[2] = CGColorCreate(colorSpace, darkGreen);
+  float darkYellow[] = { 0.6, 0.4, 0, 1 };
+  colorTable[3] = CGColorCreate(colorSpace, darkYellow);
+  float darkBlue[] = { 0, 0, 0.67, 1 };
+  colorTable[4] = CGColorCreate(colorSpace, darkBlue);
+  float darkMagenta[] = { 0.6, 0, 0.6, 1 };
+  colorTable[5] = CGColorCreate(colorSpace, darkMagenta);
+  float darkCyan[] = { 0, 0.6, 0.6, 1 };
+  colorTable[6] = CGColorCreate(colorSpace, darkCyan);
+  float darkWhite[] = { 0.67, 0.67, 0.67, 1 };
+  colorTable[7] = CGColorCreate(colorSpace, darkWhite);
+  float lightBlack[] = { 0.33, 0.33, 0.33, 1 };
+  colorTable[8] = CGColorCreate(colorSpace, lightBlack);
+  float lightRed[] = { 1, 0.4, 0.4, 1 };
+  colorTable[9] = CGColorCreate(colorSpace, lightRed);
+  float lightGreen[] = { 0.4, 1, 0.4, 1 };
+  colorTable[10] = CGColorCreate(colorSpace, lightGreen);
+  float lightYellow[] = { 1, 1, 0.4, 1 };
+  colorTable[11] = CGColorCreate(colorSpace, lightYellow);
+  float lightBlue[] = { 0.4, 0.4, 1, 1 };
+  colorTable[12] = CGColorCreate(colorSpace, lightBlue);
+  float lightMagenta[] = { 1, 0.4, 1, 1 };
+  colorTable[13] = CGColorCreate(colorSpace, lightMagenta);
+  float lightCyan[] = { 0.4, 1, 1, 1 };
+  colorTable[14] = CGColorCreate(colorSpace, lightCyan);
+  float lightWhite[] = { 1, 1, 1, 1 };
+  colorTable[15] = CGColorCreate(colorSpace, lightWhite);
+
+  // Default colors
+  float fgColor[4] = {1, 1, 1, 1};
+  defaultFGColor = CGColorCreate(colorSpace, fgColor);
+  float bgColor[4] = {0, 0, 0, 1};
+  defaultBGColor = CGColorCreate(colorSpace, bgColor);
+  float boldColor[4] = {1, 1, 1, 1};
+  defaultBoldColor = CGColorCreate(colorSpace, boldColor);
+  float cursorColor[4] = {1, 1, 1, 1};
+  defaultCursorColor = CGColorCreate(colorSpace, cursorColor);
+  float cursorTextColorC[4] = {1, 1, 1, 1};
+  cursorTextColor = CGColorCreate(colorSpace, cursorTextColorC);
+
+  [self setBackgroundColor:defaultBGColor];
   
   dataSource = nil;
   markedTextAttributes = nil;
 
   CURSOR=YES;
-  lastFindX = startX = -1;
   gettimeofday(&lastBlink, NULL);
-	    	
-  memset(charImages, 0, cacheSize*sizeof(CharCache));	
-  charWidth = 12;
   oldCursorX = oldCursorY = -1;
   return (self);
 }
@@ -94,13 +118,10 @@ static int cacheSize;
 #if DEBUG_ALLOC
   NSLog(@"%s: 0x%x", __PRETTY_FUNCTION__, self);
 #endif
-  /* 
-     [defaultFGColor release];
-     [defaultBGColor release];
-     [defaultBoldColor release];
-     [selectionColor release];
-     [defaultCursorColor release];
-   */
+  CGColorRelease(defaultFGColor);
+  CGColorRelease(defaultBGColor);
+  CGColorRelease(defaultBoldColor);
+  CGColorRelease(defaultCursorColor);
 
   //    [font release];
   //	[nafont release];
@@ -129,152 +150,121 @@ static int cacheSize;
   blinkingCursor = bFlag;
 }
 
+- (void) setFGColor:(CGColorRef)color
+{
+  CGColorRelease(defaultFGColor);
+  CGColorRetain(color);
+  defaultFGColor=color;
+  [self setNeedsDisplay];
+  // reset our default character attributes    
+}
+
+- (void) setBGColor:(CGColorRef)color
+{
+  CGColorRelease(defaultBGColor);
+  CGColorRetain(color);
+  defaultBGColor=color;
+  [self setNeedsDisplay];
+}
+
+- (void) setBoldColor: (CGColorRef)color
+{
+  CGColorRelease(defaultBoldColor);
+  CGColorRetain(color);
+  defaultBoldColor=color;
+  [self setNeedsDisplay];
+}
+
+- (void) setCursorColor: (CGColorRef)color
+{
+  CGColorRelease(defaultCursorColor);
+  CGColorRetain(color);
+  defaultCursorColor=color;
+  [self setNeedsDisplay];
+}
+
+- (void) setCursorTextColor:(CGColorRef) color
+{
+  CGColorRelease(cursorTextColor);
+  CGColorRetain(color);
+  cursorTextColor = color;
+  [self setNeedsDisplay];
+
+}
+
+- (CGColorRef) cursorTextColor
+{
+  return (cursorTextColor);
+}
+
+- (CGColorRef) defaultFGColor
+{
+  return defaultFGColor;
+}
+
+- (CGColorRef) defaultBGColor
+{
+  return defaultBGColor;
+}
+
+- (CGColorRef) defaultBoldColor
+{
+  return defaultBoldColor;
+}
+
+- (CGColorRef) defaultCursorColor
+{
+  return defaultCursorColor;
+}
+
+- (CGColorRef) colorForCode:(unsigned int) index 
+{
+  CGColorRef color;
+
+  if (index & DEFAULT_FG_COLOR_CODE) {  // special colors?
+    switch (index) {
+      case SELECTED_TEXT:
+        exit(1);
+        break;
+      case CURSOR_TEXT:
+        color = cursorTextColor;
+        break;
+      case DEFAULT_BG_COLOR_CODE:
+        color = defaultBGColor;
+        break;
+      default:
+        if (index & BOLD_MASK) {
+          color = (index-BOLD_MASK == DEFAULT_BG_COLOR_CODE) ?
+              defaultBGColor : [self defaultBoldColor];
+        } else {
+          color = defaultFGColor;
+        }
+    }
+  } else {
+    index &= 0xff;
+
+    if (index < 16) {
+      color = colorTable[index];
+    } else if (index < 232) {
+      index -= 16;
+      CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+      float components[] = {
+        (index/36) ? ((index / 36) * 40 + 55) / 256.0 : 0 ,
+        (index%36)/6 ? (((index % 36) / 6) * 40 + 55 ) / 256.0:0 ,
+        (index%6) ? ((index % 6) * 40 + 55) / 256.0:0,
+        1.0
+      };
+      color = CGColorCreate(colorSpace, components);
+    } else {
+      index -= 232;
+      exit(1); 
+      //color=[CGColorRef colorWithCalibratedWhite:(index*10+8)/256.0 alpha:1];
+    }
+  }
+  return color;
+}
+
 /*
-- (void) setFGColor:(NSColor*)color
-{
-    [defaultFGColor release];
-    [color retain];
-    defaultFGColor=color;
-	[self resetCharCache];
-	forceUpdate = YES;
-	[self setNeedsDisplay];
-	// reset our default character attributes    
-}
-
-- (void) setBGColor:(NSColor*)color
-{
-    [defaultBGColor release];
-    [color retain];
-    defaultBGColor=color;
-	//    bg = [bg colorWithAlphaComponent: [[SESSION backgroundColor] alphaComponent]];
-	//    fg = [fg colorWithAlphaComponent: [[SESSION foregroundColor] alphaComponent]];
-	forceUpdate = YES;
-	[self resetCharCache];
-	[self setNeedsDisplay];
-}
-
-- (void) setBoldColor: (NSColor*)color
-{
-    [defaultBoldColor release];
-    [color retain];
-    defaultBoldColor=color;
-	[self resetCharCache];
-	forceUpdate = YES;
-	[self setNeedsDisplay];
-}
-
-- (void) setCursorColor: (NSColor*)color
-{
-    [defaultCursorColor release];
-    [color retain];
-    defaultCursorColor=color;
-	forceUpdate = YES;
-	[self setNeedsDisplay];
-}
-
-- (void) setCursorTextColor:(NSColor*) aColor
-{
-	[cursorTextColor release];
-	[aColor retain];
-	cursorTextColor = aColor;
-	[self _clearCacheForColor: CURSOR_TEXT];
-	
-	forceUpdate = YES;
-	[self setNeedsDisplay];
-
-}
-
-- (NSColor *) cursorTextColor
-{
-	return (cursorTextColor);
-}
-
-- (NSColor *) defaultFGColor
-{
-    return defaultFGColor;
-}
-
-- (NSColor *) defaultBGColor
-{
-	return defaultBGColor;
-}
-
-- (NSColor *) defaultBoldColor
-{
-    return defaultBoldColor;
-}
-
-- (NSColor *) defaultCursorColor
-{
-    return defaultCursorColor;
-}
-
-
-- (void) setColorTable:(int) index highLight:(BOOL)hili color:(NSColor *) c
-{
-	int idx=(hili?1:0)*8+index;
-	
-    [colorTable[idx] release];
-    [c retain];
-    colorTable[idx]=c;
-	[self _clearCacheForColor: idx];
-	[self _clearCacheForColor: (BOLD_MASK | idx)];
-	[self _clearCacheForBGColor: idx];
-	
-	[self setNeedsDisplay];
-}
-
-- (NSColor *) colorForCode:(unsigned int) index 
-{
-    NSColor *color;
-	
-	if (index&DEFAULT_FG_COLOR_CODE) // special colors?
-    {
-		switch (index) {
-			case SELECTED_TEXT:
-				color = selectedTextColor;
-				break;
-			case CURSOR_TEXT:
-				color = cursorTextColor;
-				break;
-			case DEFAULT_BG_COLOR_CODE:
-				color = defaultBGColor;
-				break;
-			default:
-				if(index&BOLD_MASK)
-				{
-					color = index-BOLD_MASK == DEFAULT_BG_COLOR_CODE ? defaultBGColor : [self defaultBoldColor];
-				}
-				else
-				{
-					color = defaultFGColor;
-				}
-		}
-    }
-    else 
-    {
-		index &= 0xff;
-		
-        if (index<16) {
-			color=colorTable[index];
-		}
-		else if (index<232) {
-			index -= 16;
-			color=[NSColor colorWithCalibratedRed:(index/36) ? ((index/36)*40+55)/256.0:0 
-											green:(index%36)/6 ? (((index%36)/6)*40+55)/256.0:0 
-											 blue:(index%6) ?((index%6)*40+55)/256.0:0
-											alpha:1];
-		}
-		else {
-			index -= 232;
-			color=[NSColor colorWithCalibratedWhite:(index*10+8)/256.0 alpha:1];
-		}
-    }
-	
-    return color;
-    
-}
-
 - (NSFont *)font
 {
     return font;
@@ -313,18 +303,6 @@ static int cacheSize;
 }
 */
 
-- (void) resetCharCache
-{
-/*
-	int loop;
-	for (loop=0;loop<cacheSize;loop++)
-    {
-		[charImages[loop].image release];
-		charImages[loop].image=nil;
-    }
-*/
-}
-
 - (VT100Screen*) dataSource
 {
     return (dataSource);
@@ -341,39 +319,33 @@ static int cacheSize;
 
 - (void) refresh
 {
-	//NSLog(@"%s: 0x%x", __PRETTY_FUNCTION__, self);
-	struct CGRect aFrame;
-	int height;
-    
-    if(dataSource != nil)
-    {
-		[dataSource acquireLock];
-        numberOfLines = [dataSource numberOfLines];
-		[dataSource releaseLock];
+  /*
+  //NSLog(@"%s: 0x%x", __PRETTY_FUNCTION__, self);
+  struct CGRect aFrame;
+  int height;
 
-        height = numberOfLines * lineHeight;
-		aFrame = [self frame];
-		
-        if(height != aFrame.size.height)
-        {
-            
-			//NSLog(@"%s: 0x%x; new number of lines = %d; resizing height from %f to %d", 
-			//	  __PRETTY_FUNCTION__, self, numberOfLines, [self frame].size.height, height);
-            aFrame.size.height = height;
-            [self setFrame: aFrame];
-// TODO(allen): Scroll
-/*
-			if (![(PTYScroller *)([[self enclosingScrollView] verticalScroller]) userScroll]) 
-			{
-				[self scrollEnd];
-			}
-*/
-        }
-				
-		
-		[self setNeedsDisplay];
-    }
-	
+  if(dataSource != nil) {
+  [dataSource acquireLock];
+  numberOfLines = [dataSource numberOfLines];
+  [dataSource releaseLock];
+
+  height = numberOfLines * lineHeight;
+  aFrame = [self frame];
+
+  if(height != aFrame.size.height) {
+  //NSLog(@"%s: 0x%x; new number of lines = %d; resizing height from %f to %d", 
+  //	  __PRETTY_FUNCTION__, self, numberOfLines, [self frame].size.height, height);
+  aFrame.size.height = height;
+  [self setFrame: aFrame];
+  // TODO(allen): Scroll
+  if (![(PTYScroller *)([[self enclosingScrollView] verticalScroller]) userScroll]) 
+  {
+  [self scrollEnd];
+  }
+  }
+  [self setNeedsDisplay];
+  }
+   */
 }
 
 
@@ -482,6 +454,19 @@ static int cacheSize;
     CURSOR=YES;
 }
 
+- (void)fillBoxColor:(CGColorRef)color X:(int)x Y:(int)y
+{
+  CGContextRef context = UICurrentContext();
+  const float* components = CGColorGetComponents(color);
+  CGRect box = CGRectMake(floor((x - 1) * charWidth + 2), // + MARGIN/2,
+                          floor((y - 1) * lineHeight + 3), // + VMARGIN/2,
+                          ceil(charWidth), // - MARGIN/2,
+                          ceil(lineHeight)); // - VMARGIN/2);
+  CGContextSetRGBFillColor(context, components[0], components[1],
+                                    components[2], components[3]);
+  CGContextFillRect(context, box);
+}
+
 - (void)drawRect:(CGRect)rect
 {
 #if DEBUG_METHOD_TRACE
@@ -504,8 +489,8 @@ static int cacheSize;
     lastBlink = now;
   }
 
-  WIDTH=[dataSource width];
-  HEIGHT=[dataSource height];
+  WIDTH = [dataSource width];
+  HEIGHT = [dataSource height];
   numLines = [dataSource numberOfLines];
 
   // Which line is our screen start?
@@ -520,6 +505,19 @@ static int cacheSize;
   float h = rect.size.height - VMARGIN;
   lineHeight = h / HEIGHT;
   charWidth = w / WIDTH;
+
+  // Draw background
+  for (i = startLineIndex; i < numLines; ++i) {
+    screen_char_t *theLine = [dataSource getLineAtIndex:i];
+    for (j = 0; j < WIDTH; j++) {
+      unsigned int bgcode = theLine[j].bg_color;
+      CGColorRef bg = [self colorForCode:bgcode];
+      [self fillBoxColor:bg X:(j + 1) Y:(i - startLineIndex + 1)];
+    }
+  }
+
+
+  // Draw text
   CGContextSelectFont(context, "CourierNewBold", lineHeight,
                       kCGEncodingMacRoman);
   CGContextSetRGBFillColor(context, 1, 1, 1, 1);
@@ -535,8 +533,11 @@ static int cacheSize;
       if (c == 0) {
         c = ' ';
       }
-
-
+      unsigned int fgcode = theLine[j].fg_color;
+      CGColorRef fg = [self colorForCode:fgcode];
+      const float* fg_components = CGColorGetComponents(fg);
+      CGContextSetRGBFillColor(context, fg_components[0], fg_components[1],
+                                        fg_components[2], fg_components[3]);
       CGContextShowTextAtPoint(context, j * charWidth,
                                (i - startLineIndex + 1) * lineHeight, &c, 1);
     }
@@ -544,15 +545,9 @@ static int cacheSize;
 
   // Fill a rectangle with the cursor.
   if (CURSOR) {
-    int x1 = [dataSource cursorX]-1;
-    int y1 = [dataSource cursorY]-1;
-    CGRect cursorBox = CGRectMake(x1 * charWidth + 1,
-                                  y1 * lineHeight + VMARGIN,
-                                  charWidth - 1,
-                                  lineHeight - VMARGIN / 2);
-    CGContextSetRGBFillColor(context, 1, 1, 1, 1);
-    CGContextSetAlpha(context, 0.5);
-    CGContextFillRect(context, cursorBox);
+    [self fillBoxColor:defaultCursorColor
+                     X:[dataSource cursorX]
+                     Y:[dataSource cursorY]];
   }
 
   [dataSource releaseLock];
@@ -617,11 +612,6 @@ static int cacheSize;
 }
 */
 
-- (BOOL) keyIsARepeat
-{
-	return (keyIsARepeat);
-}
-
 /*
 // transparency
 - (float) transparency
@@ -635,7 +625,6 @@ static int cacheSize;
 	forceUpdate = YES;
 	useTransparency = fVal >=0.01;
 	[self setNeedsDisplay];
-	[self resetCharCache];
 }
 
 - (BOOL) useTransparency
@@ -648,7 +637,6 @@ static int cacheSize;
   useTransparency = flag;
   forceUpdate = YES;
   [self setNeedsDisplay];
-  [self resetCharCache];
 }
 */
 @end

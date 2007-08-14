@@ -32,8 +32,8 @@
 
 #include <sys/time.h>
 
-#define MARGIN  5
-#define VMARGIN 5
+#define MARGIN  4
+#define VMARGIN 4 
 
 // Hack for UIKit non-breaking spaces
 #define NO_BREAK_SPACE 0x00A0
@@ -90,16 +90,13 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
   float charWidth;
   float charWidthWithoutSpacing, charHeightWithoutSpacing;
   int numberOfLines;
-  /* 
-     NSColor* colorTable[16];
-     NSColor* defaultFGColor;
-     NSColor* defaultBGColor;
-     NSColor* defaultBoldColor;
-     NSColor* defaultCursorColor;
-     NSColor* selectionColor;
-     NSColor* selectedTextColor;
-     NSColor* cursorTextColor;
-   */
+
+  CGColorRef colorTable[16];
+  CGColorRef defaultFGColor;
+  CGColorRef defaultBGColor;
+  CGColorRef defaultBoldColor;
+  CGColorRef defaultCursorColor;
+  CGColorRef cursorTextColor;
 
   // transparency
   float transparency;
@@ -107,23 +104,6 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
 
   // data source
   VT100Screen *dataSource;
-  //    id _delegate;
-
-  //selection
-  int startX, startY, endX, endY;
-  BOOL mouseDown;
-  BOOL mouseDragged;
-  char selectMode;
-  BOOL mouseDownOnSelection;
-  //NSEvent *mouseDownEvent;
-
-  //find support
-  int lastFindX, lastFindY;
-
-  BOOL reportingMouseDown;
-
-  //cache
-  CharCache	*charImages;
 
   // blinking cursor
   BOOL blinkingCursor;
@@ -131,12 +111,6 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
   BOOL blinkShow;
   struct timeval lastBlink;
   int oldCursorX, oldCursorY;
-
-  // trackingRect tab
-  //NSTrackingRectTag trackingRectTag;
-
-  BOOL keyIsARepeat;
-
 }
 
 //+ (NSCursor *) textViewCursor;
@@ -156,25 +130,20 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
 - (void) setDisableBold: (BOOL) boldFlag;
 - (BOOL) blinkingCursor;
 - (void) setBlinkingCursor: (BOOL) bFlag;
+*/
 
 //color stuff
-- (NSColor *) defaultFGColor;
-- (NSColor *) defaultBGColor;
-- (NSColor *) defaultBoldColor;
-- (NSColor *) colorForCode:(unsigned int) index;
-- (NSColor *) selectionColor;
-- (NSColor *) defaultCursorColor;
-- (NSColor *) selectedTextColor;
-- (NSColor *) cursorTextColor;
-- (void) setFGColor:(NSColor*)color;
-- (void) setBGColor:(NSColor*)color;
-- (void) setBoldColor:(NSColor*)color;
-- (void) setColorTable:(int) index highLight:(BOOL)hili color:(NSColor *) c;
-- (void) setSelectionColor: (NSColor *) aColor;
-- (void)setCursorColor:(NSColor*) color;
-- (void) setSelectedTextColor: (NSColor *) aColor;
-- (void) setCursorTextColor:(NSColor*) color;
-*/
+- (CGColorRef) defaultFGColor;
+- (CGColorRef) defaultBGColor;
+- (CGColorRef) defaultBoldColor;
+- (CGColorRef) colorForCode:(unsigned int) index;
+- (CGColorRef) defaultCursorColor;
+- (CGColorRef) cursorTextColor;
+- (void) setFGColor:(CGColorRef)color;
+- (void) setBGColor:(CGColorRef)color;
+- (void) setBoldColor:(CGColorRef)color;
+- (void) setCursorColor:(CGColorRef) color;
+- (void) setCursorTextColor:(CGColorRef) color;
 
 - (VT100Screen*) dataSource;
 - (void) setDataSource: (VT100Screen*) aDataSource;
@@ -183,7 +152,6 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
 - (void) showCursor;
 - (void) hideCursor;
 
-// selection
 /*
 // transparency
 - (float) transparency;
