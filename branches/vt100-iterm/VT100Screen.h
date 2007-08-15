@@ -110,8 +110,6 @@ typedef struct screen_char_t
 - (id)init;
 - (void)dealloc;
 
-- (NSString *)description;
-
 - (void)initScreenWithWidth:(int)width Height:(int)height;
 - (void)resizeWidth:(int)width height:(int)height;
 - (void)reset;
@@ -181,7 +179,6 @@ typedef struct screen_char_t
 - (int) cursorX;
 - (int) cursorY;
 
-- (void)resetDirty;
 - (void)setDirty;
 
 - (void)updateScreen;

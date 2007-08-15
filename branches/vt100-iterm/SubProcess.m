@@ -44,7 +44,12 @@ static void signal_handler(int signal) {
     // the correct binary, they will see an error messages printed on the
     // instead of the program exiting.
     struct stat st;
-    if (stat("/bin/login", &st) == 0) {
+    if (stat("/usr/bin/login", &st) == 0) {
+      if (execlp("/usr/bin/login", "login", "-f", "root", (void*)0) == -1) {
+        perror("execlp: /usr/bin/login");
+        sleep(5);
+      }
+    } else if (stat("/bin/login", &st) == 0) {
       if (execlp("/bin/login", "login", "-f", "root", (void*)0) == -1) {
         perror("execlp: /bin/login");
         sleep(5);

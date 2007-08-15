@@ -106,10 +106,7 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
   VT100Screen *dataSource;
 
   // blinking cursor
-  BOOL blinkingCursor;
   BOOL showCursor;
-  BOOL blinkShow;
-  struct timeval lastBlink;
   int oldCursorX, oldCursorY;
 }
 

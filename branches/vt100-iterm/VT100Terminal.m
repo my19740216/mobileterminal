@@ -25,13 +25,13 @@
 
 #import "VT100Terminal.h"
 #import "VT100Screen.h"
-//#include <curses.h>
-//#include <term.h>
+#include <term.h>
 
-#define DEBUG_ALLOC		0
-#define LOG_UNKNOWN     0
+#define DEBUG_ALLOC 1	
+#define DEBUG_METHOD_TRACE 1
+#define LOG_UNKNOWN 0
 #define STANDARD_STREAM_SIZE 100000
-#define UNKNOWN		('#')
+#define UNKNOWN ('#')
 
 @implementation VT100Terminal
 
@@ -46,22 +46,22 @@
  1st   0x81-0xfe
  2nd   0x40-0x7e || 0x80-0xfe
  */
-#define iseuccn(c)   ((c) >= 0x81 && (c) <= 0xfe)
-#define isbig5(c)    ((c) >= 0xa1 && (c) <= 0xfe)
-#define issjiskanji(c)  (((c) >= 0x81 && (c) <= 0x9f) ||  \
-                         ((c) >= 0xe0 && (c) <= 0xef))
-#define iseuckr(c)   ((c) >= 0xa1 && (c) <= 0xfe)
+#define iseuccn(c) ((c) >= 0x81 && (c) <= 0xfe)
+#define isbig5(c) ((c) >= 0xa1 && (c) <= 0xfe)
+#define issjiskanji(c) (((c) >= 0x81 && (c) <= 0x9f) ||  \
+                        ((c) >= 0xe0 && (c) <= 0xef))
+#define iseuckr(c) ((c) >= 0xa1 && (c) <= 0xfe)
 
-#define isGBEncoding(e) 	((e)==0x80000019||(e)==0x80000421|| \
-							 (e)==0x80000631||(e)==0x80000632|| \
-							 (e)==0x80000930)
-#define isBig5Encoding(e) 	((e)==0x80000002||(e)==0x80000423|| \
-							 (e)==0x80000931||(e)==0x80000a03|| \
-							 (e)==0x80000a06)
-#define isJPEncoding(e) 	((e)==0x80000001||(e)==0x8||(e)==0x15)
-#define isSJISEncoding(e)	((e)==0x80000628||(e)==0x80000a01)
-#define isKREncoding(e)		((e)==0x80000422||(e)==0x80000003|| \
-							 (e)==0x80000840||(e)==0x80000940)
+#define isGBEncoding(e) ((e)==0x80000019||(e)==0x80000421|| \
+                         (e)==0x80000631||(e)==0x80000632|| \
+                         (e)==0x80000930)
+#define isBig5Encoding(e) ((e)==0x80000002||(e)==0x80000423|| \
+                           (e)==0x80000931||(e)==0x80000a03|| \
+                           (e)==0x80000a06)
+#define isJPEncoding(e) ((e)==0x80000001||(e)==0x8||(e)==0x15)
+#define isSJISEncoding(e) ((e)==0x80000628||(e)==0x80000a01)
+#define isKREncoding(e)	((e)==0x80000422||(e)==0x80000003|| \
+                         (e)==0x80000840||(e)==0x80000940)
 #define ESC  0x1b
 #define DEL  0x7f
 
@@ -87,28 +87,28 @@
 #define KEY_INSERT           "\033[2~"
 #define KEY_PAGE_UP          "\033[5~"
 #define KEY_PAGE_DOWN        "\033[6~"
-#define KEY_DEL				 "\033[3~"
-#define KEY_BACKSPACE		 "\010"
+#define KEY_DEL              "\033[3~"
+#define KEY_BACKSPACE        "\010"
 
 #define KEY_PF1		     "\033OP"
 #define KEY_PF2		     "\033OQ"
-#define KEY_PF3	         "\033OR"
-#define KEY_PF4		     "\033OS"
+#define KEY_PF3              "\033OR"
+#define KEY_PF4              "\033OS"
 
-#define ALT_KP_0		"\033Op"
-#define ALT_KP_1		"\033Oq"
-#define ALT_KP_2		"\033Or"
-#define ALT_KP_3		"\033Os"
-#define ALT_KP_4		"\033Ot"
-#define ALT_KP_5		"\033Ou"
-#define ALT_KP_6		"\033Ov"
-#define ALT_KP_7		"\033Ow"
-#define ALT_KP_8		"\033Ox"
-#define ALT_KP_9		"\033Oy"
-#define ALT_KP_MINUS	"\033Om"
-#define ALT_KP_PLUS		"\033Ol"
-#define ALT_KP_PERIOD	"\033On"
-#define ALT_KP_ENTER	"\033OM"
+#define ALT_KP_0             "\033Op"
+#define ALT_KP_1             "\033Oq"
+#define ALT_KP_2             "\033Or"
+#define ALT_KP_3             "\033Os"
+#define ALT_KP_4	     "\033Ot"
+#define ALT_KP_5             "\033Ou"
+#define ALT_KP_6             "\033Ov"
+#define ALT_KP_7             "\033Ow"
+#define ALT_KP_8             "\033Ox"
+#define ALT_KP_9             "\033Oy"
+#define ALT_KP_MINUS         "\033Om"
+#define ALT_KP_PLUS          "\033Ol"
+#define ALT_KP_PERIOD        "\033On"
+#define ALT_KP_ENTER         "\033OM"
 
 
 
@@ -119,20 +119,20 @@
 // Device Attribute : VT100 with Advanced Video Option
 #define REPORT_WHATAREYOU    "\033[?1;2c"
 // Secondary Device Attribute: VT100
-#define REPORT_SDA			 "\033[1;0;0c"
+#define REPORT_SDA           "\033[1;0;0c"
 #define REPORT_VT52          "\033/Z"
 
-#define MOUSE_REPORT_FORMAT	"\033[M%c%c%c"
+#define MOUSE_REPORT_FORMAT  "\033[M%c%c%c"
 
 #define conststr_sizeof(n)   ((sizeof(n)) - 1)
 
 
 typedef struct {
-    int p[VT100CSIPARAM_MAX];
-    int count;
-    int cmd;
-    BOOL question;
-	int modifier;
+  int p[VT100CSIPARAM_MAX];
+  int count;
+  int cmd;
+  BOOL question;
+  int modifier;
 } CSIParam;
 
 // functions
@@ -149,48 +149,37 @@ static VT100TCC decode_big5(unsigned char *,size_t, size_t *);
 static VT100TCC decode_string(unsigned char *, size_t, size_t *,
 							  NSStringEncoding);
 
-static BOOL isCSI(unsigned char *code, size_t len)
-{
-    if (len >= 2 && code[0] == ESC && (code[1] == '['))
-		return YES;
-    return NO;
+static BOOL isCSI(unsigned char *code, size_t len) {
+  return (len >= 2 && code[0] == ESC && (code[1] == '['));
 }
 
-static BOOL isString(unsigned char *code,
-					 NSStringEncoding encoding)
-{
-    BOOL result = NO;
-	
-	//    NSLog(@"%@",[NSString localizedNameOfStringEncoding:encoding]);
-    if (encoding== NSUTF8StringEncoding) {
-        if (*code >= 0x80)
-            result = YES;
-    }
-    else if (isGBEncoding(encoding)) {
-        if (iseuccn(*code))
-            result = YES;
-    }
-    else if (isBig5Encoding(encoding)) {
-        if (isbig5(*code))
-            result = YES;
-    }
-    else if (isJPEncoding(encoding)) {
-        if (*code ==0x8e || *code==0x8f|| (*code>=0xa1&&*code<=0xfe))
-            result = YES;
-    }
-    else if (isSJISEncoding(encoding)) {
-        if (*code >= 0x80)
-            result = YES;
-    }
-    else if (isKREncoding(encoding)) {
-        if (iseuckr(*code))
-            result = YES;
-    }
-    else if (*code>=0x20) {
-        result = YES;
-    }
-	
-    return result;
+static BOOL isString(unsigned char *code, NSStringEncoding encoding) {
+  BOOL result = NO;
+
+  //    NSLog(@"%@",[NSString localizedNameOfStringEncoding:encoding]);
+  if (encoding== NSUTF8StringEncoding) {
+    if (*code >= 0x80)
+      result = YES;
+  } else if (isGBEncoding(encoding)) {
+    if (iseuccn(*code))
+      result = YES;
+  } else if (isBig5Encoding(encoding)) {
+    if (isbig5(*code))
+      result = YES;
+  } else if (isJPEncoding(encoding)) {
+    if (*code ==0x8e || *code==0x8f|| (*code>=0xa1&&*code<=0xfe))
+      result = YES;
+  } else if (isSJISEncoding(encoding)) {
+    if (*code >= 0x80)
+      result = YES;
+  } else if (isKREncoding(encoding)) {
+    if (iseuckr(*code))
+      result = YES;
+  } else if (*code>=0x20) {
+    result = YES;
+  }
+
+  return result;
 }
 
 static size_t getCSIParam(unsigned char *datap,
@@ -255,7 +244,8 @@ static size_t getCSIParam(unsigned char *datap,
       datap++;
       datalen--;
 
-      // If we got an implied (blank) parameter, increment the parameter count again
+      // If we got an implied (blank) parameter, increment the parameter count
+      // again
       if(readNumericParameter == NO)
         param->count++;
       // reset the parameter flag
@@ -333,8 +323,7 @@ static size_t getCSIParam(unsigned char *datap,
                           unrecognized=YES;
                           break;
       }
-      if(unrecognized == NO)
-      {
+      if(unrecognized == NO) {
         datalen--;
         datap++;
       }
@@ -1214,8 +1203,7 @@ autorelease]; */
   NSLog(@"%s: 0x%x, done", __PRETTY_FUNCTION__, self);
 #endif
 }
-/*
-// TODO:
+
 - (NSString *)termtype
 {
     return termType;
@@ -1223,49 +1211,50 @@ autorelease]; */
 
 - (void)setTermType:(NSString *)termtype
 {
-    if (termType) [termType release];
-    termType = [termtype retain];
-    
-	allowKeypadMode = [termType rangeOfString:@"xterm"].location != NSNotFound;
-    
-    int i;
-    int r;
+#if DEBUG_METHOD_TRACE
+  NSLog(@"%s(%d):-[VT100Screen setTermType:%@]",
+      __FILE__, __LINE__, termtype);
+#endif
+//  if (termType) [termType release];
+//  termType = [termtype retain];
 
-    setupterm((char *)[termtype cString], fileno(stdout), &r);
-	
-    if (r!=1) {
-        NSLog(@"Terminal type %s is not defined.\n",[termtype cString]);
-        for(i = 0; i < TERMINFO_KEYS; i ++) {
-            if (key_strings[i]) free(key_strings[i]);
-            key_strings[i]=NULL;
-        }
-    }
-    else {
-		char *key_names[] = {
-			key_left, key_right, key_up, key_down,
-			key_home, key_end, key_npage, key_ppage,
-			key_f0, key_f1, key_f2, key_f3, key_f4,
-			key_f5, key_f6, key_f7, key_f8, key_f9,
-			key_f10, key_f11, key_f12, key_f13, key_f14,
-			key_f15, key_f16, key_f17, key_f18, key_f19,
-			key_f20, key_f21, key_f22, key_f23, key_f24,
-			key_f25, key_f26, key_f27, key_f28, key_f29,
-			key_f30, key_f31, key_f32, key_f33, key_f34,
-			key_f35, 
-			key_backspace, key_btab,
-			tab,
-			key_dc, key_ic,
-			key_help,
-		};
+  NSRange range = [termType rangeOfString:@"xterm"];
+  allowKeypadMode = range.location != NSNotFound;
 
-        for(i = 0; i < TERMINFO_KEYS; i ++) {
-            if (key_strings[i]) free(key_strings[i]);
-            key_strings[i] = key_names[i]?strdup(key_names[i]):NULL;
-        }
+  int i;
+  int r;
+  setupterm((char *)[termtype cString], fileno(stdout), &r);
+
+  if (r!=1) {
+    NSLog(@"Terminal type %s is not defined.\n",[termtype cString]);
+    for(i = 0; i < TERMINFO_KEYS; i ++) {
+      if (key_strings[i]) free(key_strings[i]);
+      key_strings[i]=NULL;
     }
+  } else {
+    char *key_names[] = {
+      key_left, key_right, key_up, key_down,
+      key_home, key_end, key_npage, key_ppage,
+      key_f0, key_f1, key_f2, key_f3, key_f4,
+      key_f5, key_f6, key_f7, key_f8, key_f9,
+      key_f10, key_f11, key_f12, key_f13, key_f14,
+      key_f15, key_f16, key_f17, key_f18, key_f19,
+      key_f20, key_f21, key_f22, key_f23, key_f24,
+      key_f25, key_f26, key_f27, key_f28, key_f29,
+      key_f30, key_f31, key_f32, key_f33, key_f34,
+      key_f35, 
+      key_backspace, key_btab,
+      tab,
+      key_dc, key_ic,
+      key_help,
+    };
+
+    for(i = 0; i < TERMINFO_KEYS; i ++) {
+      if (key_strings[i]) free(key_strings[i]);
+      key_strings[i] = key_names[i]?strdup(key_names[i]):NULL;
+    }
+  }
 }
-*/
-
 
 - (void)reset
 {
@@ -1681,45 +1670,6 @@ autorelease]; */
 
   return (theData);
 }
-/*
-- (NSData *)mousePress: (int)button withModifiers: (unsigned int)modflag atX: (int)x Y: (int)y
-{
-	static char buf[7];
-	char cb;
-	
-	cb = button % 3;
-	if (button > 3) cb += 64;
-	if (modflag & NSControlKeyMask) cb += 16;
-	if (modflag & NSShiftKeyMask) cb += 4;
-	if (modflag & NSAlternateKeyMask) cb += 8;
-	sprintf(buf, MOUSE_REPORT_FORMAT, 32 + cb, 32 + x + 1, 32 + y + 1);
-
-	return [NSData dataWithBytes: buf length: strlen(buf)];
-}
-
-- (NSData *)mouseReleaseAtX: (int)x Y: (int)y
-{
-	static char buf[7];
-	sprintf(buf, MOUSE_REPORT_FORMAT, 32 + 3, 32 + x + 1, 32 + y + 1);
-	
-	return [NSData dataWithBytes: buf length: strlen(buf)];
-}
-
-- (NSData *)mouseMotion: (int)button withModifiers: (unsigned int)modflag atX: (int)x Y: (int)y
-{
-	static char buf[7];
-	char cb;
-	
-	cb = button % 3;
-	if (button > 3) cb += 64;
-	if (modflag & NSControlKeyMask) cb += 16;
-	if (modflag & NSShiftKeyMask) cb += 4;
-	if (modflag & NSAlternateKeyMask) cb += 8;
-	sprintf(buf, MOUSE_REPORT_FORMAT, 32 + 32 + cb, 32 + x + 1, 32 + y + 1);
-	
-	return [NSData dataWithBytes: buf length: strlen(buf)];	
-}
-*/
 
 - (BOOL)lineMode
 {

@@ -311,8 +311,8 @@ typedef enum {
 - (id)init;
 - (void)dealloc;
 
-//- (NSString *)termtype;
-//- (void)setTermType:(NSString *)termtype;
+- (NSString *)termtype;
+- (void)setTermType:(NSString *)termtype;
 
 - (BOOL)trace;
 - (void)setTrace:(BOOL)flag;

@@ -15,16 +15,21 @@
 
 - (id)init:(int)fd withView:(PTYTextView*)view
 {
+  NSLog(@"int shell");
   _fd = fd;
   _controlKeyMode = NO;
   _textView = view;
 
   TERMINAL = [[VT100Terminal alloc] init];
+  // TODO: Actually set this as an environment variable?
+  [TERMINAL setTermType:@"vt100"];
+
   SCREEN = [[VT100Screen alloc] init];
-  [_textView setDataSource:SCREEN];
-  [TERMINAL setScreen:SCREEN];
   [SCREEN setTerminal:TERMINAL];
   [SCREEN initScreenWithWidth:TERMINAL_WIDTH Height:TERMINAL_HEIGHT];
+
+  [TERMINAL setScreen:SCREEN];
+  [_textView setDataSource:SCREEN];
 
   id parent = [super initWithFrame:CGRectMake(0.0f, 0.0f, 0.0f, 0.0f)];
 

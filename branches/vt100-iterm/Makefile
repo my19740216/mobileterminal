@@ -1,13 +1,15 @@
 CC = arm-apple-darwin-cc
 LD = $(CC)
 LDFLAGS = -ObjC -framework CoreFoundation -framework Foundation \
-          -framework UIKit -framework LayerKit -framework CoreGraphics
-CFLAGS = -Wall 
+          -framework UIKit -framework LayerKit -framework CoreGraphics \
+          -lcurses
+CFLAGS = -Wall -Werror
 
 all:	Terminal
 
 Terminal: main.o MobileTerminal.o  ShellKeyboard.o SubProcess.o \
-	ShellIO.o VT100Screen.o VT100Terminal.o PTYTextView.o 
+	ShellIO.o VT100Screen.o VT100Terminal.o PTYTextView.o  \
+        NSString-Additions.o
 	$(LD) $(LDFLAGS) -o $@ $^
 
 %.o:	%.m

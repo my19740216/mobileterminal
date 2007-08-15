@@ -23,8 +23,8 @@
  **  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#define DEBUG_ALLOC           1 
-#define DEBUG_METHOD_TRACE    1
+#define DEBUG_ALLOC           0
+#define DEBUG_METHOD_TRACE    0
 
 #import "PTYTextView.h"
 #import "VT100Screen.h"
@@ -103,8 +103,6 @@
   markedTextAttributes = nil;
 
   CURSOR=YES;
-  gettimeofday(&lastBlink, NULL);
-  oldCursorX = oldCursorY = -1;
   return (self);
 }
 
@@ -138,16 +136,6 @@
 - (BOOL)isFlipped
 {
     return YES;
-}
-
-- (BOOL) blinkingCursor
-{
-  return (blinkingCursor);
-}
-
-- (void) setBlinkingCursor: (BOOL) bFlag
-{
-  blinkingCursor = bFlag;
 }
 
 - (void) setFGColor:(CGColorRef)color
@@ -478,16 +466,9 @@
 
   int numLines, i, j, WIDTH;
   int startLineIndex, HEIGHT;
-  struct timeval now;
 
   // get lock on source 
   if (![dataSource tryLock]) return;
-
-  gettimeofday(&now, NULL);
-  if (now.tv_sec*10+now.tv_usec/100000 >= lastBlink.tv_sec*10+lastBlink.tv_usec/100000+7) {
-    blinkShow = !blinkShow;
-    lastBlink = now;
-  }
 
   WIDTH = [dataSource width];
   HEIGHT = [dataSource height];
@@ -499,6 +480,9 @@
   if (startLineIndex < 0) {
     startLineIndex = 0;
   }
+
+  // TODO(allen): We should only draw stuff that has changed since the last
+  // to save work for CoreGraphics.
 
   CGContextRef context = UICurrentContext();
   float w = rect.size.width - MARGIN;
@@ -515,7 +499,6 @@
       [self fillBoxColor:bg X:(j + 1) Y:(i - startLineIndex + 1)];
     }
   }
-
 
   // Draw text
   CGContextSelectFont(context, "CourierNewBold", lineHeight,

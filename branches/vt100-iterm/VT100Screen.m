@@ -30,6 +30,7 @@
 #import "VT100Screen.h"
 #import "charmaps.h"
 #import "PTYTextView.h"
+#import "NSString-Additions.h"
 #include <string.h>
 #include <unistd.h>
 
@@ -41,69 +42,69 @@
 /* translates normal char into graphics char */
 void translate(screen_char_t *s, int len)
 {
-    int i;
-	
-    for(i=0;i<len;i++) s[i].ch = charmap[(int)(s[i].ch)];	
+  int i;
+  for (i = 0; i < len ; i++) {
+    s[i].ch = charmap[(int)(s[i].ch)];
+  }
 }
 
 /* pad the source string whenever double width character appears */
-void padString(NSString *s, screen_char_t *buf, int fg, int bg, int *len, NSStringEncoding encoding)
+void padString(NSString *s, screen_char_t *buf, int fg, int bg, int *len,
+               NSStringEncoding encoding)
 {
-    unichar *sc;
-	int l=*len;
-	int i,j;
-	
-	sc = (unichar *) malloc(l*sizeof(unichar));
-	[s getCharacters: sc];
-	for(i=j=0;i<l;i++,j++) {
-		buf[j].ch = sc[i];
-		buf[j].fg_color = fg;
-		buf[j].bg_color = bg;
-// TODO(allen): Cleanup
-/*
-		if (sc[i]>0xa0 && [NSString isDoubleWidthCharacter:sc[i] encoding:encoding]) 
-		{
-			j++;
-			buf[j].ch = 0xffff;
-			buf[j].fg_color = fg;
-			buf[j].bg_color = bg;
-		}
-		else */ if (buf[j].ch == 0xfeff ||buf[j].ch == 0x200b || buf[j].ch == 0x200c || buf[j].ch == 0x200d) { //zero width space
-			j--;
-		}
-	}
-	*len=j;
-	free(sc);
+  unichar *sc;
+  int l=*len;
+  int i,j;
+
+  sc = (unichar *) malloc(l*sizeof(unichar));
+  [s getCharacters: sc];
+  for(i=j=0;i<l;i++,j++) {
+    buf[j].ch = sc[i];
+    buf[j].fg_color = fg;
+    buf[j].bg_color = bg;
+    if (sc[i]>0xa0 && [NSString isDoubleWidthCharacter:sc[i]
+                                              encoding:encoding]) {
+      j++;
+      buf[j].ch = 0xffff;
+      buf[j].fg_color = fg;
+      buf[j].bg_color = bg;
+    } else if (buf[j].ch == 0xfeff || buf[j].ch == 0x200b ||
+               buf[j].ch == 0x200c || buf[j].ch == 0x200d) { //zero width space
+      j--;
+    }
+  }
+  *len=j;
+  free(sc);
 }
 
 // increments line pointer accounting for buffer wrap-around
-static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, screen_char_t *current_line, 
-								  int max_lines, int line_width, BOOL *wrap)
+static __inline__ screen_char_t *incrementLinePointer(
+    screen_char_t *buf_start, screen_char_t *current_line,
+    int max_lines, int line_width, BOOL *wrap)
 {
-	screen_char_t *next_line;
-	
-	//include the wrapping indicator
-	line_width++;
-	
-	next_line = current_line + line_width;
-	if(next_line >= (buf_start + line_width*max_lines))
-	{
-		next_line = buf_start;
-		if(wrap)
-			*wrap = YES;
-	}
-	else if(wrap)
-		*wrap = NO;
-	
-	return (next_line);
-}
+  screen_char_t *next_line;
 
+  //include the wrapping indicator
+  line_width++;
+
+  next_line = current_line + line_width;
+  if (next_line >= (buf_start + line_width * max_lines)) {
+    next_line = buf_start;
+    if (wrap) {
+      *wrap = YES;
+     }
+  } else if (wrap) {
+    *wrap = NO;
+  }
+  return (next_line);
+}
 
 @interface VT100Screen (Private)
 
-- (screen_char_t *) _getLineAtIndex: (int) anIndex fromLine: (screen_char_t *) aLine;
-- (screen_char_t *) _getDefaultLineWithWidth: (int) width;
-- (BOOL) _addLineToScrollback;
+- (screen_char_t *)_getLineAtIndex:(int) anIndex
+                          fromLine:(screen_char_t *)aLine;
+- (screen_char_t *)_getDefaultLineWithWidth:(int)width;
+- (BOOL)_addLineToScrollback;
 
 @end
 
@@ -118,7 +119,6 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
 #define MIN_HEIGHT    3
 
 #define TABSIZE     8
-
 
 - (id)init
 {
@@ -152,10 +152,11 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
 
   // set initial tabs
   int i;
-  for(i = TABSIZE; i < TABWINDOW; i += TABSIZE)
+  for(i = TABSIZE; i < TABWINDOW; i += TABSIZE) {
     tabStop[i] = YES;
+  }
 
-  for(i=0;i<4;i++) saveCharset[i]=charset[i]=0;
+  for(i = 0; i < 4; i++) saveCharset[i] = charset[i] = 0;
 
   screenLock = [[NSLock alloc] init];
 
@@ -200,22 +201,6 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
 #endif
 }
 
-- (NSString *)description
-{
-  NSString *basestr;
-  //NSString *colstr;
-  NSString *result;
-
-#if DEBUG_METHOD_TRACE
-  NSLog(@"%s(%d):-[VT100Screen description]", __FILE__, __LINE__);
-#endif
-  basestr = [NSString stringWithFormat:@"WIDTH %d, HEIGHT %d, CURSOR (%d,%d)",
-      WIDTH, HEIGHT, CURSOR_X, CURSOR_Y];
-  result = [NSString stringWithFormat:@"%@\n%@", basestr, @""]; //colstr];
-
-  return result;
-}
-
 -(void) initScreenWithWidth:(int)width Height:(int)height
 {
   int total_height;
@@ -226,8 +211,8 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
   NSLog(@"%s(%d):-[VT100Screen initScreenWithWidth:%d Height:%d]", __FILE__, __LINE__, width, height );
 #endif
 
-  WIDTH=width;
-  HEIGHT=height;
+  WIDTH = width;
+  HEIGHT = height;
   CURSOR_X = CURSOR_Y = 0;
   SAVE_CURSOR_X = SAVE_CURSOR_Y = 0;
   SCROLL_TOP = 0;
@@ -236,7 +221,8 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
 
   // allocate our buffer to hold both scrollback and screen contents
   total_height = HEIGHT + max_scrollback_lines;
-  buffer_lines = (screen_char_t *)malloc(total_height*REAL_WIDTH*sizeof(screen_char_t));
+  buffer_lines = (screen_char_t *)malloc(
+      total_height*REAL_WIDTH*sizeof(screen_char_t));
 
   // set up our pointers
   last_buffer_line = buffer_lines + (total_height - 1)*REAL_WIDTH;
@@ -249,13 +235,15 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
   default_line_width = WIDTH;
   aDefaultLine = [self _getDefaultLineWithWidth: WIDTH];
   for(i = 0; i < HEIGHT; i++)
-    memcpy([self _getLineAtIndex: i fromLine: buffer_lines], aDefaultLine, REAL_WIDTH*sizeof(screen_char_t));
+    memcpy([self _getLineAtIndex:i fromLine:buffer_lines], aDefaultLine,
+           REAL_WIDTH * sizeof(screen_char_t));
 
   // set current lines in scrollback
   current_scrollback_lines = 0;
 
   // set up our dirty flags buffer
-  dirty=(char*)malloc(HEIGHT*WIDTH*sizeof(char));
+  dirty = (char*)malloc(HEIGHT*WIDTH*sizeof(char));
+
   // force a redraw
   [self setDirty];		
 }
@@ -595,7 +583,6 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
   screen_char_t *aLine;
 
   [self acquireLock];
-
   switch (token.type) {
     // our special code
     case VT100_STRING:
@@ -618,11 +605,11 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
     case VT100CC_LF:
     case VT100CC_VT:
     case VT100CC_FF:
-      if ([self printToAnsi] == YES)
-        [self printStringToAnsi: @"\n"];
-      else
-        [self setNewLine]; 
-      break;
+                      if ([self printToAnsi] == YES)
+                        [self printStringToAnsi: @"\n"];
+                      else
+                        [self setNewLine]; 
+                      break;
     case VT100CC_CR:  CURSOR_X = 0; break;
     case VT100CC_SO:  break;
     case VT100CC_SI:  break;
@@ -631,8 +618,8 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
     case VT100CC_CAN:
     case VT100CC_SUB: break;
     case VT100CC_DEL:
-      [self deleteCharacters:1];
-      break;
+                      [self deleteCharacters:1];
+                      break;
 
                       // VT100 CSI
     case VT100CSI_CPR: break;
@@ -640,26 +627,26 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
     case VT100CSI_CUD: [self cursorDown:token.u.csi.p[0]]; break;
     case VT100CSI_CUF: [self cursorRight:token.u.csi.p[0]]; break;
     case VT100CSI_CUP:
-      [self cursorToX:token.u.csi.p[1] Y:token.u.csi.p[0]];
-      break;
+                       [self cursorToX:token.u.csi.p[1] Y:token.u.csi.p[0]];
+                       break;
     case VT100CSI_CUU: [self cursorUp:token.u.csi.p[0]]; break;
     case VT100CSI_DA:
-      NSLog(@"Not implemented DA");
-      break;
-//  case VT100CSI_DA:   [self deviceAttribute:token]; break;
+                       NSLog(@"Not implemented DA");
+                       break;
+                       //  case VT100CSI_DA:   [self deviceAttribute:token]; break;
     case VT100CSI_DECALN:
-      for (i = 0; i < HEIGHT; i++) {
-        aLine = [self getLineAtScreenIndex: i];
-        for(j = 0; j < WIDTH; j++)
-        {
-          aLine[j].ch ='E';
-          aLine[j].fg_color = [TERMINAL foregroundColorCode];
-          aLine[j].bg_color = [TERMINAL backgroundColorCode];
-        }
-        aLine[WIDTH].ch = 0;
-      }
-      [self setDirty];
-      break;
+                       for (i = 0; i < HEIGHT; i++) {
+                         aLine = [self getLineAtScreenIndex: i];
+                         for(j = 0; j < WIDTH; j++)
+                         {
+                           aLine[j].ch ='E';
+                           aLine[j].fg_color = [TERMINAL foregroundColorCode];
+                           aLine[j].bg_color = [TERMINAL backgroundColorCode];
+                         }
+                         aLine[WIDTH].ch = 0;
+                       }
+                       [self setDirty];
+                       break;
     case VT100CSI_DECDHL: break;
     case VT100CSI_DECDWL: break;
     case VT100CSI_DECID: break;
@@ -674,37 +661,37 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
     case VT100CSI_DECSWL: break;
     case VT100CSI_DECTST: break;
     case VT100CSI_DSR:
-      NSLog(@"Not implemented DSR");
-      break;
-//  case VT100CSI_DSR:  [self deviceReport:token]; break;
+                          NSLog(@"Not implemented DSR");
+                          break;
+                          //    case VT100CSI_DSR:  [self deviceReport:token]; break;
     case VT100CSI_ED:   [self eraseInDisplay:token]; break;
     case VT100CSI_EL:   [self eraseInLine:token]; break;
     case VT100CSI_HTS: if (CURSOR_X<WIDTH) tabStop[CURSOR_X]=YES; break;
     case VT100CSI_HVP:
-      [self cursorToX:token.u.csi.p[1] Y:token.u.csi.p[0]];
-      break;
+                         [self cursorToX:token.u.csi.p[1] Y:token.u.csi.p[0]];
+                         break;
     case VT100CSI_NEL:
-      CURSOR_X=0;
+                         CURSOR_X=0;
     case VT100CSI_IND:
-      if (CURSOR_Y == SCROLL_BOTTOM) {
-        [self scrollUp];
-      } else {
-        CURSOR_Y++;
-        if (CURSOR_Y>=HEIGHT) {
-          CURSOR_Y=HEIGHT-1;
-        }
-      }
-      break;
+                         if (CURSOR_Y == SCROLL_BOTTOM) {
+                           [self scrollUp];
+                         } else {
+                           CURSOR_Y++;
+                           if (CURSOR_Y>=HEIGHT) {
+                             CURSOR_Y=HEIGHT-1;
+                           }
+                         }
+                         break;
     case VT100CSI_RI:
-      if(CURSOR_Y == SCROLL_TOP) {
-        [self scrollDown];
-       } else {
-        CURSOR_Y--;
-        if (CURSOR_Y<0) {
-          CURSOR_Y=0;
-         }	    
-       }
-       break;
+                         if(CURSOR_Y == SCROLL_TOP) {
+                           [self scrollDown];
+                         } else {
+                           CURSOR_Y--;
+                           if (CURSOR_Y<0) {
+                             CURSOR_Y=0;
+                           }	    
+                         }
+                         break;
     case VT100CSI_RIS: break;
     case VT100CSI_RM: break;
     case VT100CSI_SCS0: charset[0]=(token.u.code=='0'); break;
@@ -714,58 +701,91 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
     case VT100CSI_SGR:  [self selectGraphicRendition:token]; break;
     case VT100CSI_SM: break;
     case VT100CSI_TBC:
-      switch (token.u.csi.p[0]) {
-        case 3: [self clearTabStop]; break;
-        case 0: if (CURSOR_X<WIDTH) tabStop[CURSOR_X]=NO;
-      }
-      break;
+                      switch (token.u.csi.p[0]) {
+                        case 3: [self clearTabStop]; break;
+                        case 0: if (CURSOR_X<WIDTH) tabStop[CURSOR_X]=NO;
+                      }
+                      break;
 
     case VT100CSI_DECSET:
     case VT100CSI_DECRST:
-      if (token.u.csi.p[0]==3 && [TERMINAL allowColumnMode] == YES) {
-        // set the column
-        changeSize = CHANGE;
-        newWidth = [TERMINAL columnMode]?132:80;
-        newHeight = HEIGHT;
-      }
-      break;
+                      if (token.u.csi.p[0]==3 && [TERMINAL allowColumnMode] == YES) {
+                        // set the column
+                        changeSize = CHANGE;
+                        newWidth = [TERMINAL columnMode]?132:80;
+                        newHeight = HEIGHT;
+                      }
+                      break;
                       // ANSI CSI
     case ANSICSI_CHA:
-      [self cursorToX: token.u.csi.p[0]];
-      break;
+                      [self cursorToX: token.u.csi.p[0]];
+                      break;
     case ANSICSI_VPA:
-      [self cursorToX: CURSOR_X+1 Y: token.u.csi.p[0]];
-      break;
+                      [self cursorToX: CURSOR_X+1 Y: token.u.csi.p[0]];
+                      break;
     case ANSICSI_VPR:
-      [self cursorToX: CURSOR_X+1 Y: token.u.csi.p[0]+CURSOR_Y+1];
-      break;
+                      [self cursorToX: CURSOR_X+1 Y: token.u.csi.p[0]+CURSOR_Y+1];
+                      break;
     case ANSICSI_ECH:
-      if (CURSOR_X<WIDTH) {
-        i=WIDTH*CURSOR_Y+CURSOR_X;
-        j=token.u.csi.p[0];
-        if (j + CURSOR_X > WIDTH) 
-          j = WIDTH - CURSOR_X;
-        aLine = [self getLineAtScreenIndex: CURSOR_Y];
-        for(k = 0; k < j; k++)
-        {
-          aLine[CURSOR_X+k].ch = 0;
-          aLine[CURSOR_X+k].fg_color = [TERMINAL foregroundColorCode];
-          aLine[CURSOR_X+k].bg_color = [TERMINAL backgroundColorCode];
-        }
-        memset(dirty+i,1,j);
-      }
-      break;
+                      if (CURSOR_X<WIDTH) {
+                        i=WIDTH*CURSOR_Y+CURSOR_X;
+                        j=token.u.csi.p[0];
+                        if (j + CURSOR_X > WIDTH) 
+                          j = WIDTH - CURSOR_X;
+                        aLine = [self getLineAtScreenIndex: CURSOR_Y];
+                        for(k = 0; k < j; k++)
+                        {
+                          aLine[CURSOR_X+k].ch = 0;
+                          aLine[CURSOR_X+k].fg_color = [TERMINAL foregroundColorCode];
+                          aLine[CURSOR_X+k].bg_color = [TERMINAL backgroundColorCode];
+                        }
+                        memset(dirty+i,1,j);
+                      }
+                      break;
 
     case STRICT_ANSI_MODE:
-      [TERMINAL setStrictAnsiMode: ![TERMINAL strictAnsiMode]];
-      break;
+                      [TERMINAL setStrictAnsiMode: ![TERMINAL strictAnsiMode]];
+                      break;
+
+    case ANSICSI_PRINT:
+                      switch (token.u.csi.p[0]) {
+                        case 4:
+                          // print our stuff!!
+                          printPending = YES;
+                          break;
+                        case 5:
+                          // allocate a string for the stuff to be printed
+                          if (printToAnsiString != nil)
+                            [printToAnsiString release];
+                          printToAnsiString = [[NSMutableString alloc] init];
+                          [self setPrintToAnsi: YES];
+                          break;
+                        default:
+                          //print out the whole screen
+                          if (printToAnsiString != nil)
+                            [printToAnsiString release];
+                          printToAnsiString = nil;
+                          [self setPrintToAnsi: NO];
+                          printPending = YES;
+                      }
+                      break;
+    case XTERMCC_INSBLNK: [self insertBlank:token.u.csi.p[0]]; break;
+    case XTERMCC_INSLN: [self insertLines:token.u.csi.p[0]]; break;
+    case XTERMCC_DELCH: [self deleteCharacters:token.u.csi.p[0]]; break;
+    case XTERMCC_DELLN: [self deleteLines:token.u.csi.p[0]]; break;
+    case XTERMCC_SU:
+                        for (i=0; i<token.u.csi.p[0]; i++) [self scrollUp];
+                        break;
+    case XTERMCC_SD:
+                        for (i=0; i<token.u.csi.p[0]; i++) [self scrollDown];
+                        break;
+
 
     default:
-      NSLog(@"%s(%d): Unexpected token.type = %d", 
-            __FILE__, __LINE__, token.type);
-      break;
+                        NSLog(@"%s(%d): Unexpected token.type = %d", 
+                            __FILE__, __LINE__, token.type);
+                        break;
   }
-  //    NSLog(@"Done");
   [self releaseLock];
 }
 
@@ -999,24 +1019,18 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
     }
 
     // ANSI termianls will go to a new line after displaying a character at rightest column.
-    // TODO(allen): Maybe worth supporting? Unclear
-    /*
-       if (CURSOR_X >= WIDTH && [[TERMINAL termtype] rangeOfString:@"ANSI" options:NSCaseInsensitiveSearch | NSAnchoredSearch ].location != NSNotFound) 
-       {
-       if ([TERMINAL wraparoundMode]) 
-       {
-    //set the wrapping flag
-    aLine[WIDTH].ch = 1;
-    CURSOR_X=0;    
-    [self setNewLine];
+    if (CURSOR_X >= WIDTH &&
+         [[TERMINAL termtype] rangeOfString:@"ANSI" options:NSCaseInsensitiveSearch | NSAnchoredSearch ].location != NSNotFound) {
+      if ([TERMINAL wraparoundMode]) {
+        //set the wrapping flag
+        aLine[WIDTH].ch = 1;
+        CURSOR_X=0;    
+        [self setNewLine];
+      } else {
+        CURSOR_X=WIDTH-1;
+        idx=len-1;
+      }
     }
-    else 
-    {
-    CURSOR_X=WIDTH-1;
-    idx=len-1;
-    }
-    }
-     */
   }
 
   free(buffer);
@@ -1391,13 +1405,13 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
 
   if ([TERMINAL originMode]) y_pos += SCROLL_TOP;
 
-  if(x_pos < 0)
+  if (x_pos < 0)
     x_pos = 0;
-  else if(x_pos >= WIDTH)
+  else if (x_pos >= WIDTH)
     x_pos = WIDTH - 1;
-  if(y_pos < 0)
+  if (y_pos < 0)
     y_pos = 0;
-  else if(y_pos >= HEIGHT)
+  else if (y_pos >= HEIGHT)
     y_pos = HEIGHT - 1;
 
   CURSOR_X = x_pos;
@@ -1763,15 +1777,9 @@ static __inline__ screen_char_t *incrementLinePointer(screen_char_t *buf_start, 
   return dirty; 
 }
 
-
-- (void)resetDirty
-{
-  memset(dirty,0,WIDTH*HEIGHT*sizeof(char));
-}
-
 - (void)setDirty
 {
-  //   memset(dirty,1,WIDTH*HEIGHT*sizeof(char));
+  memset(dirty, 1, WIDTH * HEIGHT * sizeof(char));
   [display setNeedsDisplay];
 }
 
