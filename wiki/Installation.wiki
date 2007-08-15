@@ -12,7 +12,7 @@ Before you can run the mobile terminal, you need to be able to copy files back a
 Most people get files on their iPhone using one or more of the following methods.  I prefer sshd and iphonedisk.
 
   * http://ellkro.jot.com/WikiHome/InstallingDropbearOSX
-  * Get the iphone-binkit from http://iphone.natetrue.com/ which includes a lot of the common unix utilities you may need, including /bin/chmod, /bin/sh, /bin/login, etc.
+  * Get the iphone-binkit from http://iphone.natetrue.com/ which includes a lot of the common unix utilities you may need, including /bin/chmod, /bin/sh, /usr/bin/login, etc.
   * You can use [http://iphonedisk.googlecode.com iphonedisk] if you have the mac os x developer tools installed and want to mount your iphone as a disk drive
 
 = Installation =
@@ -33,4 +33,4 @@ If you don't have scp, and copied the files over using iphonedisk or iPhoneInter
   $ ssh root@10.0.1.25 "chmod +x /Applications/Terminal.app/Terminal"
 }}}
 
-You should also make sure that you have copied over /bin/login, /bin/sh, and whatever other unix tools you want and make sure they are also executable.  See iphone-binkit for a great binary distribution. 
+You should also make sure that you have copied over /usr/bin/login, /bin/sh, and whatever other unix tools you will need to make sure they are also executable.  See iphone-binkit for a great binary distribution. 
