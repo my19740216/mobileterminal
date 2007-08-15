@@ -15,7 +15,6 @@
 
 - (id)init:(int)fd withView:(PTYTextView*)view
 {
-  NSLog(@"int shell");
   _fd = fd;
   _controlKeyMode = NO;
   _textView = view;

@@ -5,7 +5,7 @@
  **  Copyright (c) 2002, 2003, 2007
  **
  **  Author: Fabian, Ujwal S. Setlur
- **	     Initial code by Kiichi Kusama
+ **          Initial code by Kiichi Kusama
  **          Ported to MobileTerminal (from iTerm) by Allen Porter
  **
  **  This program is free software; you can redistribute it and/or modify
@@ -27,8 +27,8 @@
 #import "VT100Screen.h"
 #include <term.h>
 
-#define DEBUG_ALLOC 1	
-#define DEBUG_METHOD_TRACE 1
+#define DEBUG_ALLOC 0
+#define DEBUG_METHOD_TRACE 0
 #define LOG_UNKNOWN 0
 #define STANDARD_STREAM_SIZE 100000
 #define UNKNOWN ('#')
@@ -60,7 +60,7 @@
                            (e)==0x80000a06)
 #define isJPEncoding(e) ((e)==0x80000001||(e)==0x8||(e)==0x15)
 #define isSJISEncoding(e) ((e)==0x80000628||(e)==0x80000a01)
-#define isKREncoding(e)	((e)==0x80000422||(e)==0x80000003|| \
+#define isKREncoding(e) ((e)==0x80000422||(e)==0x80000003|| \
                          (e)==0x80000840||(e)==0x80000940)
 #define ESC  0x1b
 #define DEL  0x7f
@@ -90,8 +90,8 @@
 #define KEY_DEL              "\033[3~"
 #define KEY_BACKSPACE        "\010"
 
-#define KEY_PF1		     "\033OP"
-#define KEY_PF2		     "\033OQ"
+#define KEY_PF1              "\033OP"
+#define KEY_PF2              "\033OQ"
 #define KEY_PF3              "\033OR"
 #define KEY_PF4              "\033OS"
 
@@ -99,7 +99,7 @@
 #define ALT_KP_1             "\033Oq"
 #define ALT_KP_2             "\033Or"
 #define ALT_KP_3             "\033Os"
-#define ALT_KP_4	     "\033Ot"
+#define ALT_KP_4             "\033Ot"
 #define ALT_KP_5             "\033Ou"
 #define ALT_KP_6             "\033Ov"
 #define ALT_KP_7             "\033Ow"
@@ -147,7 +147,7 @@ static VT100TCC decode_utf8(unsigned char *, size_t, size_t *);
 static VT100TCC decode_euccn(unsigned char *, size_t, size_t *);
 static VT100TCC decode_big5(unsigned char *,size_t, size_t *);
 static VT100TCC decode_string(unsigned char *, size_t, size_t *,
-							  NSStringEncoding);
+                              NSStringEncoding);
 
 static BOOL isCSI(unsigned char *code, size_t len) {
   return (len >= 2 && code[0] == ESC && (code[1] == '['));
@@ -358,22 +358,22 @@ static VT100TCC decode_csi(unsigned char *datap,
   else if (paramlen > 0 && param.cmd > 0) {
     if (!param.question) {
       switch (param.cmd) {
-        case 'D':		// Cursor Backward
+        case 'D':  // Cursor Backward
           result.type = VT100CSI_CUB;
           SET_PARAM_DEFAULT(param, 0, 1);
           break;
 
-        case 'B':		// Cursor Down
+        case 'B':  // Cursor Down
           result.type = VT100CSI_CUD;
           SET_PARAM_DEFAULT(param, 0, 1);
           break;
 
-        case 'C':		// Cursor Forward
+        case 'C':  // Cursor Forward
           result.type = VT100CSI_CUF;
           SET_PARAM_DEFAULT(param, 0, 1);
           break;
 
-        case 'A':		// Cursor Up
+        case 'A':  // Cursor Up
           result.type = VT100CSI_CUU;
           SET_PARAM_DEFAULT(param, 0, 1);
           break;
@@ -482,18 +482,18 @@ static VT100TCC decode_csi(unsigned char *datap,
           switch (param.p[0]) {
             case 8:
               result.type = XTERMCC_WINDOWSIZE;
-              SET_PARAM_DEFAULT(param, 1, 0);		// columns or Y
-              SET_PARAM_DEFAULT(param, 2, 0);		// rows or X
+              SET_PARAM_DEFAULT(param, 1, 0);  // columns or Y
+              SET_PARAM_DEFAULT(param, 2, 0);  // rows or X
               break;
             case 3:
               result.type = XTERMCC_WINDOWPOS;
-              SET_PARAM_DEFAULT(param, 1, 0);		// columns or Y
-              SET_PARAM_DEFAULT(param, 2, 0);		// rows or X
+              SET_PARAM_DEFAULT(param, 1, 0);  // columns or Y
+              SET_PARAM_DEFAULT(param, 2, 0);  // rows or X
               break;
             case 4:
               result.type = XTERMCC_WINDOWSIZE_PIXEL;
-              SET_PARAM_DEFAULT(param, 1, 0);		// columns or Y
-              SET_PARAM_DEFAULT(param, 2, 0);		// rows or X
+              SET_PARAM_DEFAULT(param, 1, 0);  // columns or Y
+              SET_PARAM_DEFAULT(param, 2, 0);  // rows or X
               break;
             case 2:
               result.type = XTERMCC_ICONIFY;
@@ -558,11 +558,11 @@ static VT100TCC decode_csi(unsigned char *datap,
     }
     else {
       switch (param.cmd) {
-        case 'h':		// Dec private mode set
+        case 'h':  // Dec private mode set
           result.type = VT100CSI_DECSET;
           SET_PARAM_DEFAULT(param, 0, 0);
           break;
-        case 'l':		// Dec private mode reset
+        case 'l':  // Dec private mode reset
           result.type = VT100CSI_DECRST;
           SET_PARAM_DEFAULT(param, 0, 0);
           break;
@@ -1408,7 +1408,7 @@ autorelease]; */
     if (rmlen > 0) {
       NSParameterAssert(current_stream_length >= streamOffset + rmlen);
       if (TRACE && result.type == VT100_UNKNOWNCHAR) {
-        //		NSLog(@"INPUT-BUFFER %@, read %d byte, type %d", 
+        //NSLog(@"INPUT-BUFFER %@, read %d byte, type %d", 
         //                      STREAM, rmlen, result.type);
       }
       // mark our current position in the stream
@@ -1654,18 +1654,18 @@ autorelease]; */
     case '+':
       theData = [NSData dataWithBytes:ALT_KP_PLUS
                                length:conststr_sizeof(ALT_KP_PLUS)];
-      break;	    
+      break;   
     case '.':
       theData = [NSData dataWithBytes:ALT_KP_PERIOD
                                length:conststr_sizeof(ALT_KP_PERIOD)];
-      break;	    
+      break;    
     case 0x03:
       theData = [NSData dataWithBytes:ALT_KP_ENTER
                                length:conststr_sizeof(ALT_KP_ENTER)];
       break;
     default:
       theData = [keystr dataUsingEncoding:NSUTF8StringEncoding];
-      break;	    
+      break;    
   }
 
   return (theData);

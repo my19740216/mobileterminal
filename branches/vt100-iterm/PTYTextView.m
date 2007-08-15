@@ -492,8 +492,12 @@
 
   // Draw background
   for (i = startLineIndex; i < numLines; ++i) {
+    const char* dirty = [dataSource dirty] + (i - startLineIndex) * WIDTH;
     screen_char_t *theLine = [dataSource getLineAtIndex:i];
     for (j = 0; j < WIDTH; j++) {
+      if (!dirty[j]) {
+        continue;
+      }
       unsigned int bgcode = theLine[j].bg_color;
       CGColorRef bg = [self colorForCode:bgcode];
       [self fillBoxColor:bg X:(j + 1) Y:(i - startLineIndex + 1)];
@@ -510,8 +514,12 @@
   myTextTransform = CGAffineTransformMake(1, 0, 0, -1, 0, h/30);
   CGContextSetTextMatrix(context, myTextTransform);
   for (i = startLineIndex; i < numLines; ++i) {
+    const char* dirty = [dataSource dirty] + (i - startLineIndex) * WIDTH;
     screen_char_t *theLine = [dataSource getLineAtIndex:i];
     for (j = 0; j < WIDTH; j++) {
+      if (!dirty) {
+        continue;
+      }
       char c = 0xff & theLine[j].ch;
       if (c == 0) {
         c = ' ';
@@ -532,7 +540,7 @@
                      X:[dataSource cursorX]
                      Y:[dataSource cursorY]];
   }
-
+  [dataSource resetDirty];
   [dataSource releaseLock];
 }
 
@@ -623,21 +631,3 @@
 }
 */
 @end
-
-//
-// private methods
-//
-/*
-@implementation PTYTextView (Private)
-- (void) _scrollToLine:(int)line
-{
-	CGRect aFrame;
-	aFrame.origin.x = 0;
-	aFrame.origin.y = line * lineHeight;
-	aFrame.size.width = [self frame].size.width;
-	aFrame.size.height = lineHeight;
-	forceUpdate = YES;
-	[self scrollRectToVisible: aFrame];
-}
-@end
-*/

@@ -24,8 +24,8 @@
  */
 
 // Debug option
-#define DEBUG_ALLOC           0
-#define DEBUG_METHOD_TRACE    0
+#define DEBUG_ALLOC 0
+#define DEBUG_METHOD_TRACE 0
 
 #import "VT100Screen.h"
 #import "charmaps.h"
@@ -1775,6 +1775,11 @@ static __inline__ screen_char_t *incrementLinePointer(
 - (char	*)dirty			
 {
   return dirty; 
+}
+
+- (void)resetDirty
+{
+  memset(dirty,0,WIDTH*HEIGHT*sizeof(char));
 }
 
 - (void)setDirty

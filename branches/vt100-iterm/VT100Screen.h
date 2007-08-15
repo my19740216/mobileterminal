@@ -179,6 +179,7 @@ typedef struct screen_char_t
 - (int) cursorX;
 - (int) cursorY;
 
+- (void)resetDirty;
 - (void)setDirty;
 
 - (void)updateScreen;
