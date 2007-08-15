@@ -16,9 +16,11 @@
   VT100Terminal* TERMINAL;
 }
 
+- (VT100Terminal*)terminal;
 - (id)init:(int)fd withView:(PTYTextView*)view;
 - (BOOL)webView:(id)fp8 shouldInsertText:(id)character
                        replacingDOMRange:(id)fp16
                              givenAction:(int)fp20;
+- (int)writeData:(const char*)data length:(unsigned int)length;
 
 @end

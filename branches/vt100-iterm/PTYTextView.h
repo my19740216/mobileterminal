@@ -55,31 +55,11 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
 
 @interface PTYTextView : UITextView
 {
-  // This is a flag to let us know whether we are handling this
-  // particular drag and drop operation. We are using it because
-  // the prepareDragOperation and performDragOperation of the
-  // parent NSTextView class return "YES" even if the parent
-  // cannot handle the drag type. To make matters worse, the
-  // concludeDragOperation does not have any return value.
-  // This all results in the inability to test whether the
-  // parent could handle the drag type properly. Is this a Cocoa
-  // implementation bug?
-  // Fortunately, the draggingEntered and draggingUpdated methods
-  // seem to return a real status, based on which we can set this flag.
-  BOOL bExtendedDragNDrop;
-
   // anti-alias flag
   BOOL antiAlias;
 
   // option to not render in bold
   BOOL disableBold;
-
-  // NSTextInput support
-  BOOL IM_INPUT_INSERT;
-  NSRange IM_INPUT_SELRANGE;
-  NSRange IM_INPUT_MARKEDRANGE;
-  NSDictionary *markedTextAttributes;
-  //    NSAttributedString *markedText;
 
   BOOL CURSOR;
   BOOL forceUpdate;
@@ -105,15 +85,14 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
   // data source
   VT100Screen *dataSource;
 
-  // blinking cursor
   BOOL showCursor;
-  int oldCursorX, oldCursorY;
 }
 
 //+ (NSCursor *) textViewCursor;
 - (id)initWithFrame: (struct CGRect) aRect;
 - (void)dealloc;
 - (void)drawRect:(CGRect)rect;
+
 /*
 - (void)changeFont:(id)sender;
 

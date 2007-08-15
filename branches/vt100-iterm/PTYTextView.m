@@ -100,15 +100,8 @@
   [self setBackgroundColor:defaultBGColor];
   
   dataSource = nil;
-  markedTextAttributes = nil;
-
   CURSOR=YES;
   return (self);
-}
-
-- (BOOL) canBecomeFirstResponder;
-{
-  return NO;
 }
 
 - (void) dealloc
@@ -123,19 +116,12 @@
 
   //    [font release];
   //	[nafont release];
-  [markedTextAttributes release];
-  //	[markedText release];
 
   [super dealloc];
 
 #if DEBUG_ALLOC
   NSLog(@"%s: 0x%x, done", __PRETTY_FUNCTION__, self);
 #endif
-}
-
-- (BOOL)isFlipped
-{
-    return YES;
 }
 
 - (void) setFGColor:(CGColorRef)color
@@ -492,12 +478,8 @@
 
   // Draw background
   for (i = startLineIndex; i < numLines; ++i) {
-    const char* dirty = [dataSource dirty] + (i - startLineIndex) * WIDTH;
     screen_char_t *theLine = [dataSource getLineAtIndex:i];
     for (j = 0; j < WIDTH; j++) {
-      if (!dirty[j]) {
-        continue;
-      }
       unsigned int bgcode = theLine[j].bg_color;
       CGColorRef bg = [self colorForCode:bgcode];
       [self fillBoxColor:bg X:(j + 1) Y:(i - startLineIndex + 1)];
@@ -543,65 +525,6 @@
   [dataSource resetDirty];
   [dataSource releaseLock];
 }
-
-/*
-- (void)keyDown:(NSEvent *)event
-{
-    NSInputManager *imana = [NSInputManager currentInputManager];
-    BOOL IMEnable = [imana wantsToInterpretAllKeystrokes];
-    id delegate = [self delegate];
-	unsigned int modflag = [event modifierFlags];
-    BOOL prev = [self hasMarkedText];
-	
-#if DEBUG_METHOD_TRACE
-    NSLog(@"%s(%d):-[PTYTextView keyDown:%@]",
-          __FILE__, __LINE__, event );
-#endif
-    
-	keyIsARepeat = [event isARepeat];
-	
-    // Hide the cursor
-    [NSCursor setHiddenUntilMouseMoves: YES];   
-		
-	if ([delegate hasKeyMappingForEvent: event highPriority: YES]) 
-	{
-		[delegate keyDown:event];
-		return;
-	}
-	
-    IM_INPUT_INSERT = NO;
-    if (IMEnable) {
-        [self interpretKeyEvents:[NSArray arrayWithObject:event]];
-        
-        if (prev == NO &&
-            IM_INPUT_INSERT == NO &&
-            [self hasMarkedText] == NO)
-        {
-            [delegate keyDown:event];
-        }
-    }
-    else {
-		// Check whether we have a custom mapping for this event or if numeric or function keys were pressed.
-		if ( prev == NO && 
-			 ([delegate hasKeyMappingForEvent: event highPriority: NO] ||
-			  (modflag & NSNumericPadKeyMask) || 
-			  (modflag & NSFunctionKeyMask)))
-		{
-			[delegate keyDown:event];
-		}
-		else {
-			if([[self delegate] optionKey] == OPT_NORMAL)
-			{
-				[self interpretKeyEvents:[NSArray arrayWithObject:event]];
-			}
-			
-			if (IM_INPUT_INSERT == NO) {
-				[delegate keyDown:event];
-			}
-		}
-    }
-}
-*/
 
 /*
 // transparency

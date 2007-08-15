@@ -39,6 +39,11 @@
   return parent;
 }
 
+- (VT100Terminal*)terminal
+{
+  return TERMINAL;
+}
+
 // Output of shell process -> Screen
 
 // This background thread blocks until output is available from the subprocess,
@@ -141,5 +146,9 @@
   return NO;
 }
 
+- (int)writeData:(const char*)data length:(unsigned int)length
+{
+  return write(_fd, data, length);
+}
 
 @end
