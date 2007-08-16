@@ -54,7 +54,7 @@
     //NSLog(@"MouseUp: scrolling\n");
   } else{
     //NSLog(@"MouseUp: not scrolling\n");
-    //[_keyboard toggle:self];
+    [_keyboard toggle:self];
   }
   [super mouseUp:fp8];
 }
