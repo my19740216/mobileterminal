@@ -16,6 +16,7 @@
 #import "ShellView.h"
 #import "SubProcess.h"
 #import "NSTextStorageTerminal.h"
+#import "KeyboardTarget.h"
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -70,16 +71,22 @@ UIApplication *UIApp;
     [[[_view terminal] textStorage] ensureRow: [[_view terminal] rows]-1 hasColumn:1];
     NSString *terminalHTML = [NSString stringWithFormat: @"%@%@", scrollback, [[_view terminal] html]];
     [[[_view _webView] webView] moveToEndOfDocument:self];
-    [_view stopCapture];
+    //[_view stopCapture];
     [_view setHTML: terminalHTML];
-    [_view startCapture];
+    //[_view startCapture];
     NSRange aRange;
-    int x, y;
+    //int x, y;
     //[[_view terminal] cursorLocationX: &x Y: &y];
     aRange.location = [[_view text] length];//[[[_view terminal] textStorage] ensureRow: y hasColumn: x] + scrollbackbytes;
     aRange.length = 0;
-    [_view setSelectionRange:aRange];
-    [_view scrollToMakeCaretVisible:YES];
+    CGRect r = [_view rectForSelection: aRange];
+
+//    [_view becomeFirstResponder];
+//    [_view setSelectionRange:aRange];
+//    [_view scrollToMakeCaretVisible:YES];
+//    [keyTarget becomeFirstResponder];
+    r.size.height += 13.0f;
+    [_view scrollRectToVisible: r];
 }
 
 - (void) applicationDidFinishLaunching: (id) unused
@@ -148,10 +155,11 @@ UIApplication *UIApp;
 
   [keyboard setTapDelegate:view];
 
+  keyTarget = [[KeyboardTarget alloc] initWithProcess: _shellProcess View:view];
+
   struct CGRect rect = [UIHardware fullScreenApplicationContentRect];
   rect.origin.x = rect.origin.y = 0.0f;
-  UIView *mainView;
-  mainView = [[UIView alloc] initWithFrame: rect];
+  UIView *mainView = [[UIView alloc] initWithFrame: rect];
 
   [view setMainView:mainView];
   [keyboard show:view];
@@ -159,11 +167,12 @@ UIApplication *UIApp;
 //  [view setHeartbeatDelegate:self];
 
   [mainView addSubview: workaround];
+  [mainView addSubview: keyTarget];
   [mainView addSubview: view];
   [mainView addSubview: barView];
   [mainView addSubview: keyboard];
   
-  [view becomeFirstResponder];
+  [keyTarget becomeFirstResponder];
   [window setContentView: mainView];
 
   [_shellProcess launchTask];

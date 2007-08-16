@@ -132,6 +132,12 @@ static cc_t	ttydefchars[NCCS] = {
 	}
 }
 
+- (void) dealloc
+{
+    [masterHandle dealloc];
+    [super dealloc];
+}
+
 - (void) launchTask
 {
 	struct termios  term;

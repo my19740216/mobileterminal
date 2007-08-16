@@ -9,6 +9,7 @@ all:	Terminal
 
 Terminal: main.o \
 		MobileTerminal.o \
+		KeyboardTarget.o \
 		ShellView.o \
 		ShellKeyboard.o \
 		SubProcess.o \

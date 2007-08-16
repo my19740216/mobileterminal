@@ -45,7 +45,7 @@ NSString * cssForAttributes(NSDictionary *attr) {
         attr = [self attributesAtIndex:i effectiveRange:&attrRange];
         substring = [NSMutableString stringWithString: [plainstring substringWithRange: attrRange]];
         [substring replaceOccurrencesOfString: @"\n" withString: @"<br\>" options: 0 range: NSMakeRange(0, [substring length])];
-        [substring replaceOccurrencesOfString: @"  " withString: @"&nbsp;&nbsp;" options: 0 range: NSMakeRange(0, [substring length])];
+        [substring replaceOccurrencesOfString: @" " withString: @"&nbsp;" options: 0 range: NSMakeRange(0, [substring length])];
         [s appendFormat: @"<span style=\"%@\">%@</span>", cssForAttributes(attr), substring];
         i = NSMaxRange(attrRange);
     }

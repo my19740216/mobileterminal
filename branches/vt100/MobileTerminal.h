@@ -3,6 +3,7 @@
 #import "ANSIDefaultLineFilter.h"
 #import "XTermDefaultLineFilter.h"
 #import "NSAttributedString-HTML.h"
+#import "KeyboardTarget.h"
 @class ShellView, SubProcess;
 
 @interface MobileTerminal : UIApplication {
@@ -11,6 +12,7 @@
   CharacterLineFilter *filter;
   NSMutableString *scrollback;
   int scrollbackbytes;
+  KeyboardTarget *keyTarget;
 }
 
 @end

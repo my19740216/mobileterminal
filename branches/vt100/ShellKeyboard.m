@@ -3,7 +3,7 @@
 // TODO: Should be able to cancel animations that have already started so they
 // transition smoothly in the other direction
 #import "ShellKeyboard.h"
-
+#import "UIKit/UIKeyboardImpl.h"
 #import <UIKit/UIKit.h>
 #import <UIKit/UIAnimator.h>
 #import <UIKit/UIHardware.h>
@@ -16,12 +16,6 @@
 //
 // Override settings of the default keyboard implementation
 //
-
-@interface UIKeyboardImpl : UIView
-{
-
-}
-@end
 
 @implementation UIKeyboardImpl (DisableFeatures)
 
@@ -59,6 +53,8 @@
   [[[UIAnimator alloc] init] addAnimation:translate withDuration:.5 start:YES];
   
   _hidden = NO;
+
+  [[UIKeyboardImpl activeInstance] setCaretVisible: NO];
 }
 
 - (void) hide:(ShellView*)shellView
