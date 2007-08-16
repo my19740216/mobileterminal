@@ -1,7 +1,6 @@
 // ShellKeyboard.h
 #import <UIKit/UIKeyboard.h>
-
-@class ShellView;
+#import "ShellView.h"
 
 @interface ShellKeyboard : UIKeyboard
 {

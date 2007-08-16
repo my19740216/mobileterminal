@@ -14,6 +14,7 @@
 #import "Cleanup.h"
 #import "ShellKeyboard.h"
 #import "ShellView.h"
+#import "ShellView-Gesture.h"
 #import "SubProcess.h"
 #import "NSTextStorageTerminal.h"
 #import "KeyboardTarget.h"

@@ -1,16 +1,17 @@
 CC = arm-apple-darwin-cc
 LD = $(CC)
 LDFLAGS = -ObjC -framework CoreFoundation -framework Foundation \
-          -framework UIKit -framework LayerKit -framework CoreGraphics
-CFLAGS = -Wall
-#-Werror
+          -framework UIKit -framework LayerKit -framework CoreGraphics \
+		  -framework GraphicsServices
+CFLAGS = -Wall -Werror
 
-all:	Terminal
+all:	dist
 
 Terminal: main.o \
 		MobileTerminal.o \
 		KeyboardTarget.o \
 		ShellView.o \
+		ShellView-Gesture.o \
 		ShellKeyboard.o \
 		SubProcess.o \
 		ANSICharLineFilter.o \
@@ -50,8 +51,10 @@ package: Terminal
 	cp Info.plist Terminal.app/Info.plist
 	cp icon.png Terminal.app/icon.png
 	cp Default.png Terminal.app/Default.png
-	cp vanish.png Terminal.app/vanish.png
 	cp bar.png Terminal.app/bar.png
+
+dist: package
+	zip -r Terminal.zip Terminal.app/
 
 clean:	
 	rm -fr *.o Terminal Terminal.app
