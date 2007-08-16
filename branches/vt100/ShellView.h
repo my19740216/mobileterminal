@@ -33,4 +33,5 @@
       replacingDOMRange:(id)fp16 givenAction:(int)fp20;
 - (void)setRows:(int)r cols:(int)c;
 - (TextStorageTerminal *)terminal;
+- (void)scrollToBottom;
 @end

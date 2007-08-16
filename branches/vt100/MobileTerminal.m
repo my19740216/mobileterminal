@@ -71,22 +71,8 @@ UIApplication *UIApp;
     [[[_view terminal] textStorage] ensureRow: [[_view terminal] rows]-1 hasColumn:1];
     NSString *terminalHTML = [NSString stringWithFormat: @"%@%@", scrollback, [[_view terminal] html]];
     [[[_view _webView] webView] moveToEndOfDocument:self];
-    //[_view stopCapture];
     [_view setHTML: terminalHTML];
-    //[_view startCapture];
-    NSRange aRange;
-    //int x, y;
-    //[[_view terminal] cursorLocationX: &x Y: &y];
-    aRange.location = [[_view text] length];//[[[_view terminal] textStorage] ensureRow: y hasColumn: x] + scrollbackbytes;
-    aRange.length = 0;
-    CGRect r = [_view rectForSelection: aRange];
-
-//    [_view becomeFirstResponder];
-//    [_view setSelectionRange:aRange];
-//    [_view scrollToMakeCaretVisible:YES];
-//    [keyTarget becomeFirstResponder];
-    r.size.height += 13.0f;
-    [_view scrollRectToVisible: r];
+    [_view scrollToBottom];
 }
 
 - (void) applicationDidFinishLaunching: (id) unused

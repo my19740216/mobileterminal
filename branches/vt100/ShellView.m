@@ -67,6 +67,15 @@
   return [super initWithFrame:fp8];
 }
 
+- (void)scrollToBottom {
+    NSRange aRange;
+    aRange.location = [[self text] length];
+    aRange.length = 0;
+    CGRect r = [self rectForSelection: aRange];
+    r.size.height += 13.0f;
+    [self scrollRectToVisible: r];
+}
+
 - (BOOL)canBecomeFirstResponder
 {
   return NO;

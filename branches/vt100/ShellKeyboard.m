@@ -52,6 +52,8 @@
   [translate setEndTransform: trans];
   [[[UIAnimator alloc] init] addAnimation:translate withDuration:.5 start:YES];
   
+  [shellView scrollToBottom];
+
   _hidden = NO;
 
   [[UIKeyboardImpl activeInstance] setCaretVisible: NO];
