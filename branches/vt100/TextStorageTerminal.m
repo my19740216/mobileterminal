@@ -750,9 +750,13 @@ static NSString *   sColors[8] = {
 - (void) cursorLeft: (int) howMany
 {
 	cursorColumn -= howMany;
-	if (cursorColumn < 0)
-		cursorColumn = 0;
-	[self notifyChangedCursor];
+	while (cursorColumn < 0)
+    {
+        cursorColumn += columns;
+        cursorRow--;
+    }
+    if (cursorRow < 0) {cursorRow = 0; cursorColumn = 0;}
+    [self notifyChangedCursor];
 }
 
 - (void) cursorLeft
