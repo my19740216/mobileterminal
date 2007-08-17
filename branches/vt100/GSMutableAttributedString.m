@@ -34,7 +34,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 }
 
 -(id)copyWithZone:(NSZone *)zone {
-   return [[GSAttributedString allocWithZone:NULL] initWithAttributedString:self];
+   return [(GSAttributedString *)[GSAttributedString allocWithZone:NULL] initWithAttributedString:self];
 }
 
 -(NSMutableString *)mutableString {
