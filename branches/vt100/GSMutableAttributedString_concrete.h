@@ -6,30 +6,12 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#import "NSAttributedString.h"
+#import "GSMutableAttributedString.h"
+#import "GSRangeEntries.h"
 
-@class NSMutableString;
-
-@interface NSMutableAttributedString : NSAttributedString
-
--(NSMutableString *)mutableString;
-
--(void)addAttribute:(NSString *)name value:(id)value range:(NSRange)range;
--(void)addAttributes:(NSDictionary *)attributes range:(NSRange)range;
--(void)appendAttributedString:(NSAttributedString *)attributedString;
-
--(void)deleteCharactersInRange:(NSRange)range;
-
--(void)removeAttribute:(NSString *)name range:(NSRange)range;
-
--(void)insertAttributedString:(NSAttributedString *)attributedString atIndex:(unsigned)index;
-
--(void)replaceCharactersInRange:(NSRange)range withString:(NSString *)string;
--(void)replaceCharactersInRange:(NSRange)range withAttributedString:(NSAttributedString *)attributedString;
--(void)setAttributes:(NSDictionary *)attributes range:(NSRange)range;
--(void)setAttributedString:(NSAttributedString *)attributedString;
-
--(void)beginEditing;
--(void)endEditing;
+@interface GSMutableAttributedString_concrete : GSMutableAttributedString {
+   NSMutableString *_string;
+   GSRangeEntries  *_rangeToAttributes;
+}
 
 @end

@@ -6,36 +6,11 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-// Original - Christopher Lloyd <cjwl@objc.net>
-#import "NSAttributedString_oneAttribute.h"
-#import <Foundation/Foundation.h>
+#import "GSAttributedString.h"
 
-@implementation NSAttributedString_oneAttribute
-
--(NSString *)string {
-   return _string;
-}
-
--(NSDictionary *)attributesAtIndex:(unsigned)location effectiveRange:(NSRangePointer)range {
-   if(location>=[self length])
-    [NSException raise: NSRangeException format: @"index %d beyond length %d",location,[self length]];
-
-   if(range!=NULL)
-    *range=NSMakeRange(0,[_string length]);
-
-   return _attributes;
-}
-
--initWithString:(NSString *)string attributes:(NSDictionary *)attributes {
-   _string=[string copy];
-   _attributes=[attributes retain];
-   return self;
-}
-
--(void)dealloc {
-   [_string release];
-   [_attributes release];
-   [super dealloc];
-}
+@interface GSAttributedString_placeholder : GSAttributedString
+-(id)initWithString:(NSString *)string;
+-(id)initWithString:(NSString *)string attributes:(NSDictionary *)attributes;
+-(id)initWithAttributedString:(GSAttributedString *)other;
 
 @end

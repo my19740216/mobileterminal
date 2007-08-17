@@ -7,20 +7,20 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 // Original - Christopher Lloyd <cjwl@objc.net>
-#import "NSAttributedString.h"
-#import "NSMutableAttributedString.h"
-#import "NSAttributedString_placeholder.h"
-#import <Foundation/Foundation.h>
+#import "GSAttributedString.h"
+#import "GSMutableAttributedString.h"
+#import "GSAttributedString_placeholder.h"
+//#import <Foundation/Foundation.h>
 
-NSString *NSBackgroundColorAttributeName = @"bgcolor";
-NSString *NSForegroundColorAttributeName = @"fgcolor";
-NSString *NSUnderlineStyleAttributeName = @"underline";
+NSString *GSBackgroundColorAttributeName = @"bgcolor";
+NSString *GSForegroundColorAttributeName = @"fgcolor";
+NSString *GSUnderlineStyleAttributeName = @"underline";
 
-@implementation NSAttributedString
+@implementation GSAttributedString
 
 +allocWithZone:(NSZone *)zone {
-   if(self==[NSAttributedString class])
-    return NSAllocateObject([NSAttributedString_placeholder class],0,NULL);
+   if(self==[GSAttributedString class])
+    return NSAllocateObject([GSAttributedString_placeholder class],0,NULL);
 
    return NSAllocateObject(self,0,zone);
 }
@@ -39,7 +39,7 @@ NSString *NSUnderlineStyleAttributeName = @"underline";
     return nil;
 }
 
--initWithAttributedString:(NSAttributedString *)other {
+-initWithAttributedString:(GSAttributedString *)other {
    //[NSException raise: NSInvalidAbstractInvocation format: @"", nil];
     return nil;
 }
@@ -53,14 +53,14 @@ NSString *NSUnderlineStyleAttributeName = @"underline";
 }
 
 -mutableCopy {
-   return [[NSMutableAttributedString allocWithZone:NULL] initWithAttributedString:self];
+   return [(GSMutableAttributedString *)[GSMutableAttributedString allocWithZone:NULL] initWithAttributedString:self];
 }
 
 -mutableCopyWithZone:(NSZone *)zone {
-   return [[NSMutableAttributedString allocWithZone:zone] initWithAttributedString:self];
+   return [(GSMutableAttributedString *)[GSMutableAttributedString allocWithZone:zone] initWithAttributedString:self];
 }
 
--(BOOL)isEqualToAttributedString:(NSAttributedString *)other {
+-(BOOL)isEqualToAttributedString:(GSAttributedString *)other {
    //[NSException raise: NSUnimplementedMethod format: @"", nil];
    return NO;
 }
@@ -96,8 +96,8 @@ NSString *NSUnderlineStyleAttributeName = @"underline";
    return nil;
 }
 
--(NSAttributedString *)attributedSubstringFromRange:(NSRange)range {
-   NSMutableAttributedString *result=[[[NSMutableAttributedString alloc] init] autorelease];
+-(GSAttributedString *)attributedSubstringFromRange:(NSRange)range {
+   GSMutableAttributedString *result=[[[GSMutableAttributedString alloc] init] autorelease];
    unsigned  location=range.location;
    unsigned  limit=NSMaxRange(range);
 

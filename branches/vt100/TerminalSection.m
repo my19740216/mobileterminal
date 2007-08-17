@@ -21,7 +21,7 @@
 
 #import "TerminalSection.h"
 #import "TextStorageTerminal.h"
-#import "NSTextStorageTerminal.h"
+#import "GSTextStorageTerminal.h"
 
 @implementation TerminalSection
 
@@ -161,8 +161,8 @@
 		if (ch > ' ') {
 			//  Get the background color and set it
 			NSDictionary *			attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-				[terminal defaultBackColor], NSForegroundColorAttributeName,
-				cursorColor, NSBackgroundColorAttributeName,
+				[terminal defaultBackColor], GSForegroundColorAttributeName,
+				cursorColor, GSBackgroundColorAttributeName,
 				[terminal defaultFont], NSFontAttributeName,
 				nil];
 			//  Draw the character

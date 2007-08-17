@@ -1,5 +1,5 @@
 //
-//  NSTextStorageTerminal.m
+//  GSTextStorageTerminal.m
 //  Crescat
 //
 //  Created by Fritz Anderson on Thu Sep 18 2003.
@@ -19,30 +19,30 @@
 //	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#import "NSTextStorageTerminal.h"
+#import "GSTextStorageTerminal.h"
 #import "TextStorageTerminal.h"
-#import "NSAttributedString.h"
+#import "GSAttributedString.h"
 #import "Debug.h"
 
 typedef unichar (*charIMP)(id, SEL, unsigned);
 
-@implementation NSAttributedString (attributedCharacter)
+@implementation GSAttributedString (attributedCharacter)
 
 + (id) stringWithCharacter: (unichar) ch attributes: (NSDictionary *) attrs
 {
-	return [[[NSAttributedString alloc] initWithString: [NSString stringWithCharacters: &ch length: 1] attributes: attrs] autorelease];
+	return [[[GSAttributedString alloc] initWithString: [NSString stringWithCharacters: &ch length: 1] attributes: attrs] autorelease];
 }
 
-/*+ (NSAttributedString *) newlineInFont: (NSFont *) aFont
+/*+ (GSAttributedString *) newlineInFont: (NSFont *) aFont
 {
 	static NSMutableDictionary *	nlDictionary = nil;
 	
 	if (! nlDictionary)
 		nlDictionary = [[NSMutableDictionary alloc] init];
 	
-	NSAttributedString *	retval = [nlDictionary objectForKey: aFont];
+	GSAttributedString *	retval = [nlDictionary objectForKey: aFont];
 	if (!retval) {
-		retval = [NSAttributedString stringWithCharacter: '\n'
+		retval = [GSAttributedString stringWithCharacter: '\n'
 							attributes: [NSDictionary dictionaryWithObjectsAndKeys: 
 															aFont, NSFontAttributeName, nil]];
 		[nlDictionary setObject: retval forKey: aFont];
@@ -50,16 +50,16 @@ typedef unichar (*charIMP)(id, SEL, unsigned);
 	return retval;
 }*/
 
-/*+ (NSAttributedString *) spaceInFont: (NSFont *) aFont
+/*+ (GSAttributedString *) spaceInFont: (NSFont *) aFont
 {
 	static NSMutableDictionary *	spDictionary = nil;
 	
 	if (! spDictionary)
 		spDictionary = [[NSMutableDictionary alloc] init];
 	
-	NSAttributedString *	retval = [spDictionary objectForKey: aFont];
+	GSAttributedString *	retval = [spDictionary objectForKey: aFont];
 	if (!retval) {
-		retval = [NSAttributedString stringWithCharacter: ' '
+		retval = [GSAttributedString stringWithCharacter: ' '
 											  attributes: [NSDictionary dictionaryWithObjectsAndKeys: 
 														aFont, NSFontAttributeName, nil]];
 		[spDictionary setObject: retval forKey: aFont];
@@ -67,14 +67,14 @@ typedef unichar (*charIMP)(id, SEL, unsigned);
 	return retval;
 }*/
 
-+ (NSAttributedString *) newlineWithAttrs: (NSDictionary *) attrs
++ (GSAttributedString *) newlineWithAttrs: (NSDictionary *) attrs
 {
-	return [[[NSAttributedString alloc] initWithString: @"\n" attributes: attrs] autorelease];
+	return [[[GSAttributedString alloc] initWithString: @"\n" attributes: attrs] autorelease];
 }
 
-+ (NSAttributedString *) spaceWithAttrs: (NSDictionary *) attrs
++ (GSAttributedString *) spaceWithAttrs: (NSDictionary *) attrs
 {
-	return [[[NSAttributedString alloc] initWithString: @" " attributes: attrs] autorelease];
+	return [[[GSAttributedString alloc] initWithString: @" " attributes: attrs] autorelease];
 }
 
 
@@ -146,9 +146,9 @@ static AlternateCoding		sAlternateCodes[] = {
 	return retval;
 }
 
-- (NSAttributedString *) unicodeAttributedString
+- (GSAttributedString *) unicodeAttributedString
 {
-	NSMutableAttributedString * retval = [self mutableCopy];
+	GSMutableAttributedString * retval = [self mutableCopy];
 	NSRange						fullRange = NSMakeRange(0, [self length]);
 	if (fullRange.length == 0)
 		return [retval autorelease];
@@ -187,9 +187,9 @@ static AlternateCoding		sAlternateCodes[] = {
 
 @end
 
-@implementation NSMutableAttributedString (attrSubstitution)
+@implementation GSMutableAttributedString (attrSubstitution)
 
-/**	Helper method for NSMutableAttributedString(attrSubstitution) that mass-substitutes an arbitrary attribute.
+/**	Helper method for GSMutableAttributedString(attrSubstitution) that mass-substitutes an arbitrary attribute.
 	\param	attr		The name of the attribute to look for.
 	\param	target		The value of the attribute to be replaced.
 	\param	newValue	The value the attribute is to assume.
@@ -213,12 +213,12 @@ static AlternateCoding		sAlternateCodes[] = {
 
 - (void) replaceForegroundColor: (NSString *) target withColor: (NSString *) newColor
 {
-	[self replaceAttribute: NSForegroundColorAttributeName target: target withValue: newColor];
+	[self replaceAttribute: GSForegroundColorAttributeName target: target withValue: newColor];
 }
 
 - (void) replaceBackgroundColor: (NSString *) target withColor: (NSString *) newColor
 {
-	[self replaceAttribute: NSBackgroundColorAttributeName target: target withValue: newColor];
+	[self replaceAttribute: GSBackgroundColorAttributeName target: target withValue: newColor];
 }
 
 //- (void) replaceFont: (NSFont *) target withFont: (NSFont *) newFont
@@ -315,7 +315,7 @@ static AlternateCoding		sAlternateCodes[] = {
 
 @end
 
-@implementation NSTextStorage (terminalExtensions)
+@implementation GSTextStorage (terminalExtensions)
 
 - (int) lineCount { return [[self mutableString] lineCount]; }
 
@@ -358,7 +358,7 @@ static AlternateCoding		sAlternateCodes[] = {
 	}		
 	
 	if (row) {
-		NSAttributedString *	newLine = [[[NSAttributedString alloc] initWithString: @"\n"] autorelease];
+		GSAttributedString *	newLine = [[[GSAttributedString alloc] initWithString: @"\n"] autorelease];
 		while (row--) {
 			[self appendAttributedString: newLine];
 			i++;
@@ -376,7 +376,7 @@ static AlternateCoding		sAlternateCodes[] = {
 	
 	int		finalOffset = i + column;
 	if (column) {
-		NSAttributedString *	space = [[[NSAttributedString alloc] initWithString: @" "] autorelease];
+		GSAttributedString *	space = [[[GSAttributedString alloc] initWithString: @" "] autorelease];
 		while (column--) {
 			[self insertAttributedString: space atIndex: i];
 		}		
@@ -415,7 +415,7 @@ static AlternateCoding		sAlternateCodes[] = {
 	}
     
 	if (row) {
-		NSAttributedString *	newLine = [NSAttributedString newlineWithAttrs: attrs];
+		GSAttributedString *	newLine = [GSAttributedString newlineWithAttrs: attrs];
 		while (row--) {
 			[self appendAttributedString: newLine];
 			i++;
@@ -433,7 +433,7 @@ static AlternateCoding		sAlternateCodes[] = {
 	}
 	int finalOffset = i + column;
 	if (column) {
-		NSAttributedString *	space = [NSAttributedString spaceWithAttrs: attrs];
+		GSAttributedString *	space = [GSAttributedString spaceWithAttrs: attrs];
      
         while (column--) {
 			[self insertAttributedString: space atIndex: i];
@@ -476,7 +476,7 @@ static AlternateCoding		sAlternateCodes[] = {
 {
 	[self beginEditing];
 	int			offset = [self ensureRow: row hasColumn: column];
-	[self insertAttributedString: [NSAttributedString stringWithCharacter: ch attributes: attrs] atIndex: offset];
+	[self insertAttributedString: [GSAttributedString stringWithCharacter: ch attributes: attrs] atIndex: offset];
 	[self endEditing];
 }
 
@@ -485,7 +485,7 @@ static AlternateCoding		sAlternateCodes[] = {
 	[self beginEditing];
 	//  int			offset = [self ensureRow: row hasColumn: column];
 	int			offset = [self ensureRow: row hasColumn: column withAttributes: attrs];
-	NSAttributedString *	attrString = [[NSAttributedString alloc] initWithString: aString attributes: attrs];
+	GSAttributedString *	attrString = [[GSAttributedString alloc] initWithString: aString attributes: attrs];
 	[self insertAttributedString: attrString atIndex: offset];
 	[self endEditing];
 }
@@ -503,7 +503,7 @@ static AlternateCoding		sAlternateCodes[] = {
 		[self insertCharacter: ch atRow: row column: column withAttributes: attrs];
 	else {
 		[self replaceCharactersInRange: NSMakeRange(offset, 1)
-					withAttributedString: [NSAttributedString stringWithCharacter: ch attributes: attrs]];
+					withAttributedString: [GSAttributedString stringWithCharacter: ch attributes: attrs]];
 	}
 	[self endEditing];
 }
@@ -515,7 +515,7 @@ static AlternateCoding		sAlternateCodes[] = {
 	int						length = [aString length];
 	//  int						offset = [self ensureRow: row hasColumn: column + length];
 	int						offset = [self ensureRow: row hasColumn: column + length withAttributes: attrs];
-	NSAttributedString *	attrString = [[NSAttributedString alloc] initWithString: aString attributes: attrs];
+	GSAttributedString *	attrString = [[GSAttributedString alloc] initWithString: aString attributes: attrs];
 
 	[self replaceCharactersInRange: NSMakeRange(offset - length, length) withAttributedString: attrString];
 	[attrString release];
@@ -553,7 +553,7 @@ static AlternateCoding		sAlternateCodes[] = {
 	}
 	else {
 		[self beginEditing];
-		NSAttributedString *	newLine = [NSAttributedString stringWithCharacter: '\n' attributes: attrs];
+		GSAttributedString *	newLine = [GSAttributedString stringWithCharacter: '\n' attributes: attrs];
 		while (howMany--) {
 			[self insertAttributedString: newLine atIndex: range.location];
 		}
@@ -583,7 +583,7 @@ static AlternateCoding		sAlternateCodes[] = {
 	[self deleteCharactersInRange: range];
 }
 
-- (NSAttributedString *) copyLines: (int) howMany atLine: (int) where
+- (GSAttributedString *) copyLines: (int) howMany atLine: (int) where
 {
 	if (howMany <= 0)
 		return nil;

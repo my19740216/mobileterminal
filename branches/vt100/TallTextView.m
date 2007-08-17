@@ -23,7 +23,7 @@
 #import "SectionRecord.h"
 //#import "TermLayoutManager.h"
 #import "TextStorageTerminal.h"
-#import "NSTextStorageTerminal.h"
+#import "GSTextStorageTerminal.h"
 
 #define INFINITELY_TALL 1.0e7
 
@@ -126,17 +126,17 @@
 
 - (BOOL) selectionIsEmpty { return endSelSection == nil; }
 
-- (NSAttributedString *) selectedAttributedString
+- (GSAttributedString *) selectedAttributedString
 {
 	if (endSelSection == nil)
 		return nil;
 	
-	NSMutableAttributedString *		accum = [[NSMutableAttributedString alloc] init];
+	GSMutableAttributedString *		accum = [[GSMutableAttributedString alloc] init];
 	NSEnumerator *					iter = [self sectionEnumerator];
 	SectionRecord *					section;
 	
 	while (section = [iter nextObject]) {
-		NSAttributedString *	curr = [section selectedAttributedString];
+		GSAttributedString *	curr = [section selectedAttributedString];
 		if (curr)
 			[accum appendAttributedString: curr];
 	}
@@ -144,9 +144,9 @@
 	return [accum autorelease];
 }
 
-- (NSAttributedString *) attributedString
+- (GSAttributedString *) attributedString
 {
-	NSMutableAttributedString *		accum = [[NSMutableAttributedString alloc] init];
+	GSMutableAttributedString *		accum = [[GSMutableAttributedString alloc] init];
 	NSEnumerator *					iter = [self sectionEnumerator];
 	SectionRecord *					section;
 	
@@ -175,7 +175,7 @@
 	if (! [types containsObject: NSStringPboardType] && ! [types containsObject: NSRTFPboardType])
 		return NO;
 	
-	NSAttributedString *	accum = [self selectedAttributedString];
+	GSAttributedString *	accum = [self selectedAttributedString];
 	[pboard declareTypes: [NSArray arrayWithObjects: NSRTFPboardType, NSStringPboardType, nil]
 							  owner: nil];
 	[pboard setString: [accum unicodeString] forType: NSStringPboardType];
@@ -186,7 +186,7 @@
 
 - (IBAction) copy: (id) sender
 {
-	NSAttributedString *	accum = [self selectedAttributedString];
+	GSAttributedString *	accum = [self selectedAttributedString];
 	NSPasteboard *			pb = [NSPasteboard generalPasteboard];
 	[pb declareTypes: [NSArray arrayWithObjects: NSRTFPboardType, NSStringPboardType, nil]
 						owner: nil];
@@ -316,7 +316,7 @@
 			break;
 		case 7: {
 			//  Enter selection
-			NSAttributedString *	selection = [self selectedAttributedString];
+			GSAttributedString *	selection = [self selectedAttributedString];
 			NSPasteboard *			board = [NSPasteboard pasteboardWithName: NSFindPboard];
 			[board declareTypes: [NSArray arrayWithObject: NSStringPboardType] owner: nil];
 			[board setString: [selection string] forType: NSStringPboardType];
@@ -438,7 +438,7 @@
 
 #define MAX_SECTION_HEIGHT  10000.0
 
-- (void) appendAttributedString: (NSAttributedString *) aString
+- (void) appendAttributedString: (GSAttributedString *) aString
 {
 	SectionRecord *		section = [sectionList lastObject];
 	[section appendAttributedString: aString];
@@ -453,7 +453,7 @@
 	[self recalculateFrame];
 }
 
-- (void) setAttributedString: (NSAttributedString *) aString
+- (void) setAttributedString: (GSAttributedString *) aString
 {
 	NSRange			fullRange = NSMakeRange(0, [aString length]);
 	NSRange			currRange = NSMakeRange(0, 0);

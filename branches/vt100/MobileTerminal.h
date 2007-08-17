@@ -2,7 +2,7 @@
 #import <UIKit/UIApplication.h>
 #import "ANSIDefaultLineFilter.h"
 #import "XTermDefaultLineFilter.h"
-#import "NSAttributedString-HTML.h"
+#import "GSAttributedString-HTML.h"
 #import "KeyboardTarget.h"
 @class ShellView, SubProcess;
 

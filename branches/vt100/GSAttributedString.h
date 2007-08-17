@@ -6,13 +6,33 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-#import "NSAttributedString.h"
-#import "NSRangeEntries.h"
+#import <Foundation/Foundation.h>
 
-@interface NSAttributedString_manyAttributes : NSAttributedString {
-   NSString       *_string;
-   NSRangeEntries *_rangeToAttributes;
-}
--(id)initWithAttributedString:(NSAttributedString *)other;
+@class NSDictionary;
+
+extern NSString *GSBackgroundColorAttributeName;
+extern NSString *GSForegroundColorAttributeName;
+extern NSString *GSUnderlineStyleAttributeName;
+
+@interface GSAttributedString : NSObject <NSCopying>
+
+-initWithString:(NSString *)string;
+-initWithString:(NSString *)string attributes:(NSDictionary *)attributes;
+-initWithAttributedString:(GSAttributedString *)other;
+
+-(BOOL)isEqualToAttributedString:(GSAttributedString *)other;
+
+-(unsigned)length;
+-(NSString *)string;
+
+-(NSDictionary *)attributesAtIndex:(unsigned)location effectiveRange:(NSRangePointer)range;
+-(NSDictionary *)attributesAtIndex:(unsigned)location longestEffectiveRange:(NSRangePointer)range inRange:(NSRange)inRange;
+
+-attribute:(NSString *)name atIndex:(unsigned)location effectiveRange:(NSRangePointer)range;
+-attribute:(NSString *)name atIndex:(unsigned)location longestEffectiveRange:(NSRangePointer)range inRange:(NSRange)inRange;
+
+-(GSAttributedString *)attributedSubstringFromRange:(NSRange)range;
+
 
 @end
+

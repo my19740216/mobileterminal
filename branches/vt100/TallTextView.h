@@ -26,20 +26,20 @@
 */
 
 #import <Foundation/Foundation.h>
-#import "NSAttributedString.h"
-#import "NSMutableAttributedString.h"
+#import "GSAttributedString.h"
+#import "GSMutableAttributedString.h"
 
 /*
  A TallTextView displays and makes available for selection a large amount of attributed text.
  
  The text arrives serially, and is immutable once appended.
  
- It uses NSTextStorage/NSTextContainer/NSLayoutManager (or my subclasses/specializations)
+ It uses GSTextStorage/NSTextContainer/NSLayoutManager (or my subclasses/specializations)
  to display them, but allocates NSTextView only as needed to service mouse events.
  OR:
  Uses NSLayoutManager to cobble mouse-handling together itself.
  
- First cut, all text is in a single NSTextStorage.
+ First cut, all text is in a single GSTextStorage.
  Second cut, if needed, text is divvied into 500-line TextStorages, with only the last mutable. The rest can comfortably cache dimensions, counts, even images.
  */
 
@@ -49,7 +49,7 @@
 	Large-text view.
     A TallTextView is a view that presents a large amount of text, changeable only by appending at the end. The text can be selected, copied, printed, searched, and of course displayed.
 
-	It is implemented by visually stacking sectionRecords, which contain NSTextStorage and know their origin and height in the visual stack. The sectionRecords, and particularly their NSTextStorage, are the model objects underlying this view.
+	It is implemented by visually stacking sectionRecords, which contain GSTextStorage and know their origin and height in the visual stack. The sectionRecords, and particularly their GSTextStorage, are the model objects underlying this view.
  
 	All section records share an NSLayoutManager for purposes of drawing, hit-testing, and highlighting.
 */
@@ -92,10 +92,10 @@
 
 /**
     Append text to the view.
-    Appends the attributed string aString to the NSTextStorage in the last section in line. The last section is the only one subject to revision by appending in this way. If appending makes the section tall enough (currently 10000 pixels), a new section is allocated and added to the end of the list.
-    @param      aString NSAttributedString, the text to append to the view.
+    Appends the attributed string aString to the GSTextStorage in the last section in line. The last section is the only one subject to revision by appending in this way. If appending makes the section tall enough (currently 10000 pixels), a new section is allocated and added to the end of the list.
+    @param      aString GSAttributedString, the text to append to the view.
 */
-- (void) appendAttributedString: (NSAttributedString *) aString;
+- (void) appendAttributedString: (GSAttributedString *) aString;
 /**
     Empty the view.
     Discards all the sections in the section list and puts a new, empty section in the list. This has the effect of erasing all the contents of the view.
@@ -104,9 +104,9 @@
 /**
     Replace the view's contents with an attributed string.
     This method starts with a clearBuffer, then adds the aString parameter to the view in large chunks using appendAttributedString:, so that reasonable sectioning will occur.
-    @param      aString NSAttributedString, the new contents for the view.
+    @param      aString GSAttributedString, the new contents for the view.
 */
-- (void) setAttributedString: (NSAttributedString *) aString;
+- (void) setAttributedString: (GSAttributedString *) aString;
 
 /**
     Archive of the view's contents.
@@ -142,15 +142,15 @@
 /**
     The selected text, as attributed string.
     Returns the selected text as an attributed string, or nil if no text is selected.
-    @retval     NSAttributedString the contents of the current selection, or nil if no contents.
+    @retval     GSAttributedString the contents of the current selection, or nil if no contents.
 */
-- (NSAttributedString *) selectedAttributedString;
+- (GSAttributedString *) selectedAttributedString;
 /**
     The entire contents as attributed string.
     Returns the entire contents of this view, as an attributed string.
-    @retval     NSAttributedString the entire contents of the view.
+    @retval     GSAttributedString the entire contents of the view.
 */
-- (NSAttributedString *) attributedString;
+- (GSAttributedString *) attributedString;
 /**
     The entire contents as a plain string.
     Returns the entire contents of this view, as a plain string.

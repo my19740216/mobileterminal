@@ -20,8 +20,8 @@
 //
 
 #import "TextStorageTerminal.h"
-#import "NSTextStorageTerminal.h"
-#import "NSAttributedString-HTML.h"
+#import "GSTextStorageTerminal.h"
+#import "GSAttributedString-HTML.h"
 
 @implementation TextStorageTerminal
 
@@ -44,14 +44,14 @@ static NSMutableDictionary *	sPlainAttributes = nil;
 	if (self == [TextStorageTerminal class]) {
 		sPlainAttributes = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
 //			[self defaultFont], NSFontAttributeName,
-			[self htmlColorForCode: tcGreen], NSForegroundColorAttributeName,
-			[NSNumber numberWithInt: 0], NSUnderlineStyleAttributeName,
+			[self htmlColorForCode: tcGreen], GSForegroundColorAttributeName,
+			[NSNumber numberWithInt: 0], GSUnderlineStyleAttributeName,
 			[NSNumber numberWithInt: 0], TSTInvisibleAttribute,
 			[NSNumber numberWithInt: 0], TSTBlinkingAttribute,
 			[NSNumber numberWithInt: 0], TSTBoldAttribute,
 			[NSNumber numberWithInt: 0], TSTAlternateAttribute,
-			[self htmlColorForCode: tcBlack], NSBackgroundColorAttributeName,
-//          [NSColor whiteColor], NSBackgroundColorAttributeName,
+			[self htmlColorForCode: tcBlack], GSBackgroundColorAttributeName,
+//          [NSColor whiteColor], GSBackgroundColorAttributeName,
 			nil];
 	}
 }
@@ -105,11 +105,11 @@ static NSString *   sColors[8] = {
 	
 	[self resetCurrentAttributes];
 //	[self setDefaultFont: [plainAttributes objectForKey: NSFontAttributeName]];
-	[self setDefaultForeColor: [plainAttributes objectForKey: NSForegroundColorAttributeName]];
-//	[self setDefaultBackColor: [plainAttributes objectForKey: NSBackgroundColorAttributeName]];
+	[self setDefaultForeColor: [plainAttributes objectForKey: GSForegroundColorAttributeName]];
+//	[self setDefaultBackColor: [plainAttributes objectForKey: GSBackgroundColorAttributeName]];
 	[self setDefaultBackColor: [TextStorageTerminal htmlColorForCode: tcBlack]];//[NSColor whiteColor]];
 	
-	content = [[NSTextStorage alloc] initWithString: @"" attributes: attrDictionary];
+	content = [[GSTextStorage alloc] initWithString: @"" attributes: attrDictionary];
 	tabStops = (BOOL *) malloc(columns * sizeof(BOOL));
 
 	if (!content || !tabStops) {
@@ -136,9 +136,9 @@ static NSString *   sColors[8] = {
 	return self;
 }
 
-- (NSTextStorage *) textStorage { return content; }
+- (GSTextStorage *) textStorage { return content; }
 
-- (void) setAttributedString: (NSAttributedString *) string
+- (void) setAttributedString: (GSAttributedString *) string
 {
 	[content setAttributedString: string];
 }
@@ -168,11 +168,11 @@ static NSString *   sColors[8] = {
 		[defaultForeColor release];
 		defaultForeColor = [aColor retain];
 
-		[content removeAttribute: NSForegroundColorAttributeName range: NSMakeRange(0, [content length])];
-		[content addAttribute: NSForegroundColorAttributeName value: defaultForeColor range: NSMakeRange(0, [content length])];
+		[content removeAttribute: GSForegroundColorAttributeName range: NSMakeRange(0, [content length])];
+		[content addAttribute: GSForegroundColorAttributeName value: defaultForeColor range: NSMakeRange(0, [content length])];
 		
-		[attrDictionary setObject: aColor forKey: NSForegroundColorAttributeName];
-		[plainAttributes setObject: aColor forKey: NSForegroundColorAttributeName];
+		[attrDictionary setObject: aColor forKey: GSForegroundColorAttributeName];
+		[plainAttributes setObject: aColor forKey: GSForegroundColorAttributeName];
 	}
 }
 
@@ -184,12 +184,12 @@ static NSString *   sColors[8] = {
 		[defaultBackColor release];
 		defaultBackColor = [aColor retain];
 		
-		//  [content removeAttribute: NSBackgroundColorAttributeName range: NSMakeRange(0, [content length])];
-		//  [content addAttribute: NSBackgroundColorAttributeName value: defaultBackColor range: NSMakeRange(0, [content length])];
+		//  [content removeAttribute: GSBackgroundColorAttributeName range: NSMakeRange(0, [content length])];
+		//  [content addAttribute: GSBackgroundColorAttributeName value: defaultBackColor range: NSMakeRange(0, [content length])];
 		
-		//  [attrDictionary setObject: aColor forKey: NSBackgroundColorAttributeName];
-		[attrDictionary removeObjectForKey: NSBackgroundColorAttributeName];
-		//  [plainAttributes setObject: aColor forKey: NSBackgroundColorAttributeName];
+		//  [attrDictionary setObject: aColor forKey: GSBackgroundColorAttributeName];
+		[attrDictionary removeObjectForKey: GSBackgroundColorAttributeName];
+		//  [plainAttributes setObject: aColor forKey: GSBackgroundColorAttributeName];
 	}
 }
 
@@ -281,7 +281,7 @@ static NSString *   sColors[8] = {
 	[attrDictionary setObject: [NSNumber numberWithInt: 1] forKey: TSTBoldAttribute];
 }
 
-- (void) startUnderline { [attrDictionary setObject: [NSNumber numberWithInt: 1] forKey: NSUnderlineStyleAttributeName]; }
+- (void) startUnderline { [attrDictionary setObject: [NSNumber numberWithInt: 1] forKey: GSUnderlineStyleAttributeName]; }
 
 - (void) startBlink
 {
@@ -291,13 +291,13 @@ static NSString *   sColors[8] = {
 
 - (void) startInverse
 {
-	NSString *		backColor = [attrDictionary objectForKey: NSBackgroundColorAttributeName];
+	NSString *		backColor = [attrDictionary objectForKey: GSBackgroundColorAttributeName];
 	if (!backColor)
 		backColor = defaultBackColor;
 	
-//	[attrDictionary setObject: [plainAttributes objectForKey: NSBackgroundColorAttributeName] forKey: NSForegroundColorAttributeName];
-	[attrDictionary setObject: backColor forKey: NSForegroundColorAttributeName];
-	[attrDictionary setObject: [plainAttributes objectForKey: NSForegroundColorAttributeName] forKey: NSBackgroundColorAttributeName];		
+//	[attrDictionary setObject: [plainAttributes objectForKey: GSBackgroundColorAttributeName] forKey: GSForegroundColorAttributeName];
+	[attrDictionary setObject: backColor forKey: GSForegroundColorAttributeName];
+	[attrDictionary setObject: [plainAttributes objectForKey: GSForegroundColorAttributeName] forKey: GSBackgroundColorAttributeName];		
 	invertMode = YES;
 }
 
@@ -319,7 +319,7 @@ static NSString *   sColors[8] = {
 	[attrDictionary removeObjectForKey: TSTBoldAttribute];
 }
 
-- (void) endUnderline { [attrDictionary setObject: [NSNumber numberWithInt: 0] forKey: NSUnderlineStyleAttributeName]; }
+- (void) endUnderline { [attrDictionary setObject: [NSNumber numberWithInt: 0] forKey: GSUnderlineStyleAttributeName]; }
 
 - (void) endBlink
 {
@@ -329,9 +329,9 @@ static NSString *   sColors[8] = {
 
 - (void) endInverse
 {
-	[attrDictionary setObject: [plainAttributes objectForKey: NSForegroundColorAttributeName] forKey: NSForegroundColorAttributeName];
-//	[attrDictionary setObject: [plainAttributes objectForKey: NSBackgroundColorAttributeName] forKey: NSBackgroundColorAttributeName];
-	[attrDictionary removeObjectForKey: NSBackgroundColorAttributeName];
+	[attrDictionary setObject: [plainAttributes objectForKey: GSForegroundColorAttributeName] forKey: GSForegroundColorAttributeName];
+//	[attrDictionary setObject: [plainAttributes objectForKey: GSBackgroundColorAttributeName] forKey: GSBackgroundColorAttributeName];
+	[attrDictionary removeObjectForKey: GSBackgroundColorAttributeName];
 	invertMode = NO;
 }
 
@@ -351,35 +351,35 @@ static NSString *   sColors[8] = {
 {
 	if (invertMode)
 		[attrDictionary setObject: [TextStorageTerminal htmlColorForCode: color]
-							forKey: NSBackgroundColorAttributeName];
+							forKey: GSBackgroundColorAttributeName];
 	else
 		[attrDictionary setObject: [TextStorageTerminal htmlColorForCode: color]
-							forKey: NSForegroundColorAttributeName];
+							forKey: GSForegroundColorAttributeName];
 }
 
 - (void) setBackground: (TerminalColor) color
 {
 	if (invertMode)
 		[attrDictionary setObject: [TextStorageTerminal htmlColorForCode: color]
-							forKey: NSForegroundColorAttributeName];
+							forKey: GSForegroundColorAttributeName];
 	else if (color == tcWhite)
-		[attrDictionary removeObjectForKey: NSBackgroundColorAttributeName];
+		[attrDictionary removeObjectForKey: GSBackgroundColorAttributeName];
 	else
 		[attrDictionary setObject: [TextStorageTerminal htmlColorForCode: color]
-							forKey: NSBackgroundColorAttributeName];
+							forKey: GSBackgroundColorAttributeName];
 }
 
 - (void) setPlainForeground
 {
-	[attrDictionary setObject: [plainAttributes objectForKey: NSForegroundColorAttributeName]
-									  forKey: NSForegroundColorAttributeName];
+	[attrDictionary setObject: [plainAttributes objectForKey: GSForegroundColorAttributeName]
+									  forKey: GSForegroundColorAttributeName];
 }
 
 - (void) setPlainBackground
 {
-//	[attrDictionary setObject: [plainAttributes objectForKey: NSBackgroundColorAttributeName]
-//						forKey: NSBackgroundColorAttributeName];
-	[attrDictionary removeObjectForKey: NSBackgroundColorAttributeName];
+//	[attrDictionary setObject: [plainAttributes objectForKey: GSBackgroundColorAttributeName]
+//						forKey: GSBackgroundColorAttributeName];
+	[attrDictionary removeObjectForKey: GSBackgroundColorAttributeName];
 }
 
 - (void) enableAlternateCharacters { }

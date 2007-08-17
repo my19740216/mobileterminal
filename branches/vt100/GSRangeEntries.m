@@ -7,7 +7,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 // Original - Christopher Lloyd <cjwl@objc.net>
-#import "NSRangeEntries.h"
+#import "GSRangeEntries.h"
 #import <Foundation/Foundation.h>
 
 /* this could be improved with more merging of adjacent entries after insert/remove */
@@ -17,15 +17,15 @@ typedef struct NSRangeEntry {
    void   *value;
 } NSRangeEntry;
 
-struct NSRangeEntries {
+struct GSRangeEntries {
    unsigned             capacity;
    unsigned             count;
    struct NSRangeEntry *entries;
    BOOL                 objects;
 };
 
- NSRangeEntries *NSCreateRangeToOwnedPointerEntries(unsigned capacity) {
-   NSRangeEntries *result=NSZoneMalloc(NULL,sizeof(NSRangeEntries));
+ GSRangeEntries *NSCreateRangeToOwnedPointerEntries(unsigned capacity) {
+   GSRangeEntries *result=NSZoneMalloc(NULL,sizeof(GSRangeEntries));
 
    result->capacity=(capacity<4)?4:capacity;
    result->count=0;
@@ -35,21 +35,21 @@ struct NSRangeEntries {
    return result;
 }
 
-  NSRangeEntries *NSCreateRangeToCopiedObjectEntries(unsigned capacity) {
-   NSRangeEntries *result=NSCreateRangeToOwnedPointerEntries(capacity);
+  GSRangeEntries *NSCreateRangeToCopiedObjectEntries(unsigned capacity) {
+   GSRangeEntries *result=NSCreateRangeToOwnedPointerEntries(capacity);
 
    result->objects=YES;
 
    return result;
 }
 
- void NSFreeRangeEntries(NSRangeEntries *self) {
+ void NSFreeRangeEntries(GSRangeEntries *self) {
    NSResetRangeEntries(self);
    NSZoneFree(NULL,self->entries);
    NSZoneFree(NULL,self);
 }
 
- void NSResetRangeEntries(NSRangeEntries *self) {
+ void NSResetRangeEntries(GSRangeEntries *self) {
    int i;
 
    for(i=0;i<self->count;i++)
@@ -61,11 +61,11 @@ struct NSRangeEntries {
    self->count=0;
 }
 
- unsigned NSCountRangeEntries(NSRangeEntries *self) {
+ unsigned NSCountRangeEntries(GSRangeEntries *self) {
    return self->count;
 }
 
-static inline void insertEntryAtIndex(NSRangeEntries *self,unsigned index,NSRange range,void *value){
+static inline void insertEntryAtIndex(GSRangeEntries *self,unsigned index,NSRange range,void *value){
    int i;
 
    self->count++;
@@ -84,7 +84,7 @@ static inline void insertEntryAtIndex(NSRangeEntries *self,unsigned index,NSRang
    self->entries[index].value=value;
 }
 
- void NSRangeEntryInsert(NSRangeEntries *self,NSRange range,void *value) {
+ void NSRangeEntryInsert(GSRangeEntries *self,NSRange range,void *value) {
    int count=self->count;
    int bottom=0,top=count;
    int insertAt=0;
@@ -141,7 +141,7 @@ NSRange NSUnionRange2(NSRange r1, NSRange r2) {
     return NSMakeRange(first, length);
 }
 
- void *NSRangeEntryAtIndex(NSRangeEntries *self,unsigned location,NSRange *effectiveRangep) {
+ void *NSRangeEntryAtIndex(GSRangeEntries *self,unsigned location,NSRange *effectiveRangep) {
    int     count=self->count;
    int     bottom=0,top=count;
 
@@ -204,7 +204,7 @@ NSRange NSUnionRange2(NSRange r1, NSRange r2) {
    return NULL;
 }
 
- void *NSRangeEntryAtRange(NSRangeEntries *self,NSRange range) {
+ void *NSRangeEntryAtRange(GSRangeEntries *self,NSRange range) {
    int bottom=0,top=self->count;
 
    if(top>0){
@@ -224,7 +224,7 @@ NSRange NSUnionRange2(NSRange r1, NSRange r2) {
    return NULL;
 }
 
- NSRangeEnumerator NSRangeEntryEnumerator(NSRangeEntries *self) {
+ NSRangeEnumerator NSRangeEntryEnumerator(GSRangeEntries *self) {
    NSRangeEnumerator result;
 
    result.self=self;
@@ -234,7 +234,7 @@ NSRange NSUnionRange2(NSRange r1, NSRange r2) {
 }
 
  BOOL NSNextRangeEnumeratorEntry(NSRangeEnumerator *state,NSRange *rangep,void **valuep) {
-   NSRangeEntries *self=state->self;
+   GSRangeEntries *self=state->self;
 
    if(state->index>=self->count)
     return NO;
@@ -246,7 +246,7 @@ NSRange NSUnionRange2(NSRange r1, NSRange r2) {
    return YES;
 }
 
-static inline void removeEntryAtIndex(NSRangeEntries *self,unsigned index){
+static inline void removeEntryAtIndex(GSRangeEntries *self,unsigned index){
    if(self->objects)
     [(id)self->entries[index].value release];
    else
@@ -257,7 +257,7 @@ static inline void removeEntryAtIndex(NSRangeEntries *self,unsigned index){
     self->entries[index]=self->entries[index+1];
 }
 
- void NSRangeEntriesExpandAndWipe(NSRangeEntries *self,NSRange range,int delta) {
+ void GSRangeEntriesExpandAndWipe(GSRangeEntries *self,NSRange range,int delta) {
    int      count=self->count;
    unsigned max=NSMaxRange(range);
    enum { useBefore, useFirst, useAfter, useNone } useAttributes;
@@ -309,7 +309,7 @@ static inline void removeEntryAtIndex(NSRangeEntries *self,unsigned index){
    }
 }
 
- void NSRangeEntriesDivideAndConquer(NSRangeEntries *self,NSRange range) {
+ void GSRangeEntriesDivideAndConquer(GSRangeEntries *self,NSRange range) {
    int      count=self->count;
    unsigned max=NSMaxRange(range);
 
@@ -339,7 +339,7 @@ static inline void removeEntryAtIndex(NSRangeEntries *self,unsigned index){
    }
 }
 
- void NSRangeEntriesDump(NSRangeEntries *self) {
+ void GSRangeEntriesDump(GSRangeEntries *self) {
    int i;
 
 NSLog(@"DUMP BEGIN");
@@ -348,12 +348,12 @@ NSLog(@"DUMP BEGIN");
 NSLog(@"DUMP END");
 }
 
- void NSRangeEntriesDumpAndAbort(NSRangeEntries *self) {
-  NSRangeEntriesDump(self);
+ void GSRangeEntriesDumpAndAbort(GSRangeEntries *self) {
+  GSRangeEntriesDump(self);
 *(char *)0=0;
 }
 
- void NSRangeEntriesVerify(NSRangeEntries *self,unsigned length) {
+ void GSRangeEntriesVerify(GSRangeEntries *self,unsigned length) {
 #if 0
    unsigned last=0;
    int      i;
@@ -363,17 +363,17 @@ NSLog(@"DUMP END");
 
     if(range.length==0 && length>0){
     NSLog(@"ZERO RANGE");
-     NSRangeEntriesDumpAndAbort (self);
+     GSRangeEntriesDumpAndAbort (self);
     }
     if(range.location!=last){
     NSLog(@"RANGE GAP");
-     NSRangeEntriesDumpAndAbort (self);
+     GSRangeEntriesDumpAndAbort (self);
     }
     last=NSMaxRange(range);
    }
    if(last!=length){
     NSLog(@"SHORT RANGES %d",length);
-    NSRangeEntriesDumpAndAbort (self);
+    GSRangeEntriesDumpAndAbort (self);
    }
    if(self->count==0)
     NSLog(@"EMPTY");

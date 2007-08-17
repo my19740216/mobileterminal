@@ -1,9 +1,9 @@
 #import <Foundation/Foundation.h>
-#import "NSAttributedString-HTML.h"
+#import "GSAttributedString-HTML.h"
 #import "TextStorageTerminal.h"
 #import "Debug.h"
 
-@implementation NSAttributedString (HTML)
+@implementation GSAttributedString (HTML)
 
 NSString * cssForAttributes(NSDictionary *attr) {
     NSEnumerator *keyEnum = [attr keyEnumerator];
@@ -15,14 +15,14 @@ NSString * cssForAttributes(NSDictionary *attr) {
         o = [attr objectForKey: key];
         if ([key isEqualToString: TSTInvisibleAttribute] && o && [(NSNumber*)o intValue])
             display = @"display: none;";
-        else if ([key isEqualToString: NSUnderlineStyleAttributeName] && o && [(NSNumber*)o intValue])
+        else if ([key isEqualToString: GSUnderlineStyleAttributeName] && o && [(NSNumber*)o intValue])
             underline = @"text-decoration: underline;";
-        else if ([key isEqualToString: NSBackgroundColorAttributeName]) {
+        else if ([key isEqualToString: GSBackgroundColorAttributeName]) {
             // don't paint the background if it's black 'cause it will cover up our shiny background graphic!
             if (![o isEqualToString: @"000000"])
                 background = [NSString stringWithFormat: @"background-color: #%@;", o];
         }
-        else if ([key isEqualToString: NSForegroundColorAttributeName])
+        else if ([key isEqualToString: GSForegroundColorAttributeName])
             foreground = [NSString stringWithFormat: @"color: #%@;", o];
         else if ([key isEqualToString: TSTBoldAttribute] && o && [(NSNumber*)o intValue])
             bold = @"font-weight: bold;";

@@ -23,22 +23,22 @@ Terminal: main.o \
 		XTermAltCharLineFilter.o \
 		XTermDefaultLineFilter.o \
 		XTermEscapeLineFilter.o \
-		NSAttributedString.o \
-		NSMutableAttributedString.o \
-		NSAttributedString_manyAttributes.o \
-		NSAttributedString_nilAttributes.o \
-		NSAttributedString_oneAttribute.o \
-		NSAttributedString_placeholder.o \
-		NSMutableAttributedString_concrete.o \
+		GSAttributedString.o \
+		GSMutableAttributedString.o \
+		GSAttributedString_manyAttributes.o \
+		GSAttributedString_nilAttributes.o \
+		GSAttributedString_oneAttribute.o \
+		GSAttributedString_placeholder.o \
+		GSMutableAttributedString_concrete.o \
 		NSMutableString_proxyToMutableAttributedString.o \
-		NSRangeEntries.o \
-		NSTextStorage_concrete.o \
-		NSTextStorage.o \
+		GSRangeEntries.o \
+		GSTextStorage_concrete.o \
+		GSTextStorage.o \
 		SectionRecord.o \
 		TerminalSection.o \
-		NSAttributedString-HTML.o \
+		GSAttributedString-HTML.o \
 		TextStorageTerminal.o \
-		NSTextStorageTerminal.o
+		GSTextStorageTerminal.o
 	$(LD) $(LDFLAGS) -o $@ $^
 
 %.o:	%.m

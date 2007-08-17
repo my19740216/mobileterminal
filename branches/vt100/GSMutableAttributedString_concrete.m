@@ -7,12 +7,12 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 // Original - Christopher Lloyd <cjwl@objc.net>
-#import "NSMutableAttributedString_concrete.h"
+#import "GSMutableAttributedString_concrete.h"
 #import "NSMutableString_proxyToMutableAttributedString.h"
 #import <Foundation/Foundation.h>
 #import "Debug.h"
 
-@implementation NSMutableAttributedString_concrete
+@implementation GSMutableAttributedString_concrete
 
 -initWithString:(NSString *)string {
    _string=[string mutableCopy];
@@ -52,12 +52,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     int delta=[string length]-range.length;
     [_string replaceCharactersInRange:range withString:string];
 
-    NSRangeEntriesExpandAndWipe(_rangeToAttributes,range,delta);
+    GSRangeEntriesExpandAndWipe(_rangeToAttributes,range,delta);
     
     if(NSCountRangeEntries(_rangeToAttributes)==0)
         NSRangeEntryInsert(_rangeToAttributes,NSMakeRange(0,[_string length]),[NSDictionary dictionary]);
 
-    NSRangeEntriesVerify(_rangeToAttributes,[self length]);
+    GSRangeEntriesVerify(_rangeToAttributes,[self length]);
 }
 
 -(void)setAttributes:(NSDictionary *)attributes range:(NSRange)range {
@@ -69,10 +69,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     NSRangeEntryInsert(_rangeToAttributes,range,attributes);
    }
    else if(range.length>0){
-    NSRangeEntriesDivideAndConquer(_rangeToAttributes,range);
+    GSRangeEntriesDivideAndConquer(_rangeToAttributes,range);
     NSRangeEntryInsert(_rangeToAttributes,range,attributes);
    }
-NSRangeEntriesVerify(_rangeToAttributes,[self length]);
+GSRangeEntriesVerify(_rangeToAttributes,[self length]);
 }
 
 -(NSMutableString *)mutableString {

@@ -7,16 +7,16 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 // Original - Christopher Lloyd <cjwl@objc.net>
-#import "NSMutableAttributedString.h"
-#import "NSMutableAttributedString_concrete.h"
+#import "GSMutableAttributedString.h"
+#import "GSMutableAttributedString_concrete.h"
 #import <Foundation/Foundation.h>
 #import "Debug.h"
 
-@implementation NSMutableAttributedString
+@implementation GSMutableAttributedString
 
 +allocWithZone:(NSZone *)zone {
-   if(self==[NSMutableAttributedString class])
-    return NSAllocateObject([NSMutableAttributedString_concrete class],0,NULL);
+   if(self==[GSMutableAttributedString class])
+    return NSAllocateObject([GSMutableAttributedString_concrete class],0,NULL);
 
    return NSAllocateObject(self,0,zone);
 }
@@ -27,14 +27,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
    return self;
 }
 
--initWithAttributedString:(NSAttributedString *)other {
+-initWithAttributedString:(GSAttributedString *)other {
    self=[self init];
    [self setAttributedString:other];
    return self;
 }
 
 -(id)copyWithZone:(NSZone *)zone {
-   return [[NSAttributedString allocWithZone:NULL] initWithAttributedString:self];
+   return [[GSAttributedString allocWithZone:NULL] initWithAttributedString:self];
 }
 
 -(NSMutableString *)mutableString {
@@ -67,7 +67,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
    }
 }
 
--(void)appendAttributedString:(NSAttributedString *)attributedString {
+-(void)appendAttributedString:(GSAttributedString *)attributedString {
    [self replaceCharactersInRange:NSMakeRange([self length],0) withAttributedString:attributedString];
 }
 
@@ -96,7 +96,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
    }
 }
 
--(void)insertAttributedString:(NSAttributedString *)attributedString atIndex:(unsigned)index {
+-(void)insertAttributedString:(GSAttributedString *)attributedString atIndex:(unsigned)index {
     [self replaceCharactersInRange:NSMakeRange(index,0) withAttributedString:attributedString];
 }
 
@@ -104,7 +104,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 //   NSInvalidAbstractInvocation();
 }
 
--(void)replaceCharactersInRange:(NSRange)replaced withAttributedString:(NSAttributedString *)other {
+-(void)replaceCharactersInRange:(NSRange)replaced withAttributedString:(GSAttributedString *)other {
     NSString *string=[other string];
    unsigned location=0;
    unsigned limit=[string length];
@@ -126,7 +126,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 //   NSInvalidAbstractInvocation();
 }
 
--(void)setAttributedString:(NSAttributedString *)attributedString {
+-(void)setAttributedString:(GSAttributedString *)attributedString {
    [self replaceCharactersInRange:NSMakeRange(0,[self length]) withAttributedString:attributedString];
 }
 

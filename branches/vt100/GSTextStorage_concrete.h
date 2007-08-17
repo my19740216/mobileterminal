@@ -6,31 +6,12 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-// Original - Christopher Lloyd <cjwl@objc.net>
-#import "NSAttributedString.h"
-#import "NSAttributedString_placeholder.h"
-#import "NSAttributedString_nilAttributes.h"
-#import "NSAttributedString_oneAttribute.h"
-#import "NSAttributedString_manyAttributes.h"
+#import "GSTextStorage.h"
+#import "GSRangeEntries.h"
 
-@implementation NSAttributedString_placeholder
-
--(id)initWithString:(NSString *)string {
-   NSDeallocateObject(self);
-
-   return [(NSAttributedString_nilAttributes *)NSAllocateObject([NSAttributedString_nilAttributes class],0,NULL) initWithString:string];
-}
-
--(id)initWithString:(NSString *)string attributes:(NSDictionary *)attributes {
-   NSDeallocateObject(self);
-
-   return [(NSAttributedString_oneAttribute *)NSAllocateObject([NSAttributedString_oneAttribute class],0,NULL) initWithString:string attributes:attributes];
-}
-
--(id)initWithAttributedString:(NSAttributedString *)other {
-   NSDeallocateObject(self);
-
-   return [(NSAttributedString_manyAttributes *)NSAllocateObject([NSAttributedString_manyAttributes class],0,NULL) initWithAttributedString:other];
+@interface GSTextStorage_concrete : GSTextStorage {
+   NSMutableString *_string;
+   GSRangeEntries  *_rangeToAttributes;
 }
 
 @end

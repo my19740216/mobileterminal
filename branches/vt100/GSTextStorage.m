@@ -7,20 +7,20 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 // Original - Christopher Lloyd <cjwl@objc.net>
-#import "NSTextStorage.h"
-#import "NSTextStorage_concrete.h"
+#import "GSTextStorage.h"
+#import "GSTextStorage_concrete.h"
 //#import <AppKit/NSLayoutManager.h>
-#import "NSAttributedString.h"
+#import "GSAttributedString.h"
 //#import <AppKit/NSNibKeyedUnarchiver.h>
 #import "Debug.h"
 
-NSString *NSTextStorageWillProcessEditingNotification=@"NSTextStorageWillProcessEditingNotification";
-NSString *NSTextStorageDidProcessEditingNotification=@"NSTextStorageDidProcessEditingNotification";
+NSString *GSTextStorageWillProcessEditingNotification=@"GSTextStorageWillProcessEditingNotification";
+NSString *GSTextStorageDidProcessEditingNotification=@"GSTextStorageDidProcessEditingNotification";
 
-@implementation NSTextStorage
+@implementation GSTextStorage
 +allocWithZone:(NSZone *)zone {
-   if(self==[NSTextStorage class])
-    return NSAllocateObject([NSTextStorage_concrete class],0,NULL);
+   if(self==[GSTextStorage class])
+    return NSAllocateObject([GSTextStorage_concrete class],0,NULL);
 
    return NSAllocateObject(self,0,zone);
 }
@@ -92,11 +92,11 @@ NSString *NSTextStorageDidProcessEditingNotification=@"NSTextStorageDidProcessEd
 -(void)processEditing {
    //int i,count;
 
-   //[[NSNotificationCenter defaultCenter] postNotificationName: NSTextStorageWillProcessEditingNotification object:self];
+   //[[NSNotificationCenter defaultCenter] postNotificationName: GSTextStorageWillProcessEditingNotification object:self];
 
    //[self fixAttributesInRange:_editedRange];
 
-   //[[NSNotificationCenter defaultCenter] postNotificationName: NSTextStorageDidProcessEditingNotification object:self];
+   //[[NSNotificationCenter defaultCenter] postNotificationName: GSTextStorageDidProcessEditingNotification object:self];
 
    //count=[_layoutManagers count];
    //for(i=0;i<count;i++){

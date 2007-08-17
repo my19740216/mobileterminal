@@ -22,7 +22,7 @@
 #import <UIKit/UIView.h>
 #import <UIKit/UIBezierPath.h>
 #import "SectionRecord.h"
-#import "NSTextStorageTerminal.h"
+#import "GSTextStorageTerminal.h"
 
 @implementation SectionRecord
 
@@ -53,7 +53,7 @@
 
 //+ (NSTextContainer *) sharedTextContainer { return sTextContainer; }
 #if 1
-- (id) initWithOrigin: (float) yCoord content: (NSAttributedString *) initialContent
+- (id) initWithOrigin: (float) yCoord content: (GSAttributedString *) initialContent
 {
 	if ((self = [self initWithOrigin: yCoord])) {
 		[self appendAttributedString: initialContent];
@@ -68,7 +68,7 @@
 		heightOfLastLine = 0.0;
 	selectionStart =
 		selectionEnd = 0;
-	content = [[NSTextStorage alloc] init];
+	content = [[GSTextStorage alloc] init];
 	if (! content) {
 		[self release];
 		self = nil;
@@ -82,7 +82,7 @@
 	[super dealloc];
 }
 
-- (void) appendAttributedString: (NSAttributedString *) moreContent
+- (void) appendAttributedString: (GSAttributedString *) moreContent
 {
 	//  For each line in the string, scan for fonts and ask the layout manager for the line height.
 	//  Add this to the height of the view. Append the string to the text storage. Redisplay.
@@ -146,9 +146,9 @@
 //	return depth >= origin && depth < origin+height;
 //}
 
-- (NSTextStorage *) content { return content; }
+- (GSTextStorage *) content { return content; }
 
-- (void) setContent: (NSTextStorage *) newContent
+- (void) setContent: (GSTextStorage *) newContent
 {
 	if (newContent != content) {
 		[content release];
@@ -158,12 +158,12 @@
 
 - (unsigned) length { return [content length]; }
 
-- (NSAttributedString *) attributedSubstringFromRange: (NSRange) range
+- (GSAttributedString *) attributedSubstringFromRange: (NSRange) range
 {
 	return [[content attributedSubstringFromRange: range] unicodeAttributedString];
 }
 
-/*- (NSAttributedString *) selectedAttributedString
+/*- (GSAttributedString *) selectedAttributedString
 {
 	if (selectionStart == selectionEnd)
 		return nil;
@@ -188,7 +188,7 @@
 	
 	NSRange			attrRange = NSMakeRange(0, 0);
 	do {
-		NSString *	candidate = [content attribute: NSBackgroundColorAttributeName
+		NSString *	candidate = [content attribute: GSBackgroundColorAttributeName
 										   atIndex: NSMaxRange(attrRange)
 									effectiveRange: &attrRange];
 		if (candidate)
@@ -529,7 +529,7 @@
 	[aCoder encodeValueOfObjCType: @encode(float) at: &height];
 	[aCoder encodeValueOfObjCType: @encode(float) at: &heightOfLastLine];
 	
-	NSAttributedString *		temp = [[NSAttributedString alloc] initWithAttributedString: content];
+	GSAttributedString *		temp = [[GSAttributedString alloc] initWithAttributedString: content];
 	[aCoder encodeObject: temp];
 	[temp release];
 }
@@ -545,8 +545,8 @@
 	[aDecoder decodeValueOfObjCType: @encode(float) at: &height];
 	[aDecoder decodeValueOfObjCType: @encode(float) at: &heightOfLastLine];
 	
-	NSAttributedString *		temp = [aDecoder decodeObject];
-	content = [[NSTextStorage alloc] initWithAttributedString: temp];
+	GSAttributedString *		temp = [aDecoder decodeObject];
+	content = [[GSTextStorage alloc] initWithAttributedString: temp];
 	
 	selectionStart = selectionEnd = 0;
 	

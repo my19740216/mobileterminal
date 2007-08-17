@@ -20,12 +20,12 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "NSTextStorage.h"
+#import "GSTextStorage.h"
 
 /**
     \file
     Vertical text component for TallTextView
-    The TallTextView, a selectable and scrollable styled text view that accepts only tail-appends as modifications, consists internally of a visual stack of SectionRecords. Each SectionRecord has its own NSTextStorage, knows its origin and how tall it is, and can borrow an NSLayoutManager for drawing and hit testing.
+    The TallTextView, a selectable and scrollable styled text view that accepts only tail-appends as modifications, consists internally of a visual stack of SectionRecords. Each SectionRecord has its own GSTextStorage, knows its origin and how tall it is, and can borrow an NSLayoutManager for drawing and hit testing.
 */
 
 /**
@@ -42,7 +42,7 @@ typedef enum {
 
 
 /**	Vertical text component for TallTextView.
-    The TallTextView, a selectable and scrollable styled text view that accepts only tail-appends as modifications, consists internally of a visual stack of SectionRecords. Each SectionRecord has its own NSTextStorage, knows its origin and how tall it is, and can borrow an NSLayoutManager for drawing and hit testing.
+    The TallTextView, a selectable and scrollable styled text view that accepts only tail-appends as modifications, consists internally of a visual stack of SectionRecords. Each SectionRecord has its own GSTextStorage, knows its origin and how tall it is, and can borrow an NSLayoutManager for drawing and hit testing.
  
 	SectionRecord is not an NSView, but it has drawing methods. It is expected that its owner, a view, will defer the drawing of individual sections to the sections themselves.
 	\ingroup	Presentation
@@ -52,14 +52,14 @@ typedef enum {
 	float				origin;
 	float				height;
 	float				heightOfLastLine;
-	NSTextStorage *		content;
+	GSTextStorage *		content;
 	unsigned			selectionStart;
 	unsigned			selectionEnd;
 }
 
 /**
     Singleton layout manager for TallTextView/SectionRecord.
-    Returns the NSLayoutManager used for all layout and hit-test operations in SectionRecords. All SectionRecords, which keep the several NSTextStorages of TallTextViews, share a single NSLayoutManager.
+    Returns the NSLayoutManager used for all layout and hit-test operations in SectionRecords. All SectionRecords, which keep the several GSTextStorages of TallTextViews, share a single NSLayoutManager.
     @retval     NSLayoutManager the shared layout manager.
 */
 //+ (NSLayoutManager *) sharedLayoutManager;
@@ -81,10 +81,10 @@ typedef enum {
     Initialize section with known content.
     This is a convenience initializer that calls initWithOrigin: and then appendAttributedString:. Use it when you know both the origin and initial content of the section.
     @param      yCoord The depth in the view of the top-left corner of the section.
-    @param      initialContent NSAttributedString, the content of the section.
+    @param      initialContent GSAttributedString, the content of the section.
     @retval     self unless the text storage could not be allocated, in which case nil.
 */
-- (id) initWithOrigin: (float) yCoord content: (NSAttributedString *) initialContent;
+- (id) initWithOrigin: (float) yCoord content: (GSAttributedString *) initialContent;
 /**
     Designated initializer.
     Creates a SectionRecord with empty text storage, zero height, no selection, and top-left corner at the given origin.
@@ -96,9 +96,9 @@ typedef enum {
 /**
     Add content to the end of the section.
     This method appends the given attributed string to the section's text storage, and adjusts the section's height according to the changes. This is done by querying the layout manager for defaultLineHeightForFont:, rather than doing an actual layout, so discrepancies with drawn layout are conceivable, but have never been observed.
-    @param      moreContent NSAttributedString, the content to append to the section.
+    @param      moreContent GSAttributedString, the content to append to the section.
 */
-- (void) appendAttributedString: (NSAttributedString *) moreContent;
+- (void) appendAttributedString: (GSAttributedString *) moreContent;
 /**
     The y-coordinate of the top of the section.
     This is a direct accessor for the origin instance variable. It represents the y-coordinate in flipped (positive-down) coordinates of the top-left corner of the section within the enclosing view.
@@ -141,35 +141,35 @@ typedef enum {
 
 /**
     The section's text storage.
-    This is a direct accessor for the SectionRecord's NSTextStorage.
-    @retval     NSTextStorage the text storage for this SectionRecord.
+    This is a direct accessor for the SectionRecord's GSTextStorage.
+    @retval     GSTextStorage the text storage for this SectionRecord.
 */
-- (NSTextStorage *) content;
+- (GSTextStorage *) content;
 /**
     Set the section's text storage.
     Setter for the SectionRecord's text storage. The existing storage is released.
-    @param      newContent NSTextStorage, the new text storage.
+    @param      newContent GSTextStorage, the new text storage.
 */
-- (void) setContent: (NSTextStorage *) newContent;
+- (void) setContent: (GSTextStorage *) newContent;
 /**
     The length of the text.
-    This is the length of the SectionRecord's NSTextStorage, in characters.
+    This is the length of the SectionRecord's GSTextStorage, in characters.
     @retval     Unsigned integer, the length of the section's text.
 */
 - (unsigned) length;
 /**
     Retrieve substring from attributed content.
-    Given a range, retrieves the attributed substring of the section's NSTextStorage that occupies that range. A front for attributedSubstringFromRange: method, with substitutions made for certain graphical characters (see NSAttributedString(attributedCharacter) unicodeAttributedString).
+    Given a range, retrieves the attributed substring of the section's GSTextStorage that occupies that range. A front for attributedSubstringFromRange: method, with substitutions made for certain graphical characters (see GSAttributedString(attributedCharacter) unicodeAttributedString).
     @param      range NSRange, the portion of the section's text to extract.
-    @retval     NSAttributedString the extracted text.
+    @retval     GSAttributedString the extracted text.
 */
-- (NSAttributedString *) attributedSubstringFromRange: (NSRange) range;
+- (GSAttributedString *) attributedSubstringFromRange: (NSRange) range;
 /**
     Retrieve the selected substring.
     This is equivalent to deriving an NSRange from the section's selection, and passing it in an -attributedSubstringFromRange: message.
-    @retval     NSAttributedString the extracted text.
+    @retval     GSAttributedString the extracted text.
 */
-//- (NSAttributedString *) selectedAttributedString;
+//- (GSAttributedString *) selectedAttributedString;
 /**
     Retrieve text attribute at a location.
     Given a point within the section, determine whether the named attribute is present in the text at that point, and return the value of that attribute if it is. Return nil if it isn't.

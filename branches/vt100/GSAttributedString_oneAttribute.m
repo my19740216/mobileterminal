@@ -6,46 +6,36 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
+// Original - Christopher Lloyd <cjwl@objc.net>
+#import "GSAttributedString_oneAttribute.h"
 #import <Foundation/Foundation.h>
-//#import <AppKit/AppKitExport.h>
-#import "NSMutableAttributedString.h"
-//@class NSLayoutManager;
 
-enum {
-   NSTextStorageEditedCharacters=0x01,
-   NSTextStorageEditedAttributes=0x02,
-};
+@implementation GSAttributedString_oneAttribute
 
-extern NSString *NSTextStorageWillProcessEditingNotification;
-extern NSString *NSTextStorageDidProcessEditingNotification;
-
-@interface NSTextStorage : NSMutableAttributedString {
-   id              _delegate;
-   NSMutableArray *_layoutManagers;
-   int             _changeInLength;
-   unsigned        _editedMask;
-   NSRange         _editedRange;
-   int             _beginEditing;
+-(NSString *)string {
+   return _string;
 }
 
--delegate;
--(NSArray *)layoutManagers;
+-(NSDictionary *)attributesAtIndex:(unsigned)location effectiveRange:(NSRangePointer)range {
+   if(location>=[self length])
+    [NSException raise: NSRangeException format: @"index %d beyond length %d",location,[self length]];
 
--(int)changeInLength;
--(unsigned)editedMask;
--(NSRange)editedRange;
+   if(range!=NULL)
+    *range=NSMakeRange(0,[_string length]);
 
--(void)setDelegate:delegate;
-//-(void)addLayoutManager:(NSLayoutManager *)layoutManager;
-//-(void)removeLayoutManager:(NSLayoutManager *)layoutManager;
+   return _attributes;
+}
 
--(void)processEditing;
+-initWithString:(NSString *)string attributes:(NSDictionary *)attributes {
+   _string=[string copy];
+   _attributes=[attributes retain];
+   return self;
+}
 
--(void)edited:(unsigned)editedMask range:(NSRange)range changeInLength:(int)delta;
+-(void)dealloc {
+   [_string release];
+   [_attributes release];
+   [super dealloc];
+}
 
-@end
-
-@interface NSObject(NSTextStorage_delegate)
--(void)textStorageWillProcessEditing:(NSNotification *)note;
--(void)textStorageDidProcessEditing:(NSNotification *)note;
 @end

@@ -21,7 +21,7 @@
 /**
     \file
     TallTextView section that emulates a terminal.
-    A pure TallTextView is a visual stack of SectionRecords, all but the last static, and the last appending attributed text. The IntegratedTSView adds to the bottom of the stack an additional kind of SectionRecord, which has as a model not a simple NSTextStorage, but a TextStorageTerminal, which can emulate a terminal display. This header declares that section type, TerminalSection.
+    A pure TallTextView is a visual stack of SectionRecords, all but the last static, and the last appending attributed text. The IntegratedTSView adds to the bottom of the stack an additional kind of SectionRecord, which has as a model not a simple GSTextStorage, but a TextStorageTerminal, which can emulate a terminal display. This header declares that section type, TerminalSection.
 */
 
 #import <UIKit/UIView.h>
@@ -32,7 +32,7 @@
 
 /**	\ingroup	Presentation
         TallTextView SectionRecord that emulates a terminal.
-    A pure TallTextView is a visual stack of SectionRecords, all but the last static, and the last appending attributed text. The IntegratedTSView adds to the bottom of the stack an additional kind of SectionRecord, which has as a model not a simple NSTextStorage, but a TextStorageTerminal, which can emulate a terminal display.
+    A pure TallTextView is a visual stack of SectionRecords, all but the last static, and the last appending attributed text. The IntegratedTSView adds to the bottom of the stack an additional kind of SectionRecord, which has as a model not a simple GSTextStorage, but a TextStorageTerminal, which can emulate a terminal display.
  
 	TextStorageTerminal is responsible for drawing the terminal's cursor. The first stage is, during the background-drawing phase, simply to draw a block of the appropriate size and color in the proper place. A second phase may be necessary: If the cursor color has been determined to be close in luminance to the foreground text color, TerminalSection will come in after the text has been drawn to redraw the character at the cursor in the background color.
 */

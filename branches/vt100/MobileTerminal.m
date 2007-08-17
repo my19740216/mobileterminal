@@ -16,7 +16,7 @@
 #import "ShellView.h"
 #import "ShellView-Gesture.h"
 #import "SubProcess.h"
-#import "NSTextStorageTerminal.h"
+#import "GSTextStorageTerminal.h"
 #import "KeyboardTarget.h"
 
 #include <stdio.h>
@@ -28,7 +28,7 @@
 
 UIApplication *UIApp;
 
-- (void) terminalScreen: (TextStorageTerminal *)terminal scrollsOffText: (NSAttributedString *)text {
+- (void) terminalScreen: (TextStorageTerminal *)terminal scrollsOffText: (GSAttributedString *)text {
     [scrollback appendString: [text html]];
     scrollbackbytes += [text length];
 }

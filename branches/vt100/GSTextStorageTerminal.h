@@ -1,5 +1,5 @@
 //
-//  NSTextStorageTerminal.h
+//  GSTextStorageTerminal.h
 //  Crescat
 //
 //  Created by Fritz Anderson on Thu Sep 18 2003.
@@ -20,41 +20,41 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "NSAttributedString.h"
-#import "NSMutableAttributedString.h"
-#import "NSTextStorage.h"
+#import "GSAttributedString.h"
+#import "GSMutableAttributedString.h"
+#import "GSTextStorage.h"
 
-/**	Extensions to NSAttributedString to provide convenient literals and to translate alt-encoded characters into Unicode for export.
+/**	Extensions to GSAttributedString to provide convenient literals and to translate alt-encoded characters into Unicode for export.
 	\ingroup	TermModel
 */
-@interface NSAttributedString (attributedCharacter)
+@interface GSAttributedString (attributedCharacter)
 
 /**	A single-character attributed string with the given attributes.
 	\param	unichar	the single-character content for the string.
 	\param	attrs	the attributes the string is to have.
-	\retval	NSAttributedString	the single character, with the given attributes.
+	\retval	GSAttributedString	the single character, with the given attributes.
 */
 + (id) stringWithCharacter: (unichar) ch attributes: (NSDictionary *) attrs;
 /**	The space character, with only the given font attribute.
 	The result has an attribute dictionary with only the font attribute set.
 	\param	aFont				the desired font.
-	\retval	NSAttributedString	a space character, in aFont.
+	\retval	GSAttributedString	a space character, in aFont.
 */
-//+ (NSAttributedString *) spaceInFont: (NSFont *) aFont;
+//+ (GSAttributedString *) spaceInFont: (NSFont *) aFont;
 /**	The newline character, with only the given font attribute.
 	The result has an attribute dictionary with only the font attribute set.
 	\param	aFont				the desired font.
-	\retval	NSAttributedString	a newline character, in aFont.
+	\retval	GSAttributedString	a newline character, in aFont.
 */
-//+ (NSAttributedString *) newlineInFont: (NSFont *) aFont;
+//+ (GSAttributedString *) newlineInFont: (NSFont *) aFont;
 /**	A newline with the given attributes.
-	\retval NSAttributedString	a \\n with the given attribute dictionary. Allocated and autoreleased for each call.
+	\retval GSAttributedString	a \\n with the given attribute dictionary. Allocated and autoreleased for each call.
 */
-+ (NSAttributedString *) newlineWithAttrs: (NSDictionary *) attrs;
++ (GSAttributedString *) newlineWithAttrs: (NSDictionary *) attrs;
 /**	A space with the given attributes.
-	\retval NSAttributedString	a space character with the given attribute dictionary. Allocated and autoreleased for each call.
+	\retval GSAttributedString	a space character with the given attribute dictionary. Allocated and autoreleased for each call.
 */
-+ (NSAttributedString *) spaceWithAttrs: (NSDictionary *) attrs;
++ (GSAttributedString *) spaceWithAttrs: (NSDictionary *) attrs;
 
 /**	Translate internal alt-character coding into Unicode.
 	Crescat uses an internal code for ANSI alternate characters that must be drawn specially. These have at least close equivalents in Unicode, but the Unicode characters do not render with uniform spacing in Monaco. This method converts runs with the alt-charset character attributes to Unicode, and returns the plain string.
@@ -63,16 +63,16 @@
 - (NSString *) unicodeString;
 /**	Translate internal alt-character coding into Unicode attributed string.
 	Crescat uses an internal code for ANSI alternate characters that must be drawn specially. These have at least close equivalents in Unicode, but the Unicode characters do not render with uniform spacing in Monaco. This method converts runs with the alt-charset character attributes to Unicode, and returns the attributed string without the alt-charset attribute.
-	\retval	NSAttributedString	a copy of the receiver, with alt-chars translated into Unicode. Formatting not related to alt-char markup is preserved.
+	\retval	GSAttributedString	a copy of the receiver, with alt-chars translated into Unicode. Formatting not related to alt-char markup is preserved.
 */
-- (NSAttributedString *) unicodeAttributedString;
+- (GSAttributedString *) unicodeAttributedString;
 
 @end
 
-/**	Extensions to NSMutableAttributedString for mass-substituting fonts or colors.
+/**	Extensions to GSMutableAttributedString for mass-substituting fonts or colors.
 	\ingroup	TermModel
 */
-@interface NSMutableAttributedString (attrSubstitution)
+@interface GSMutableAttributedString (attrSubstitution)
 
 /**	Replace all uses of a foreground color with another.
 	\param	target		the color to replace.
@@ -123,10 +123,10 @@
 
 @end
 
-/**	Extensions to NSTextStorage that support the row-and-column model of a terminal.
+/**	Extensions to GSTextStorage that support the row-and-column model of a terminal.
 	\ingroup	TermModel
 */
-@interface NSTextStorage (terminalExtensions)
+@interface GSTextStorage (terminalExtensions)
 
 /**	The number of lines in the receiver.
 	\see NSString(lineRange)#lineCount
@@ -157,9 +157,9 @@
 	The result will end in a newline unless the last line was ended with end-of-string. Asking for more lines than are available will yield only as many lines as are there. Asking for where >= the number of lines in the receiver will return nil.
 	\param	howMany	int, >= 1, the number of lines to copy
 	\param	where	int, >= 0, the first line to copy.
-	\retval	NSAttributedString	the substring comprising howMany lines beginning at line where.
+	\retval	GSAttributedString	the substring comprising howMany lines beginning at line where.
 */
-- (NSAttributedString *) copyLines: (int) howMany atLine: (int) where;
+- (GSAttributedString *) copyLines: (int) howMany atLine: (int) where;
 
 /**	Make sure a character in the receiver represents {row, column}.
 	This is the heart of modeling the terminal in a flat string. A caller can ensure, before setting a character at a row and column, that a space representing that position, front-filled with spaces if necessary, is present in the text storage. This method will append as many newlines as are necessary to ensure that \c row is present in the storage, and then will fill that line with as many spaces as are necessary to ensure that at least \c column + 1 spaces are in that line.
@@ -306,7 +306,7 @@
 */
 - (unichar) characterAtRow: (int) row column: (int) column;
 
-/**	The NSTextView associated with this NSTextStorage.
+/**	The NSTextView associated with this GSTextStorage.
 	This method returns the first text view associated with the first container 
     associated with the first layout manager associated with the receiver. Each 
     of those associations can be many-to-one, or null, so this is not a 

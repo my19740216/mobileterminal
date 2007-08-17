@@ -10,30 +10,30 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #import <Foundation/NSRange.h>
 
 // an ordered, nonoverlapping set of NSRanges and related value
-typedef struct NSRangeEntries NSRangeEntries;
+typedef struct GSRangeEntries GSRangeEntries;
 
 typedef struct {
-   NSRangeEntries *self;
+   GSRangeEntries *self;
    unsigned        index;
 } NSRangeEnumerator;
 
-FOUNDATION_EXPORT NSRangeEntries *NSCreateRangeToOwnedPointerEntries(unsigned capacity);
-FOUNDATION_EXPORT NSRangeEntries *NSCreateRangeToCopiedObjectEntries(unsigned capacity);
+FOUNDATION_EXPORT GSRangeEntries *NSCreateRangeToOwnedPointerEntries(unsigned capacity);
+FOUNDATION_EXPORT GSRangeEntries *NSCreateRangeToCopiedObjectEntries(unsigned capacity);
 
-FOUNDATION_EXPORT void NSFreeRangeEntries(NSRangeEntries *self);
-FOUNDATION_EXPORT void  NSResetRangeEntries(NSRangeEntries *self);
-FOUNDATION_EXPORT unsigned NSCountRangeEntries(NSRangeEntries *self);
+FOUNDATION_EXPORT void NSFreeRangeEntries(GSRangeEntries *self);
+FOUNDATION_EXPORT void  NSResetRangeEntries(GSRangeEntries *self);
+FOUNDATION_EXPORT unsigned NSCountRangeEntries(GSRangeEntries *self);
 
-FOUNDATION_EXPORT void  NSRangeEntryInsert(NSRangeEntries *self,NSRange range,void *value);
-FOUNDATION_EXPORT void *NSRangeEntryAtIndex(NSRangeEntries *self,unsigned index,NSRange *effectiveRange);
-FOUNDATION_EXPORT void *NSRangeEntryAtRange(NSRangeEntries *self,NSRange range);
+FOUNDATION_EXPORT void  NSRangeEntryInsert(GSRangeEntries *self,NSRange range,void *value);
+FOUNDATION_EXPORT void *NSRangeEntryAtIndex(GSRangeEntries *self,unsigned index,NSRange *effectiveRange);
+FOUNDATION_EXPORT void *NSRangeEntryAtRange(GSRangeEntries *self,NSRange range);
 
-FOUNDATION_EXPORT NSRangeEnumerator NSRangeEntryEnumerator(NSRangeEntries *self);
+FOUNDATION_EXPORT NSRangeEnumerator NSRangeEntryEnumerator(GSRangeEntries *self);
 FOUNDATION_EXPORT BOOL NSNextRangeEnumeratorEntry(NSRangeEnumerator *state,NSRange *rangep,void **value);
 
-FOUNDATION_EXPORT void NSRangeEntriesExpandAndWipe(NSRangeEntries *self,NSRange range,int delta);
-FOUNDATION_EXPORT void NSRangeEntriesDivideAndConquer(NSRangeEntries *self,NSRange range);
-FOUNDATION_EXPORT void NSRangeEntriesDump(NSRangeEntries *self);
-FOUNDATION_EXPORT void NSRangeEntriesVerify(NSRangeEntries *self,unsigned length);
+FOUNDATION_EXPORT void GSRangeEntriesExpandAndWipe(GSRangeEntries *self,NSRange range,int delta);
+FOUNDATION_EXPORT void GSRangeEntriesDivideAndConquer(GSRangeEntries *self,NSRange range);
+FOUNDATION_EXPORT void GSRangeEntriesDump(GSRangeEntries *self);
+FOUNDATION_EXPORT void GSRangeEntriesVerify(GSRangeEntries *self,unsigned length);
 NSRange NSUnionRange2(NSRange r1, NSRange r2);
 

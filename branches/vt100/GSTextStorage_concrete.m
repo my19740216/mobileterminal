@@ -7,11 +7,11 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
 // Original - Christopher Lloyd <cjwl@objc.net>
-#import "NSTextStorage_concrete.h"
+#import "GSTextStorage_concrete.h"
 //#import <AppKit/NSNibKeyedUnarchiver.h>
 #import "Debug.h"
 
-@implementation NSTextStorage_concrete
+@implementation GSTextStorage_concrete
 
 -initWithString:(NSString *)string {
    [super initWithString:string];
@@ -47,23 +47,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
    return result;
 }
 
-static inline int replaceCharactersInRangeWithString(NSTextStorage_concrete *self,NSRange range,NSString *string){
+static inline int replaceCharactersInRangeWithString(GSTextStorage_concrete *self,NSRange range,NSString *string){
    int delta=[string length]-range.length;
 
    [self->_string replaceCharactersInRange:range withString:string];
 
-//NSRangeEntriesDump(self->_rangeToAttributes);
+//GSRangeEntriesDump(self->_rangeToAttributes);
 
-   NSRangeEntriesExpandAndWipe(self->_rangeToAttributes,range,delta);
+   GSRangeEntriesExpandAndWipe(self->_rangeToAttributes,range,delta);
    if(NSCountRangeEntries(self->_rangeToAttributes)==0)
     NSRangeEntryInsert(self->_rangeToAttributes,NSMakeRange(0,[self->_string length]),[NSDictionary dictionary]);
 
-NSRangeEntriesVerify(self->_rangeToAttributes,[self length]);
+GSRangeEntriesVerify(self->_rangeToAttributes,[self length]);
 
    return delta;
 }
 
-static inline void setAttributes(NSTextStorage_concrete *self,NSDictionary *attributes,NSRange range){
+static inline void setAttributes(GSTextStorage_concrete *self,NSDictionary *attributes,NSRange range){
    if(attributes==nil)
     attributes=[NSDictionary dictionary];
 
@@ -72,21 +72,21 @@ static inline void setAttributes(NSTextStorage_concrete *self,NSDictionary *attr
     NSRangeEntryInsert(self->_rangeToAttributes,range,attributes);
    }
    else if(range.length>0){
-    NSRangeEntriesDivideAndConquer(self->_rangeToAttributes,range);
+    GSRangeEntriesDivideAndConquer(self->_rangeToAttributes,range);
     NSRangeEntryInsert(self->_rangeToAttributes,range,attributes);
    }
 
-NSRangeEntriesVerify(self->_rangeToAttributes,[self length]);
+GSRangeEntriesVerify(self->_rangeToAttributes,[self length]);
 
 }
 
-static inline void replaceCharactersInRangeWithAttributedString(NSTextStorage_concrete *self,NSRange replaced,NSAttributedString *other) {
+static inline void replaceCharactersInRangeWithAttributedString(GSTextStorage_concrete *self,NSRange replaced,GSAttributedString *other) {
     NSString *string=[other string];
    unsigned location=0;
    unsigned limit=[string length];
    int      delta=replaceCharactersInRangeWithString(self,replaced,string);
    
-   [self edited:NSTextStorageEditedAttributes|NSTextStorageEditedCharacters range:replaced changeInLength:delta];
+   [self edited:GSTextStorageEditedAttributes|GSTextStorageEditedCharacters range:replaced changeInLength:delta];
    
    while(location<limit){
     NSRange       effectiveRange;
@@ -98,24 +98,24 @@ static inline void replaceCharactersInRangeWithAttributedString(NSTextStorage_co
     location=NSMaxRange(effectiveRange);
    }
 
-   [self edited:NSTextStorageEditedAttributes range:NSMakeRange(replaced.location,limit) changeInLength:0];
+   [self edited:GSTextStorageEditedAttributes range:NSMakeRange(replaced.location,limit) changeInLength:0];
 }
 
 -(void)replaceCharactersInRange:(NSRange)range withString:(NSString *)string {
    int delta=replaceCharactersInRangeWithString(self,range,string);
-   [self edited:NSTextStorageEditedAttributes|NSTextStorageEditedCharacters range:range changeInLength:delta];
+   [self edited:GSTextStorageEditedAttributes|GSTextStorageEditedCharacters range:range changeInLength:delta];
 }
 
 -(void)setAttributes:(NSDictionary *)attributes range:(NSRange)range {
    setAttributes(self,attributes,range);
-   [self edited:NSTextStorageEditedAttributes range:range changeInLength:0];
+   [self edited:GSTextStorageEditedAttributes range:range changeInLength:0];
 }
 
--(void)replaceCharactersInRange:(NSRange)replaced withAttributedString:(NSAttributedString *)other {
+-(void)replaceCharactersInRange:(NSRange)replaced withAttributedString:(GSAttributedString *)other {
    replaceCharactersInRangeWithAttributedString(self,replaced,other);
 }
 
--(void)setAttributedString:(NSAttributedString *)attributedString {
+-(void)setAttributedString:(GSAttributedString *)attributedString {
    [self beginEditing];
    replaceCharactersInRangeWithAttributedString(self,NSMakeRange(0,[self length]),attributedString);
    [self endEditing];

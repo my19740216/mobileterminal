@@ -21,20 +21,20 @@
 
 //#import <Cocoa/Cocoa.h>
 #import <Foundation/Foundation.h>
-#import "NSAttributedString.h"
-#import "NSTextStorage.h"
+#import "GSAttributedString.h"
+#import "GSTextStorage.h"
 #import "Debug.h"
 
 /**
     \file
-    Model for NSTextStorage-based terminal screen.
-    TextStorageTerminal maintains an NSTextStorage and supports a repertoire of methods that make the storage behave like a fixed array of characters with simple attributes. 
+    Model for GSTextStorage-based terminal screen.
+    TextStorageTerminal maintains an GSTextStorage and supports a repertoire of methods that make the storage behave like a fixed array of characters with simple attributes. 
 
 	It has a delegate that takes care of controller-layer tasks like transmitting report codes, printing, and storing scrolled-off text. 
 */
 
 /**	\defgroup	TermModel		Terminal model
-	Organizing NSString and NSTextStorage into a row-and-column model for placing, inserting, and deleting text. The nexus to terminal presentation (using the Cocoa text architecture to display and select terminal text) is TextStorageTerminal.
+	Organizing NSString and GSTextStorage into a row-and-column model for placing, inserting, and deleting text. The nexus to terminal presentation (using the Cocoa text architecture to display and select terminal text) is TextStorageTerminal.
 */
 /**	\defgroup	Presentation	Terminal presentation
 	The visual presentation of a terminal screen and its scrollback. Text display is based on the Cocoa text architecture. The nexus to the terminal model (addressing attributed text by row and column) is TextStorageTerminal.
@@ -102,17 +102,17 @@ extern NSString * const TSScreenScrolledNotification;
 
 
 /**
-	Model class for an NSTextStorage-based terminal screen.
-	TextStorageTerminal maintains an NSTextStorage and supports a repertoire of methods that make the storage behave like a fixed array of characters with simple attributes. The intent of this class is to provide methods that correspond closely to the primitive terminal operations in the termcap database.
+	Model class for an GSTextStorage-based terminal screen.
+	TextStorageTerminal maintains an GSTextStorage and supports a repertoire of methods that make the storage behave like a fixed array of characters with simple attributes. The intent of this class is to provide methods that correspond closely to the primitive terminal operations in the termcap database.
  
-	The other classes in the terminal-model group handle row-and-column addressing of an NSTextStorage, but they do not have the semantics of a terminal: There is no concept of scrolling, of a cursor, or of a limit to the height or width of the character array. TextStorageTerminal is responsible for those semantics.
+	The other classes in the terminal-model group handle row-and-column addressing of an GSTextStorage, but they do not have the semantics of a terminal: There is no concept of scrolling, of a cursor, or of a limit to the height or width of the character array. TextStorageTerminal is responsible for those semantics.
  
 	\ingroup TermModel
 	\ingroup Presentation
 */
 @interface TextStorageTerminal : NSObject
 {
-	NSTextStorage *			content;
+	GSTextStorage *			content;
 	
 	int						rows;
 	int						columns;
@@ -159,7 +159,7 @@ extern NSString * const TSScreenScrolledNotification;
 - (id) init;
 /**
     Designated initializer. Model a terminal with the given number of lines and columns.
-    This initializer sets its character attributes to the terminal defaults and allocates its NSTextStorage, initializing it with the default attributes. Cursor visible at 0, 0, tabs reset, screen erased.
+    This initializer sets its character attributes to the terminal defaults and allocates its GSTextStorage, initializing it with the default attributes. Cursor visible at 0, 0, tabs reset, screen erased.
     @param      nRows Integer, the number of lines the terminal is to have.
     @param      nColumns Integer, the number of characters each line in the terminal is to have.
     @retval     self
@@ -167,20 +167,20 @@ extern NSString * const TSScreenScrolledNotification;
 - (id) initWithRows: (int) nRows columns: (int) nColumns;
 
 /**
-    The NSTextStorage backing the terminal model.
-    This is a direct accessor to the NSTextStorage object that underlies the terminal model.
-    @retval     NSTextStorage the text storage object.
+    The GSTextStorage backing the terminal model.
+    This is a direct accessor to the GSTextStorage object that underlies the terminal model.
+    @retval     GSTextStorage the text storage object.
 */
-- (NSTextStorage *) textStorage;
+- (GSTextStorage *) textStorage;
 /**
     Set the contents of the terminal screen.
     This is equivalent to sending setAttributedString: to the underlying textStorage for the TextStorageTerminal. The attributed string you supply will completely replace the contents of the terminal.
-    @param      string NSAttributedString, the new content for the terminal.
+    @param      string GSAttributedString, the new content for the terminal.
 */
-- (void) setAttributedString: (NSAttributedString *) string;
+- (void) setAttributedString: (GSAttributedString *) string;
 /**
     The attributes for characters arriving at the screen.
-    This is an NSDictionary, suitable for use in an NSAttributedString, describing the attributes that will be given the next character that is written to the terminal.
+    This is an NSDictionary, suitable for use in an GSAttributedString, describing the attributes that will be given the next character that is written to the terminal.
  
 	-resetCurrentAttributes will replace this object, so always use this method to examine the current-attribute dictionary.
     @retval     NSDictionary an attribute dictionary.
@@ -188,7 +188,7 @@ extern NSString * const TSScreenScrolledNotification;
 - (NSDictionary *) currentAttributes;
 /**
     The attributes that constitute plain text.
-    This is an NSDictionary, suitable for use in an NSAttributedString, describing the attributes used when the terminal is reset to plain text. Absolute dictionaries -- dictionaries that are "just bold," for instance -- are built from this dictionary.
+    This is an NSDictionary, suitable for use in an GSAttributedString, describing the attributes used when the terminal is reset to plain text. Absolute dictionaries -- dictionaries that are "just bold," for instance -- are built from this dictionary.
     @retval     NSDictionary an attribute dictionary.
 */
 - (NSDictionary *) plainAttributes;
@@ -232,7 +232,7 @@ extern NSString * const TSScreenScrolledNotification;
 
 /**
     Change size of terminal.
-    This method, called by the TerminalSection initialization and resizing methods, handles the bookkeeping for changes in terminal geometry: Adding or removing lines in the NSTextStorage, resetting tab stops, and making sure the cursor stays on the screen. 
+    This method, called by the TerminalSection initialization and resizing methods, handles the bookkeeping for changes in terminal geometry: Adding or removing lines in the GSTextStorage, resetting tab stops, and making sure the cursor stays on the screen. 
 	
 	Curiously, nothing is done to truncate lines when the terminal becomes narrower. One would not want to do so while tracking a resize (the resize might be reversed), but I'm surprised the storage is allowed to linger. 
     @param      nRows Integer, the new height of the terminal, in lines.
@@ -462,7 +462,7 @@ extern NSString * const TSScreenScrolledNotification;
 - (void) cursorToColumn: (int) column;
 /**
     The number of characters in the text storage before the cursor position.
-    This method uses a NSTextStorage category method, ensureRow:hasColumn:withAttributes:, to determine how many characters there currently are in the text storage before the character under the terminal cursor. This is not necessarily row * columns + column, because the text storage keeps short lines for lines that don't fill all the columns.
+    This method uses a GSTextStorage category method, ensureRow:hasColumn:withAttributes:, to determine how many characters there currently are in the text storage before the character under the terminal cursor. This is not necessarily row * columns + column, because the text storage keeps short lines for lines that don't fill all the columns.
     @retval     Integer the number of characters before the cursor.
 */
 - (int) characterOffsetOfCursor;
@@ -664,7 +664,7 @@ extern NSString * const TSScreenScrolledNotification;
 - (void) startBold;
 /**
     Set Underline text attribute.
-    Sets the NSUnderlineStyleAttributeName in the attribute dictionary to 1, so all characters that arrive until endUnderline or a reset is encountered are underlined. Additional calls to this method have no effect.
+    Sets the GSUnderlineStyleAttributeName in the attribute dictionary to 1, so all characters that arrive until endUnderline or a reset is encountered are underlined. Additional calls to this method have no effect.
 */
 - (void) startUnderline;
 /**
@@ -694,7 +694,7 @@ extern NSString * const TSScreenScrolledNotification;
 - (void) endBold;
 /**
     Clear the Underline text attribute.
-    Sets the NSUnderlineStyleAttributeName in the attribute dictionary to 0, ending the effect of -startUnderline. Additional calls to this method have no effect.
+    Sets the GSUnderlineStyleAttributeName in the attribute dictionary to 0, ending the effect of -startUnderline. Additional calls to this method have no effect.
 */
 - (void) endUnderline;
 /**
@@ -822,8 +822,8 @@ extern NSString * const TSScreenScrolledNotification;
  
 	This is the one method that delegates must implement. The others are optional.
     @param      screen The TextStorageTerminal on which the scroll-off occurred.
-    @param      someText NSAttributedString, the attributed text that scrolled up out of view.
+    @param      someText GSAttributedString, the attributed text that scrolled up out of view.
 */
-- (void) terminalScreen: (TextStorageTerminal *) screen scrollsOffText: (NSAttributedString *) someText;
+- (void) terminalScreen: (TextStorageTerminal *) screen scrollsOffText: (GSAttributedString *) someText;
 
 @end

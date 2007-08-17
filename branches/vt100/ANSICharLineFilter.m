@@ -65,7 +65,7 @@ static GraphicCharPair  sGraphicCharPairs[] = {
 	{ '\277', 0x2510 },	//  Upper right
 	{ '\263', 0x2502 },	//  Vertical line
 #else
-	//  The Unicode equivalents have to be kept coordinated in the NSAttributedString category in NSTextStorageTerminal.m
+	//  The Unicode equivalents have to be kept coordinated in the GSAttributedString category in GSTextStorageTerminal.m
 	{ '\234', 0x00A3 },	//  Pound sterling
 	{ 25, 0x2193 },	//  Down arrow
 	{ '\021', 'L' },	//  Left arrow
