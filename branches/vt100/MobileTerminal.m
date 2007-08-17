@@ -14,10 +14,10 @@
 #import "Cleanup.h"
 #import "ShellKeyboard.h"
 #import "ShellView.h"
-#import "ShellView-Gesture.h"
 #import "SubProcess.h"
 #import "GSTextStorageTerminal.h"
 #import "KeyboardTarget.h"
+#import "GestureView.h"
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -116,6 +116,7 @@ UIApplication *UIApp;
 
   ShellView* view =
     [[ShellView alloc] initWithFrame: CGRectMake(0.0f, 0.0f, 320.0f, 240.0f)];
+  
   [view setPty:_shellProcess];
   [view setText:@""];
   // Don't change the font size or style without updating the window size below
@@ -135,6 +136,8 @@ UIApplication *UIApp;
   [view setBottomBufferHeight:(5.0f)];
   _view = view;
  
+  _gestureView = [[GestureView alloc] initWithProcess: _shellProcess Frame: CGRectMake(0.0f, 0.0f, 240.0f, 480.0f)];
+  
   ShellKeyboard* keyboard = [[ShellKeyboard alloc]
     initWithFrame: CGRectMake(0.0f, 240.0, 320.0f, 480.0f)];
 
@@ -156,6 +159,7 @@ UIApplication *UIApp;
   [mainView addSubview: workaround];
   [mainView addSubview: keyTarget];
   [mainView addSubview: view];
+  [mainView addSubview: _gestureView];
   [mainView addSubview: barView];
   [mainView addSubview: keyboard];
   

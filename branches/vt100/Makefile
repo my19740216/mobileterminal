@@ -11,7 +11,7 @@ Terminal: main.o \
 		MobileTerminal.o \
 		KeyboardTarget.o \
 		ShellView.o \
-		ShellView-Gesture.o \
+		GestureView.o \
 		ShellKeyboard.o \
 		SubProcess.o \
 		ANSICharLineFilter.o \
