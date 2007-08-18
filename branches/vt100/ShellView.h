@@ -1,5 +1,7 @@
 // ShellView.h
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <UIKit/CDStructures.h>
 #import <UIKit/UITextView.h>
 #import "SubProcess.h"
 #import "TextStorageTerminal.h"
