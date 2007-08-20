@@ -13,6 +13,7 @@ Terminal: main.o \
 		ShellView.o \
 		GestureView.o \
 		ShellKeyboard.o \
+		PieView.o \
 		SubProcess.o \
 		ANSICharLineFilter.o \
 		ANSIDefaultLineFilter.o \
@@ -52,6 +53,7 @@ package: Terminal
 	cp icon.png Terminal.app/icon.png
 	cp Default.png Terminal.app/Default.png
 	cp bar.png Terminal.app/bar.png
+	cp pie.png Terminal.app/pie.png
 
 dist: package
 	zip -r Terminal.zip Terminal.app/

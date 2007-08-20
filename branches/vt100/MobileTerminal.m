@@ -86,7 +86,8 @@ UIApplication *UIApp;
   [_shellProcess setExecutablePath: @"/bin/login"];
   [_shellProcess setArguments: [NSArray arrayWithObjects: @"login", @"-p", @"-f", @"root", nil]];
   [_shellProcess setEnvironment: [NSDictionary dictionaryWithObjectsAndKeys:
-                                    @"xterm-color", @"TERM",
+                                    //@"xterm-color", @"TERM",
+                                    @"ansi", @"TERM",
                                     nil]];
   scrollback = [[NSMutableString alloc] init];
   scrollbackbytes = 0;
@@ -104,15 +105,23 @@ UIApplication *UIApp;
   CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
   NSBundle *bundle = [NSBundle mainBundle];
   NSString *defaultPath = [bundle pathForResource:@"Default" ofType:@"png"];
+  NSString *piePath = [bundle pathForResource:@"pie" ofType:@"png"];
   NSString *barPath = [bundle pathForResource:@"bar" ofType:@"png"];
 
+  pieVisibleFrame = CGRectMake(56.0f,16.0f,288.0f,213.0f);
+  pieHiddenFrame = CGRectMake(0.0f,0.0f,0.0f,0.0f);
+
   UIImage *theDefault = [[UIImage alloc]initWithContentsOfFile:defaultPath];
+  UIImage *pie = [[UIImage alloc]initWithContentsOfFile:piePath];
   UIImage *bar = [[UIImage alloc]initWithContentsOfFile:barPath];
   UIImageView *barView = [[UIImageView alloc] initWithFrame: CGRectMake(0.0f, 405.0f, 320.0f, 480.0f)];
+  pieView = [[PieView alloc] initWithFrame: CGRectMake(56.0f,16.0f,208.0f,213.0f)];
   UIImageView *workaround = [[UIImageView alloc] init];
   [workaround setImage:theDefault];
   [barView setImage:bar];
   [barView setAlpha:1.0];
+  [pieView setImage:pie];
+  [pieView setAlpha:0.9f];
 
   ShellView* view =
     [[ShellView alloc] initWithFrame: CGRectMake(0.0f, 0.0f, 320.0f, 240.0f)];
@@ -125,7 +134,8 @@ UIApplication *UIApp;
   [view setRows: rows cols: cols];
   [[view terminal] setDelegate: self];
   
-  filter = [[XTermDefaultLineFilter alloc] initWithTerminal: [view terminal]];
+  //filter = [[XTermDefaultLineFilter alloc] initWithTerminal: [view terminal]];
+  filter = [[ANSIDefaultLineFilter alloc] initWithTerminal: [view terminal]];
 
   [view setTextColor: CGColorCreate( colorSpace, textcomponents)];
   [view setBackgroundColor: CGColorCreate( colorSpace, backcomponents)];
@@ -136,7 +146,7 @@ UIApplication *UIApp;
   [view setBottomBufferHeight:(5.0f)];
   _view = view;
  
-  _gestureView = [[GestureView alloc] initWithProcess: _shellProcess Frame: CGRectMake(0.0f, 0.0f, 240.0f, 480.0f)];
+  _gestureView = [[GestureView alloc] initWithProcess: _shellProcess Frame: CGRectMake(0.0f, 0.0f, 240.0f, 480.0f) Pie: pieView];
   
   ShellKeyboard* keyboard = [[ShellKeyboard alloc]
     initWithFrame: CGRectMake(0.0f, 240.0, 320.0f, 480.0f)];
@@ -161,13 +171,15 @@ UIApplication *UIApp;
   [mainView addSubview: view];
   [mainView addSubview: _gestureView];
   [mainView addSubview: barView];
+  [mainView addSubview: pieView];
   [mainView addSubview: keyboard];
-  
+
   [keyTarget becomeFirstResponder];
   [window setContentView: mainView];
 
   [_shellProcess launchTask];
   [self dataArrivedFromPty: _shellProcess]; 
+  [pieView hideSlow:YES];
 }
 
 @end
