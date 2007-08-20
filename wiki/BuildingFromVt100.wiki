@@ -3,7 +3,7 @@
 
 = Introduction =
 
-This procedure is necessary to correct certain omissions and/or flaws in the header files that come with iphone-binutils.  You will probably need to start with the instructions in Building.
+This procedure is necessary to correct certain omissions and/or flaws in the header files that come with iphone-binutils.  You will probably need to start with the instructions in [Building].
 
 = Details =
 
