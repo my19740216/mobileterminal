@@ -34,7 +34,7 @@ If this file does not exist, create it with the following contents:
 }}}
 
 
-*UIKit/UIDefaultKeyboardLayout.h*
+*UIKit/UIDefaultKeyboardInput.h*
 
 Add a line with
 {{{
@@ -107,7 +107,6 @@ after the other `#import`s.
 If you have any further problems, please post them under [http://code.google.com/p/mobileterminal/issues/detail?id=36 Issue #36].
 
 Thanks to si...@findsimon.com for helping to identify these build problems.
-
 
 
 
