@@ -17,12 +17,12 @@ svn co http://svn.googlecode.com/svn/branches/vt100 branches/vt100
 
 == "Make"ing a Break For It ==
 
-After cd'ing to branches/vt100, try executing make.  You may receive errors.  This is unfortunate.
+After `cd`'ing to `branches/vt100`, try executing `make`.  You may receive errors.  This is unfortunate.
 
 
 == Clearing Customs ==
 
-Part of the problem is the fact that many of the default UIKit headers are missing #import directives.  Some headers are missing entirely.  The following fixes will help you get going.  You will probably need to sudo your favorite text editor to change these files.  If you are using the default install directory for iphone-binutils, they will be in /Developer/SDKs/iPhone/includes.
+Part of the problem is the fact that many of the default UIKit headers are missing #import directives.  Some headers are missing entirely.  The following fixes will help you get going.  You will probably need to `sudo` your favorite text editor to change these files.  If you are using the default install directory for `iphone-binutils`, they will be in `/Developer/SDKs/iPhone/includes`.
 
 *UIKit/WebCaretChangeListenerProtocol.h*
 
@@ -40,7 +40,7 @@ Add a line with
 {{{
 #import "UIKeyboardInputProtocol.h"
 }}}
-after the other #imports.
+after the other `#import`s.
 
 
 *UIKit/UIKeyboardInputProtocol.h*
@@ -99,15 +99,14 @@ Add a line with
 {{{
 #import "UIKeyboardInputProtocol.h"
 }}}
-after the other #imports.
+after the other `#import`s.
 
 
-== bag.ungetc(cat) ==
+== `bag.ungetc(cat)` ==
 
 If you have any further problems, please post them under [http://code.google.com/p/mobileterminal/issues/detail?id=36 Issue #36].
 
 Thanks to si...@findsimon.com for helping to identify these build problems.
-
 
 
 
