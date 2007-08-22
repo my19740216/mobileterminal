@@ -171,8 +171,8 @@ UIApplication *UIApp;
   [mainView addSubview: view];
   [mainView addSubview: _gestureView];
   [mainView addSubview: barView];
-  [mainView addSubview: pieView];
   [mainView addSubview: keyboard];
+  [mainView addSubview: pieView];
 
   [keyTarget becomeFirstResponder];
   [window setContentView: mainView];
