@@ -30,7 +30,7 @@ CGPoint start;
 - (void)mouseDown:(struct __GSEvent *)event {
     CGRect rect = GSEventGetLocationInWindow(event);
     start = rect.origin;
-    [_pie show];
+    [_pie showAtPoint: rect.origin];
 }
 
 - (void)mouseDragged:(struct __GSEvent*)event {

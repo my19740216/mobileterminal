@@ -4,9 +4,10 @@
 
 @interface PieView : UIImageView {
     CGRect visibleFrame, hiddenFrame;
+    CGPoint location;
     BOOL _visible;
 }
--(void)show;
+-(void)showAtPoint:(CGPoint)p;
 -(void)hide;
 -(void)hideSlow:(BOOL)slow;
 @end
