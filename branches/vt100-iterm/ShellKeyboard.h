@@ -1,5 +1,5 @@
 // ShellKeyboard.h
-#include <UIKit/UIKeyboard.h>
+#include <UIKit/UIKit.h>
 
 @class ShellView;
 

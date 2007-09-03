@@ -1,7 +1,5 @@
 // ShellIO.h
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import <UIKit/CDStructures.h>
 #import <UIKit/UITextView.h>
 
 @class PTYTextView, VT100Screen, VT100Terminal;

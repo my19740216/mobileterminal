@@ -44,18 +44,22 @@ static void signal_handler(int signal) {
     // the correct binary, they will see an error messages printed on the
     // instead of the program exiting.
     struct stat st;
+    char* login_args[] = { "login", "-f", "root", (char*)0, };
+    char* sh_args[] = { "sh", (char*)0, };
+    char* env[] = { "TERM=vt100", (char*)0 };
     if (stat("/usr/bin/login", &st) == 0) {
-      if (execlp("/usr/bin/login", "login", "-f", "root", (void*)0) == -1) {
+      if (execve("/usr/bin/login", login_args, env) == -1) {
         perror("execlp: /usr/bin/login");
+        printf("execlp a b c");
         sleep(5);
       }
     } else if (stat("/bin/login", &st) == 0) {
-      if (execlp("/bin/login", "login", "-f", "root", (void*)0) == -1) {
+      if (execve("/bin/login", login_args, env) == -1) {
         perror("execlp: /bin/login");
         sleep(5);
       }
     } else if (stat("/bin/sh", &st) == 0) {
-      if (execlp("/bin/sh", "sh", (void*)0) == -1) {
+      if (execve("/bin/sh", sh_args, (void*)0) == -1) {
         perror("execlp: /bin/sh");
         sleep(5);
       }

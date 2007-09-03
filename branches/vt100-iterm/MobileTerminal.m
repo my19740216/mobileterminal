@@ -3,24 +3,12 @@
 
 #import <Foundation/Foundation.h>
 #import <GraphicsServices/GraphicsServices.h>
-#import <UIKit/CDStructures.h>
-#import <UIKit/UIKit.h>
-#import <UIKit/UIHardware.h>
-#import <UIKit/UIImage.h>
-#import <UIKit/UIKeyboard.h>
-#import <UIKit/UIImageView.h>
-#import <UIKit/UIView.h>
-#import <UIKit/UIView-Hierarchy.h>
-#import <UIKit/UIView-Rendering.h>
-#import <UIKit/UIWindow.h>
 #import "Common.h"
 #import "ShellKeyboard.h"
 #import "PTYTextView.h"
 #import "SubProcess.h"
 #import "ShellIO.h"
 #import "VT100Terminal.h"
-
-struct CGRect GSEventGetLocationInWindow(struct GSEvent *ev);
 
 // TODO: Clean up, use some singletons?
 ShellIO* shell;
@@ -51,35 +39,32 @@ CGPoint start;
   isGesture = NO;
 }
 
-- (void)gestureStarted:(struct GSEvent *)event
+- (void)gestureStarted:(GSEvent *)event
 {
   isGesture = YES;
 }
 
-- (void)mouseDown:(struct GSEvent*)event
+- (void)mouseDown:(GSEvent*)event
 {
   // Save the start position of the mouse down event, which is later used
   // to determine which way the cursor moved.
-  CGRect rect = GSEventGetLocationInWindow(event);
-  start = rect.origin;
+  CGPoint point = GSEventGetLocationInWindow(event);
+  start = point;
 }
 
-- (void)mouseDragged:(struct GSEvent*)event
+- (void)mouseDragged:(GSEvent*)event
 {
 /*
-  // TODO: Arrow key is held down, do multiple key presses
-  CGRect rect = GSEventGetLocationInWindow(event);
-  NSLog(@"mouseDragged %f,%f %f,%f", rect.origin.x, rect.origin.y,
-        rect.size.width, rect.size.height);
+  // TODO: If the arrow key is held down, do multiple key presses?
 */
 }
 
-- (void)mouseUp:(struct GSEvent*)event
+- (void)mouseUp:(GSEvent*)event
 {
-  CGRect rect = GSEventGetLocationInWindow(event);
+  CGPoint point = GSEventGetLocationInWindow(event);
   CGPoint vector;
-  vector.x = start.x - rect.origin.x;
-  vector.y = start.y - rect.origin.y;
+  vector.x = start.x - point.x;
+  vector.y = start.y - point.y;
 
   // Only allow one arrow key to be pressed with one mouse event.  See which
   // direction was moved the most first, then move the arrow key in that

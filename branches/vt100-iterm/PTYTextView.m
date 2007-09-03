@@ -27,8 +27,8 @@
 #define DEBUG_METHOD_TRACE    0
 
 #import "PTYTextView.h"
-#import "VT100Screen.h"
 #import <UIKit/NSString-UIStringDrawing.h>
+#import "VT100Screen.h"
 #import "Common.h"
 
 #include <sys/time.h>

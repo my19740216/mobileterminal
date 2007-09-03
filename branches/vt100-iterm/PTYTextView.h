@@ -24,10 +24,6 @@
  */
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import <UIKit/CDStructures.h>
-#import <UIKit/UIView.h>
-#import <UIKit/UIView-Rendering.h>
-#import <UIKit/UIView-Geometry.h>
 #import <UIKit/UITextView.h>
 
 #include <sys/time.h>

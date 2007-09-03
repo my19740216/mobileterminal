@@ -5,7 +5,6 @@
 #include <sys/types.h>
 #include <sys/uio.h>
 #include <unistd.h>
-#import "Cleanup.h"
 #import "Common.h"
 #import "PTYTextView.h"
 #import "VT100Screen.h"

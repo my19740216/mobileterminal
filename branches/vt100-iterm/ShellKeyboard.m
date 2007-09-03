@@ -4,24 +4,13 @@
 // transition smoothly in the other direction
 #import "ShellKeyboard.h"
 
-#import <UIKit/CDStructures.h>
-#import <UIKit/UIKit.h>
-#import <UIKit/UIAnimator.h>
-#import <UIKit/UIHardware.h>
-#import <UIKit/UIScroller.h>
-#import <UIKit/UITransformAnimation.h>
+#import <UIkit/UITransformAnimation.h>
 #import <UIKit/UIView-Geometry.h>
 #import "Common.h"
 
 //
 // Override settings of the default keyboard implementation
 //
-
-@interface UIKeyboardImpl : UIView
-{
-
-}
-@end
 
 @implementation UIKeyboardImpl (DisableFeatures)
 
