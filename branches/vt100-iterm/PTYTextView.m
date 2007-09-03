@@ -29,6 +29,7 @@
 #import "PTYTextView.h"
 #import <UIKit/NSString-UIStringDrawing.h>
 #import "VT100Screen.h"
+#import "ColorMap.h"
 #import "Common.h"
 
 #include <sys/time.h>
@@ -49,56 +50,6 @@
   [self displayScrollerIndicators];
   [self setAllowsRubberBanding:YES];
 
-  CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-
-  // System 7.5 colors, why not?
-  float darkBlack[] = { 0, 0, 0, 1 };
-  colorTable[0] = CGColorCreate(colorSpace, darkBlack);
-  float darkRed[] = { 0.67, 0, 0, 1 };
-  colorTable[1] = CGColorCreate(colorSpace, darkRed);
-  float darkGreen[] = { 0, 0.67, 0, 1 };
-  colorTable[2] = CGColorCreate(colorSpace, darkGreen);
-  float darkYellow[] = { 0.6, 0.4, 0, 1 };
-  colorTable[3] = CGColorCreate(colorSpace, darkYellow);
-  float darkBlue[] = { 0, 0, 0.67, 1 };
-  colorTable[4] = CGColorCreate(colorSpace, darkBlue);
-  float darkMagenta[] = { 0.6, 0, 0.6, 1 };
-  colorTable[5] = CGColorCreate(colorSpace, darkMagenta);
-  float darkCyan[] = { 0, 0.6, 0.6, 1 };
-  colorTable[6] = CGColorCreate(colorSpace, darkCyan);
-  float darkWhite[] = { 0.67, 0.67, 0.67, 1 };
-  colorTable[7] = CGColorCreate(colorSpace, darkWhite);
-  float lightBlack[] = { 0.33, 0.33, 0.33, 1 };
-  colorTable[8] = CGColorCreate(colorSpace, lightBlack);
-  float lightRed[] = { 1, 0.4, 0.4, 1 };
-  colorTable[9] = CGColorCreate(colorSpace, lightRed);
-  float lightGreen[] = { 0.4, 1, 0.4, 1 };
-  colorTable[10] = CGColorCreate(colorSpace, lightGreen);
-  float lightYellow[] = { 1, 1, 0.4, 1 };
-  colorTable[11] = CGColorCreate(colorSpace, lightYellow);
-  float lightBlue[] = { 0.4, 0.4, 1, 1 };
-  colorTable[12] = CGColorCreate(colorSpace, lightBlue);
-  float lightMagenta[] = { 1, 0.4, 1, 1 };
-  colorTable[13] = CGColorCreate(colorSpace, lightMagenta);
-  float lightCyan[] = { 0.4, 1, 1, 1 };
-  colorTable[14] = CGColorCreate(colorSpace, lightCyan);
-  float lightWhite[] = { 1, 1, 1, 1 };
-  colorTable[15] = CGColorCreate(colorSpace, lightWhite);
-
-  // Default colors
-  float fgColor[4] = {1, 1, 1, 1};
-  defaultFGColor = CGColorCreate(colorSpace, fgColor);
-  float bgColor[4] = {0, 0, 0, 1};
-  defaultBGColor = CGColorCreate(colorSpace, bgColor);
-  float boldColor[4] = {1, 1, 1, 1};
-  defaultBoldColor = CGColorCreate(colorSpace, boldColor);
-  float cursorColor[4] = {1, 1, 1, 1};
-  defaultCursorColor = CGColorCreate(colorSpace, cursorColor);
-  float cursorTextColorC[4] = {1, 1, 1, 1};
-  cursorTextColor = CGColorCreate(colorSpace, cursorTextColorC);
-
-  [self setBackgroundColor:defaultBGColor];
-  
   dataSource = nil;
   CURSOR=YES;
   return (self);
@@ -109,11 +60,6 @@
 #if DEBUG_ALLOC
   NSLog(@"%s: 0x%x", __PRETTY_FUNCTION__, self);
 #endif
-  CGColorRelease(defaultFGColor);
-  CGColorRelease(defaultBGColor);
-  CGColorRelease(defaultBoldColor);
-  CGColorRelease(defaultCursorColor);
-
   //    [font release];
   //	[nafont release];
 
@@ -122,120 +68,6 @@
 #if DEBUG_ALLOC
   NSLog(@"%s: 0x%x, done", __PRETTY_FUNCTION__, self);
 #endif
-}
-
-- (void) setFGColor:(CGColorRef)color
-{
-  CGColorRelease(defaultFGColor);
-  CGColorRetain(color);
-  defaultFGColor=color;
-  [self setNeedsDisplay];
-  // reset our default character attributes    
-}
-
-- (void) setBGColor:(CGColorRef)color
-{
-  CGColorRelease(defaultBGColor);
-  CGColorRetain(color);
-  defaultBGColor=color;
-  [self setNeedsDisplay];
-}
-
-- (void) setBoldColor: (CGColorRef)color
-{
-  CGColorRelease(defaultBoldColor);
-  CGColorRetain(color);
-  defaultBoldColor=color;
-  [self setNeedsDisplay];
-}
-
-- (void) setCursorColor: (CGColorRef)color
-{
-  CGColorRelease(defaultCursorColor);
-  CGColorRetain(color);
-  defaultCursorColor=color;
-  [self setNeedsDisplay];
-}
-
-- (void) setCursorTextColor:(CGColorRef) color
-{
-  CGColorRelease(cursorTextColor);
-  CGColorRetain(color);
-  cursorTextColor = color;
-  [self setNeedsDisplay];
-
-}
-
-- (CGColorRef) cursorTextColor
-{
-  return (cursorTextColor);
-}
-
-- (CGColorRef) defaultFGColor
-{
-  return defaultFGColor;
-}
-
-- (CGColorRef) defaultBGColor
-{
-  return defaultBGColor;
-}
-
-- (CGColorRef) defaultBoldColor
-{
-  return defaultBoldColor;
-}
-
-- (CGColorRef) defaultCursorColor
-{
-  return defaultCursorColor;
-}
-
-- (CGColorRef) colorForCode:(unsigned int) index 
-{
-  CGColorRef color;
-
-  if (index & DEFAULT_FG_COLOR_CODE) {  // special colors?
-    switch (index) {
-      case SELECTED_TEXT:
-        exit(1);
-        break;
-      case CURSOR_TEXT:
-        color = cursorTextColor;
-        break;
-      case DEFAULT_BG_COLOR_CODE:
-        color = defaultBGColor;
-        break;
-      default:
-        if (index & BOLD_MASK) {
-          color = (index-BOLD_MASK == DEFAULT_BG_COLOR_CODE) ?
-              defaultBGColor : [self defaultBoldColor];
-        } else {
-          color = defaultFGColor;
-        }
-    }
-  } else {
-    index &= 0xff;
-
-    if (index < 16) {
-      color = colorTable[index];
-    } else if (index < 232) {
-      index -= 16;
-      CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-      float components[] = {
-        (index/36) ? ((index / 36) * 40 + 55) / 256.0 : 0 ,
-        (index%36)/6 ? (((index % 36) / 6) * 40 + 55 ) / 256.0:0 ,
-        (index%6) ? ((index % 6) * 40 + 55) / 256.0:0,
-        1.0
-      };
-      color = CGColorCreate(colorSpace, components);
-    } else {
-      index -= 232;
-      exit(1); 
-      //color=[CGColorRef colorWithCalibratedWhite:(index*10+8)/256.0 alpha:1];
-    }
-  }
-  return color;
 }
 
 /*
@@ -290,133 +122,6 @@
     dataSource = aDataSource;
     [temp releaseLock];
 }
-
-- (void) refresh
-{
-  /*
-  //NSLog(@"%s: 0x%x", __PRETTY_FUNCTION__, self);
-  struct CGRect aFrame;
-  int height;
-
-  if(dataSource != nil) {
-  [dataSource acquireLock];
-  numberOfLines = [dataSource numberOfLines];
-  [dataSource releaseLock];
-
-  height = numberOfLines * lineHeight;
-  aFrame = [self frame];
-
-  if(height != aFrame.size.height) {
-  //NSLog(@"%s: 0x%x; new number of lines = %d; resizing height from %f to %d", 
-  //	  __PRETTY_FUNCTION__, self, numberOfLines, [self frame].size.height, height);
-  aFrame.size.height = height;
-  [self setFrame: aFrame];
-  // TODO(allen): Scroll
-  if (![(PTYScroller *)([[self enclosingScrollView] verticalScroller]) userScroll]) 
-  {
-  [self scrollEnd];
-  }
-  }
-  [self setNeedsDisplay];
-  }
-   */
-}
-
-
-/*
-
-- (CGRect)adjustScroll:(CGRect)proposedVisibleRect
-{
-#if DEBUG_METHOD_TRACE
-    NSLog(@"%s(%d):-[PTYTextView adjustScroll]", __FILE__, __LINE__ );
-#endif
-	proposedVisibleRect.origin.y=(int)(proposedVisibleRect.origin.y/lineHeight+0.5)*lineHeight;
-
-//	if([(PTYScrollView *)[self enclosingScrollView] backgroundImage] != nil)
-//        forceUpdate = YES; // we have to update everything if there's a background image
-    
-	[self setNeedsDisplay];
-	return proposedVisibleRect;
-}
-
--(void) scrollLineUp: (id) sender
-{
-    CGRect scrollRect;
-    
-    scrollRect= [self visibleRect];
-//    scrollRect.origin.y-=[[self enclosingScrollView] verticalLineScroll];
-    scrollRect.origin.y-=[self lineHeight];
-    //NSLog(@"%f/%f",[[self enclosingScrollView] verticalLineScroll],[[self enclosingScrollView] verticalPageScroll]);
-    [self scrollRectToVisible: scrollRect];
-}
-
--(void) scrollLineDown: (id) sender
-{
-    CGRect scrollRect;
-    
-    scrollRect= [self visibleRect];
-//    scrollRect.origin.y+=[[self enclosingScrollView] verticalLineScroll];
-    scrollRect.origin.y+=[self lineHeight];
-    [self scrollRectToVisible: scrollRect];
-}
-
--(void) scrollPageUp: (id) sender
-{
-    CGRect scrollRect;
-	
-    scrollRect= [self visibleRect];
-//    scrollRect.origin.y-= scrollRect.size.height - [[self enclosingScrollView] verticalPageScroll];
-    scrollRect.origin.y-= scrollRect.size.height - [self lineHeight];
-    [self scrollRectToVisible: scrollRect];
-}
-
--(void) scrollPageDown: (id) sender
-{
-    CGRect scrollRect;
-    
-    scrollRect= [self visibleRect];
-    scrollRect.origin.y+= scrollRect.size.height - [self lineHeight];
-//    scrollRect.origin.y+= scrollRect.size.height - [[self enclosingScrollView] verticalPageScroll];
-    [self scrollRectToVisible: scrollRect];
-}
-
--(void) scrollHome
-{
-    CGRect scrollRect;
-    
-    scrollRect= [self visibleRect];
-    scrollRect.origin.y = 0;
-    [self scrollRectToVisible: scrollRect];
-}
-
-- (void)scrollEnd
-{
-#if DEBUG_METHOD_TRACE
-    NSLog(@"%s(%d):-[PTYTextView scrollEnd]", __FILE__, __LINE__ );
-#endif
-    
-    if (numberOfLines > 0)
-    {
-        CGRect aFrame;
-		aFrame.origin.x = 0;
-		aFrame.origin.y = (numberOfLines - 1) * lineHeight;
-		aFrame.size.width = [self frame].size.width;
-		aFrame.size.height = lineHeight;
-		[self scrollRectToVisible: aFrame];
-    }
-}
-
-- (void)scrollToSelection
-{
-	CGRect aFrame;
-	aFrame.origin.x = 0;
-	aFrame.origin.y = startY * lineHeight;
-	aFrame.size.width = [self frame].size.width;
-	aFrame.size.height = (endY - startY + 1) *lineHeight;
-	[self scrollRectToVisible: aFrame];
-}
-
-*/
 
 -(void) hideCursor
 {
@@ -481,7 +186,7 @@
     screen_char_t *theLine = [dataSource getLineAtIndex:i];
     for (j = 0; j < WIDTH; j++) {
       unsigned int bgcode = theLine[j].bg_color;
-      CGColorRef bg = [self colorForCode:bgcode];
+      CGColorRef bg = [[ColorMap sharedInstance] colorForCode:bgcode];
       [self fillBoxColor:bg X:(j + 1) Y:(i - startLineIndex + 1)];
     }
   }
@@ -507,7 +212,7 @@
         c = ' ';
       }
       unsigned int fgcode = theLine[j].fg_color;
-      CGColorRef fg = [self colorForCode:fgcode];
+      CGColorRef fg = [[ColorMap sharedInstance] colorForCode:fgcode];
       const float* fg_components = CGColorGetComponents(fg);
       CGContextSetRGBFillColor(context, fg_components[0], fg_components[1],
                                         fg_components[2], fg_components[3]);
@@ -518,7 +223,7 @@
 
   // Fill a rectangle with the cursor.
   if (CURSOR) {
-    [self fillBoxColor:defaultCursorColor
+    [self fillBoxColor:[[ColorMap sharedInstance] defaultCursorColor]
                      X:[dataSource cursorX]
                      Y:[dataSource cursorY]];
   }
@@ -553,4 +258,5 @@
   [self setNeedsDisplay];
 }
 */
+
 @end

@@ -478,8 +478,7 @@ static __inline__ screen_char_t *incrementLinePointer(
   [self releaseLock];
 
   // An immediate refresh is needed so that the size of TEXTVIEW can be adjusted to fit the new size
-  [display refresh];
-
+  [display setNeedsDisplay];
 }
 
 - (void) reset
@@ -827,7 +826,7 @@ static __inline__ screen_char_t *incrementLinePointer(
 
   [self releaseLock];
   [self setDirty];
-  [self updateScreen];
+  [display setNeedsDisplay];
 }
 
 - (void) saveBuffer
@@ -1734,13 +1733,6 @@ static __inline__ screen_char_t *incrementLinePointer(
     [display hideCursor];
 }
 
-- (void)blink
-{
-  if (memchr(dirty, 1, WIDTH*HEIGHT)) {
-    [self updateScreen];
-  }     
-}
-
 - (int) cursorX
 {
   return CURSOR_X+1;
@@ -1766,11 +1758,6 @@ static __inline__ screen_char_t *incrementLinePointer(
   return (num_lines_in_scrollback+HEIGHT);
 }
 
-
-- (void) updateScreen
-{
-  [display refresh];
-}
 
 - (char	*)dirty			
 {

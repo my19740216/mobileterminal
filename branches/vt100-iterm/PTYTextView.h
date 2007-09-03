@@ -67,13 +67,6 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
   float charWidthWithoutSpacing, charHeightWithoutSpacing;
   int numberOfLines;
 
-  CGColorRef colorTable[16];
-  CGColorRef defaultFGColor;
-  CGColorRef defaultBGColor;
-  CGColorRef defaultBoldColor;
-  CGColorRef defaultCursorColor;
-  CGColorRef cursorTextColor;
-
   // transparency
   float transparency;
   BOOL useTransparency;
@@ -104,23 +97,9 @@ enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
 - (void) setBlinkingCursor: (BOOL) bFlag;
 */
 
-//color stuff
-- (CGColorRef) defaultFGColor;
-- (CGColorRef) defaultBGColor;
-- (CGColorRef) defaultBoldColor;
-- (CGColorRef) colorForCode:(unsigned int) index;
-- (CGColorRef) defaultCursorColor;
-- (CGColorRef) cursorTextColor;
-- (void) setFGColor:(CGColorRef)color;
-- (void) setBGColor:(CGColorRef)color;
-- (void) setBoldColor:(CGColorRef)color;
-- (void) setCursorColor:(CGColorRef) color;
-- (void) setCursorTextColor:(CGColorRef) color;
-
 - (VT100Screen*) dataSource;
 - (void) setDataSource: (VT100Screen*) aDataSource;
 
-- (void) refresh;
 - (void) showCursor;
 - (void) hideCursor;
 

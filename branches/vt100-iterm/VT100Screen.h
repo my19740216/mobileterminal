@@ -175,14 +175,12 @@ typedef struct screen_char_t
 - (void)insertBlank: (int)n;
 - (void)insertLines: (int)n;
 - (void)deleteLines: (int)n;
-- (void)blink;
 - (int) cursorX;
 - (int) cursorY;
 
 - (void)resetDirty;
 - (void)setDirty;
 
-- (void)updateScreen;
 - (int) numberOfLines;
 
 // print to ansi...

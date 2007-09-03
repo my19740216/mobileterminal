@@ -9,7 +9,7 @@ all:	Terminal
 
 Terminal: main.o MobileTerminal.o  ShellKeyboard.o SubProcess.o \
 	ShellIO.o VT100Screen.o VT100Terminal.o PTYTextView.o  \
-        NSString-Additions.o
+        NSString-Additions.o ColorMap.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
 %.o:	%.m

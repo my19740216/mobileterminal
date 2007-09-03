@@ -9,6 +9,7 @@
 #import "SubProcess.h"
 #import "ShellIO.h"
 #import "VT100Terminal.h"
+#import "ColorMap.h"
 
 // TODO: Clean up, use some singletons?
 ShellIO* shell;
@@ -16,6 +17,7 @@ ShellIO* shell;
 //
 // Mouse control handling, Example: Swipe left: arrow key left
 //
+
 @implementation PTYTextView (MouseEvents)
 
 // Amount of movement before detecting an arrow key
@@ -74,15 +76,15 @@ CGPoint start;
   int abs_x = abs((int)vector.x);
   int abs_y = abs((int)vector.y);
   if (abs_x > abs_y) {
-    if (vector.x > 75) {
+    if (vector.x > ARROW_KEY_SLOP) {
       data = [term keyArrowLeft:0];
-    } else if (vector.x < -75) {
+    } else if (vector.x < (0 - ARROW_KEY_SLOP)) {
       data = [term keyArrowRight:0];
     }
   } else {
-    if (vector.y > 75) {
+    if (vector.y > ARROW_KEY_SLOP) {
       data = [term keyArrowUp:0];
-    } else if (vector.y < -75) {
+    } else if (vector.y < (0 - ARROW_KEY_SLOP)) {
       data = [term keyArrowDown:0];
     }
   }
@@ -96,34 +98,15 @@ CGPoint start;
 
 @implementation MobileTerminal
 
-- (void)deviceOrientationChanged:(struct GSEvent *)event
-{
-  NSLog(@"orientation");
-}
-
 - (void) applicationDidFinishLaunching:(NSNotification*)unused
 {
-  NSLog(@"o=%d", [UIHardware deviceOrientation: YES]);
+  [ColorMap sharedInstance];
 
   SubProcess* shellProcess =
     [[SubProcess alloc] initWithWidth:TERMINAL_WIDTH Height:TERMINAL_HEIGHT];
 
   UIWindow *window = [[UIWindow alloc] initWithContentRect: [UIHardware 
     fullScreenApplicationContentRect]];
-
-  NSBundle *bundle = [NSBundle mainBundle];
-  NSString *defaultPath = [bundle pathForResource:@"Default" ofType:@"png"];
-  NSString *barPath = [bundle pathForResource:@"bar" ofType:@"png"];
-
-  UIImage *theDefault = [[UIImage alloc]initWithContentsOfFile:defaultPath];
-  UIImage *bar = [[UIImage alloc]initWithContentsOfFile:barPath];
-  UIImageView *barView =
-    [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 405.0f, 320.0f,
-                                                  480.0f)];
-  UIImageView *workaround = [[UIImageView alloc] init];
-  [workaround setImage:theDefault];
-  [barView setImage:bar];
-  [barView setAlpha:1.0];
 
   PTYTextView* view =
     [[PTYTextView alloc] initWithFrame:CGRectMake(0.0f, 0.0, 320.0f, 245.0f)];
@@ -138,10 +121,8 @@ CGPoint start;
   rect.origin.x = rect.origin.y = 0.0f;
 
   UIView *mainView = [[UIView alloc] initWithFrame: rect];
-  [mainView addSubview:workaround];
   [mainView addSubview:shell];
   [mainView addSubview:view];
-  [mainView addSubview:barView];
   [mainView addSubview:keyboard];
   
   [window orderFront: self];
