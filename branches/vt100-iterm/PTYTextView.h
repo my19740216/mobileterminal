@@ -1,114 +1,52 @@
-// -*- mode:objc -*-
-/*
- **  PTYTextView.h
- **
- **  Copyright (c) 2002, 2003, 2007
- **
- **  Author: Fabian, Ujwal S. Setlur
- **	     Initial code by Kiichi Kusama
- **          Ported to MobileTerminal (from iTerm) by Allen Porter
- **
- **  This program is free software; you can redistribute it and/or modify
- **  it under the terms of the GNU General Public License as published by
- **  the Free Software Foundation; either version 2 of the License, or
- **  (at your option) any later version.
- **
- **  This program is distributed in the hope that it will be useful,
- **  but WITHOUT ANY WARRANTY; without even the implied warranty of
- **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- **  GNU General Public License for more details.
- **
- **  You should have received a copy of the GNU General Public License
- **  along with this program; if not, write to the Free Software
- **  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
-#import <Foundation/Foundation.h>
+// PTYTextView.h
 #import <UIKit/UIKit.h>
-#import <UIKit/UITextView.h>
+#import <UIKit/UITiledView.h>
 
 #include <sys/time.h>
 
-#define MARGIN  4
-#define VMARGIN 4 
-
-// Hack for UIKit non-breaking spaces
-#define NO_BREAK_SPACE 0x00A0
-
-typedef enum { CURSOR_UNDERLINE, CURSOR_VERTICAL, CURSOR_BOX } ITermCursorType;
-
 @class VT100Screen;
 
-typedef struct 
+@interface PTYTextView : UITiledView
 {
-  int code;
-  unsigned int color;
-  unsigned int bgColor;
-  UIImage *image;
-  int count;
-} CharCache;
-	
-enum { SELECT_CHAR, SELECT_WORD, SELECT_LINE };
-
-@interface PTYTextView : UITextView
-{
-  // anti-alias flag
-  BOOL antiAlias;
-
-  // option to not render in bold
-  BOOL disableBold;
-
   BOOL CURSOR;
-  BOOL forceUpdate;
 
   // geometry
   float lineHeight;
   float lineWidth;
   float charWidth;
-  float charWidthWithoutSpacing, charHeightWithoutSpacing;
   int numberOfLines;
 
-  // transparency
-  float transparency;
-  BOOL useTransparency;
+  int margin;
+  int vmargin;
 
   // data source
   VT100Screen *dataSource;
-
-  BOOL showCursor;
+  UIScroller *textScroller;
 }
 
-//+ (NSCursor *) textViewCursor;
-- (id)initWithFrame: (struct CGRect) aRect;
++ (PTYTextView*)sharedInstance;
++ (Class)tileClass;
+
+- (id)initWithFrame:(CGRect)rect
+             source:(VT100Screen*)screen
+           scroller:(UIScroller*)scroller;
 - (void)dealloc;
-- (void)drawRect:(CGRect)rect;
 
-/*
-- (void)changeFont:(id)sender;
+- (void)drawTileFrame:(CGRect)frame tileRect:(CGRect)rect;
+- (void)drawRow:(unsigned int)row tileRect:(CGRect)rect;
+- (void)refresh;
 
-//get/set methods
-- (NSFont *)font;
-- (NSFont *)nafont;
-- (void) setFont:(NSFont*)aFont nafont:(NSFont*)naFont;
-- (BOOL) antiAlias;
-- (void) setAntiAlias: (BOOL) antiAliasFlag;
-- (BOOL) disableBold;
-- (void) setDisableBold: (BOOL) boldFlag;
-- (BOOL) blinkingCursor;
-- (void) setBlinkingCursor: (BOOL) bFlag;
-*/
+// Only draws tiles which are dirty
+- (void)updateIfNecessary;
+- (void)updateAndScrollToEnd;
 
-- (VT100Screen*) dataSource;
-- (void) setDataSource: (VT100Screen*) aDataSource;
+- (void)drawBox:(CGContextRef)context
+          color:(CGColorRef)color
+        boxRect:(CGRect)rect;
 
-- (void) showCursor;
-- (void) hideCursor;
-
-/*
-// transparency
-- (float) transparency;
-- (void) setTransparency: (float) fVal;
-- (BOOL) useTransparency;
-- (void) setUseTransparency: (BOOL) flag;
-*/
+- (void)drawChar:(CGContextRef)context
+       character:(char)c
+           color:(CGColorRef)color
+           point:(CGPoint)point;
 
 @end

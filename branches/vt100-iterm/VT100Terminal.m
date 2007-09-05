@@ -1178,6 +1178,9 @@ autorelease]; */
 
   numLock = YES;
 
+  // TODO: Tweakable?
+  [self setTermType:@"vt100"];
+
   return self;
 }
 

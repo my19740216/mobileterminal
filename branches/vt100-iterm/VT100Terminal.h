@@ -24,8 +24,6 @@
  */
 
 #import <Foundation/Foundation.h>
-//#import <Cocoa/Cocoa.h>
-//#include <term.h>
 
 @class VT100Screen;
 @class PseudoTerminal;
@@ -378,6 +376,6 @@ typedef enum {
 - (void)_setMode:(VT100TCC)token;
 - (void)_setCharAttr:(VT100TCC)token;
 
-- (void) setScreen:(VT100Screen *)sc;
+- (void) setScreen:(VT100Screen*)sc;
 @end
 

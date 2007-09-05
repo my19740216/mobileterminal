@@ -25,8 +25,6 @@
 
 #import "VT100Terminal.h"
 
-enum { NO_CHANGE, CHANGE, CHANGE_PIXEL };
-	
 @class PTYTextView;
 
 typedef struct screen_char_t
@@ -97,7 +95,6 @@ typedef struct screen_char_t
 
 
   // UI related
-  int changeSize;
   int newWidth,  newHeight;
   NSString *newWinTitle;
   NSString *newIconTitle;
@@ -119,26 +116,26 @@ typedef struct screen_char_t
 - (unsigned int)scrollbackLines;
 - (void)setScrollback:(unsigned int)lines;
 - (void)setTerminal:(VT100Terminal *)terminal;
-- (VT100Terminal *)terminal;
+- (VT100Terminal*)terminal;
 
-- (PTYTextView *) display;
-- (void) setDisplay: (PTYTextView *) aDisplay;
+- (PTYTextView*)display;
+- (void)setDisplay:(PTYTextView *)aDisplay;
 
-- (BOOL) blinkingCursor;
-- (void) setBlinkingCursor: (BOOL) flag;
+- (BOOL)blinkingCursor;
+- (void)setBlinkingCursor:(BOOL)flag;
 - (void)showCursor:(BOOL)show;
 - (void)setPlayBellFlag:(BOOL)flag;
 - (void)setShowBellFlag:(BOOL)flag;
 
 // line access
-- (screen_char_t *) getLineAtIndex: (int) theIndex;
-- (screen_char_t *) getLineAtScreenIndex: (int) theIndex;
-- (char *) dirty;
+- (screen_char_t *)getLineAtIndex: (int) theIndex;
+- (screen_char_t *)getLineAtScreenIndex: (int) theIndex;
+- (char *)dirty;
 
 // lock
-- (void) acquireLock;
-- (void) releaseLock;
-- (BOOL) tryLock;
+- (void)acquireLock;
+- (void)releaseLock;
+- (BOOL)tryLock;
 
 // edit screen buffer
 - (void)putToken:(VT100TCC)token;
@@ -189,7 +186,6 @@ typedef struct screen_char_t
 - (void) printStringToAnsi: (NSString *) aString;
 
 // UI stuff
-- (int)changeSize;
 - (int)newWidth;
 - (int)newHeight;
 - (void) updateBell;

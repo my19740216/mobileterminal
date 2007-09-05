@@ -1,5 +1,5 @@
 CC=/usr/local/arm-apple-darwin/bin/gcc
-CFLAGS=-fsigned-char -Wall -Werror
+CFLAGS=-fsigned-char -Wall -Werror -O7
 LDFLAGS=-Wl,-syslibroot,$(HEAVENLY) -lobjc \
         -framework CoreFoundation -framework Foundation \
         -framework UIKit -framework LayerKit -framework CoreGraphics \
@@ -8,8 +8,8 @@ LDFLAGS=-Wl,-syslibroot,$(HEAVENLY) -lobjc \
 all:	Terminal
 
 Terminal: main.o MobileTerminal.o  ShellKeyboard.o SubProcess.o \
-	ShellIO.o VT100Screen.o VT100Terminal.o PTYTextView.o  \
-        NSString-Additions.o ColorMap.o
+	VT100Screen.o VT100Terminal.o PTYTextView.o  \
+        NSString-Additions.o ColorMap.o PTYTile.o Settings.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
 %.o:	%.m
