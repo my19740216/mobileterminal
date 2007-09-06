@@ -1,4 +1,5 @@
 // ShellKeyboard.h
+#import <UIKit/UIKeyboardInputProtocol.h>
 #import <UIKit/UIKeyboard.h>
 #import "ShellView.h"
 

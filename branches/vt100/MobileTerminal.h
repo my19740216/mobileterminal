@@ -7,7 +7,7 @@
 #import "GestureView.h"
 #import "PieView.h"
 
-@class ShellView, SubProcess;
+@class ShellView, SubProcess, ShellKeyboard;
 
 CGRect pieVisibleFrame, pieHiddenFrame;
 
@@ -15,6 +15,7 @@ CGRect pieVisibleFrame, pieHiddenFrame;
   SubProcess* _shellProcess;
   ShellView* _view;
   GestureView* _gestureView;
+  ShellKeyboard* _keyboard;
   CharacterLineFilter *filter;
   NSMutableString *scrollback;
   int scrollbackbytes;

@@ -20,6 +20,7 @@
 #import "GestureView.h"
 
 #include <stdio.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/uio.h>
 #include <unistd.h>
@@ -83,12 +84,28 @@ UIApplication *UIApp;
   _shellProcess = [[SubProcess alloc] init];
   [_shellProcess setRows:rows columns:cols];
   [_shellProcess setDelegate: self];
-  [_shellProcess setExecutablePath: @"/bin/login"];
-  [_shellProcess setArguments: [NSArray arrayWithObjects: @"login", @"-p", @"-f", @"root", nil]];
-  [_shellProcess setEnvironment: [NSDictionary dictionaryWithObjectsAndKeys:
-                                    //@"xterm-color", @"TERM",
-                                    @"ansi", @"TERM",
-                                    nil]];
+  NSString *executablePath = nil;
+  NSArray *arguments = nil;
+  NSDictionary *environment = [NSDictionary dictionaryWithObjectsAndKeys:
+                                //@"xterm-color", @"TERM",
+                                @"ansi", @"TERM",
+                                nil];
+  struct stat st;
+  if (stat("/usr/bin/login", &st) == 0) {
+      executablePath = @"/usr/bin/login";
+      arguments = [NSArray arrayWithObjects: @"login", @"-p", @"-f", @"root", nil];
+  } else if (stat("/bin/login", &st) == 0) {
+      executablePath = @"/bin/login";
+      arguments = [NSArray arrayWithObjects: @"login", @"-p", @"-f", @"root", nil];
+  } else if (stat("/bin/sh", &st) == 0) {
+      executablePath = @"/bin/sh";
+      arguments = [NSArray arrayWithObjects: @"sh", nil];
+  } else
+      exit(1);
+
+  [_shellProcess setExecutablePath: executablePath];
+  [_shellProcess setArguments: arguments];
+  [_shellProcess setEnvironment: environment];
   scrollback = [[NSMutableString alloc] init];
   scrollbackbytes = 0;
 
@@ -154,6 +171,7 @@ UIApplication *UIApp;
   [view setKeyboard:keyboard];
 
   [keyboard setTapDelegate:view];
+  _keyboard = keyboard;
 
   keyTarget = [[KeyboardTarget alloc] initWithProcess: _shellProcess View:view];
 
@@ -180,6 +198,30 @@ UIApplication *UIApp;
   [_shellProcess launchTask];
   [self dataArrivedFromPty: _shellProcess]; 
   [pieView hideSlow:YES];
+}
+
+- (void)applicationSuspend:(struct __GSEvent *)event 
+{
+	NSLog(@"Suspending...");
+//	[[ApolloTOC sharedInstance]suspendApollo];
+}
+
+- (void)applicationResume:(struct __GSEvent *)event 
+{
+	NSLog(@"Resuming...");
+    [_keyboard show: _view];
+    [keyTarget becomeFirstResponder];
+    [self dataArrivedFromPty: _shellProcess];
+}
+
+- (BOOL)applicationIsReadyToSuspend
+{
+	return YES;
+}
+
+- (BOOL)isSuspendingUnderLock
+{
+	return NO;
 }
 
 @end
