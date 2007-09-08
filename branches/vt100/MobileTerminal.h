@@ -16,6 +16,7 @@ CGRect pieVisibleFrame, pieHiddenFrame;
   ShellView* _view;
   GestureView* _gestureView;
   ShellKeyboard* _keyboard;
+  UIWindow* _window;
   CharacterLineFilter *filter;
   NSMutableString *scrollback;
   int scrollbackbytes;

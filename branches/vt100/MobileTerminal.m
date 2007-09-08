@@ -25,6 +25,8 @@
 #include <sys/uio.h>
 #include <unistd.h>
 
+extern NSString *startPath;
+
 @implementation MobileTerminal
 
 UIApplication *UIApp;
@@ -196,8 +198,11 @@ UIApplication *UIApp;
   [window setContentView: mainView];
 
   [_shellProcess launchTask];
-  [self dataArrivedFromPty: _shellProcess]; 
+  [self dataArrivedFromPty: _shellProcess];
+  if (startPath)
+      [_shellProcess writeData: [[NSString stringWithFormat:@"chdir %@\n", startPath] dataUsingEncoding:NSASCIIStringEncoding]];
   [pieView hideSlow:YES];
+    _window = window;
 }
 
 - (void)applicationSuspend:(struct __GSEvent *)event 
@@ -209,9 +214,11 @@ UIApplication *UIApp;
 - (void)applicationResume:(struct __GSEvent *)event 
 {
 	NSLog(@"Resuming...");
-    [_keyboard show: _view];
-    [keyTarget becomeFirstResponder];
     [self dataArrivedFromPty: _shellProcess];
+    [_window makeKey:self];
+    //[_keyboard setTapDelegate:_view];
+    [keyTarget becomeFirstResponder];
+    [_keyboard show:_view];
 }
 
 - (BOOL)applicationIsReadyToSuspend
