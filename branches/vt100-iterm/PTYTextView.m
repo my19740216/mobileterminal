@@ -51,8 +51,7 @@ static PTYTextView* instance = nil;
   [textScroller setBottomBufferHeight:5.0];
   [textScroller setBounces:YES];
   [textScroller setContentSize:frame.size];
-  // Set the scroll indicators as solid white
-  [textScroller setScrollerIndicatorStyle:2];
+  [textScroller setScrollerIndicatorStyle:kUIScrollerIndicatorWhite];
 
   [self refresh];
 
