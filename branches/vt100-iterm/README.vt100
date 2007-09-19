@@ -11,4 +11,3 @@ we never plan to support (mouse events, etc)
   - Special keyboard layout, ESC, TAB (see vt100 branch)
   - Preferences
   - See design spec on code project
-- Color

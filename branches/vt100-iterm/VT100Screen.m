@@ -64,14 +64,8 @@ void padString(NSString *s, screen_char_t *buf, int fg, int bg, int *len,
     buf[j].ch = sc[i];
     buf[j].fg_color = fg;
     buf[j].bg_color = bg;
-    if (sc[i]>0xa0 && [NSString isDoubleWidthCharacter:sc[i]
-                                              encoding:encoding]) {
-      j++;
-      buf[j].ch = 0xffff;
-      buf[j].fg_color = fg;
-      buf[j].bg_color = bg;
-    } else if (buf[j].ch == 0xfeff || buf[j].ch == 0x200b ||
-               buf[j].ch == 0x200c || buf[j].ch == 0x200d) { //zero width space
+    if (buf[j].ch == 0xfeff || buf[j].ch == 0x200b ||
+        buf[j].ch == 0x200c || buf[j].ch == 0x200d) { //zero width space
       j--;
     }
   }
