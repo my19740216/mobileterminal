@@ -32,7 +32,6 @@
 #include <string.h>
 #include <unistd.h>
 #import "charmaps.h"
-#import "NSString-Additions.h"
 #import "PTYTextView.h"
 #import "Settings.h"
 
