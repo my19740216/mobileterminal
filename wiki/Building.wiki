@@ -6,8 +6,7 @@
 This page is for developers who wish to build MobileTerminal and package it for binary distribution.  This page assumes that you have access to your iPhone and have a working [http://www.google.com/url?sa=t&ct=res&cd=1&url=http%3A%2F%2Fdeveloper.berlios.de%2Fprojects%2Fiphone-binutils%2F&ei=_rWwRsucMY24gQP8_5CuCA&usg=AFQjCNGmoQuFDFPJ8XVWAsHMwf8VYk-BoQ&sig2=kdfUORR2uWGpzwtaykEWWw iphone-binutils] toolchain.
 
 See these pages for more info on how to get prepared:
-  * http://ellkro.jot.com/WikiHome/ToolchainInstallation -- a binary development package
-  * http://ellkro.jot.com/HowToBuildObjCApps -- build from toolchain svn, for those who would rather spend more time compiling the source of the compiler than writing apps for the iphone :-D
+  * http://iphone.fiveforty.net/wiki/index.php/Toolchain_Project -- Instructions for building the latest toolchain.
 
 = Details =
 
@@ -35,7 +34,7 @@ $ make
 ...
 }}}
 
-This should a "Terminal" binary in the current directory.  If you have problems building the source, feel free to [http://code.google.com/p/mobileterminal/issues/list Open an Issue].
+This should build a "Terminal" binary in the current directory.  If you have problems building the source, feel free to [http://code.google.com/p/mobileterminal/issues/list Open an Issue].
 
 The default "Terminal" program can be run on the command line of your iPhone.  In order to run it from the main GUI menu, you build the package and place it in the /Applications folder of your phone.
 
@@ -49,17 +48,7 @@ See the Installation page for more details on how to install the Terminal.app on
 
 ==== Build Errors ===
 
-You may run into build errors caused by differences in the UIKit headers included in the toolchain and the UIKit headers of the developers.  The UIKit headers in the current toolchain include files which do not exist.  They can safely be commented out, or an empty file can be created in their place.  For example, some headers might have a line like:
-
-{{{
-#import "NSString.h"
-}}}
-
-Which causes a build error because that file was not included in the UIKit header directory.  You can "touch NSString.h" in your UIKit include directory, or simply comment out the line in the offending header file.
-
-{{{
-//#import "NSString.h"
-}}}
+If you run into any errors while building, you should make sure that you are using the latest toolchain headers.  These headers may change often so always make sure you're up to date.  Some MobileTerminal developers may be using headers from the iphone-binutils trunk, which is bleeding edge.
 
 === Packaging ===
 
@@ -68,3 +57,5 @@ This section is for mobileterminal developers who want to package the latest bin
 TODO
 
 See BinaryVersioning
+ 
+ 
