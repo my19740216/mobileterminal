@@ -8,6 +8,7 @@
 #import "SubProcess.h"
 #import "VT100Terminal.h"
 #import "VT100Screen.h"
+#import "GestureView.h"
 
 @implementation MobileTerminal
 
@@ -25,7 +26,7 @@
 
   window = [[UIWindow alloc] initWithContentRect:frame];
 
-  CGRect textFrame = CGRectMake(0.0f, 0.0, 320.0f, 245.0f);
+  CGRect textFrame = CGRectMake(0.0f, 0.0, 320.0f, 250.0f);
   textScroller = [[UIScroller alloc] initWithFrame:textFrame];
   textView = [[PTYTextView alloc] initWithFrame:textFrame
                                          source:screen
@@ -36,8 +37,6 @@
   [keyboardView setInputDelegate:self];
 
   UIView *mainView = [[UIView alloc] initWithFrame: frame];
-  [mainView addSubview:textScroller];
-  [mainView addSubview:keyboardView];
 
   [window orderFront: self];
   [window makeKey: self];
@@ -46,7 +45,21 @@
 
   process = [[SubProcess alloc] initWithDelegate:self];
 
+  // add the gesture view with the pie thing too
+  NSBundle *bundle = [NSBundle mainBundle];
+  NSString *pieImagePath = [bundle pathForResource: @"pie" ofType: @"png"];
+  UIImage *pieImage = [[UIImage alloc] initWithContentsOfFile: pieImagePath];
+  pieView = [[PieView alloc] initWithFrame: CGRectMake(56.0f,16.0f,208.0f,213.0f)];
+  [pieView setImage: pieImage];
+  [pieView setAlpha: 0.9f];
+  gestureView = [[GestureView alloc] initWithProcess: process Frame: CGRectMake(0.0f, 0.0f, 240.0f, 250.0f) Pie: pieView];
+
+  [mainView addSubview:textScroller];
+  [mainView addSubview:keyboardView];
   [mainView addSubview:[keyboardView inputView]];
+  [mainView addSubview:gestureView];
+  [mainView addSubview:pieView];
+  [pieView hideSlow:YES];
   [[keyboardView inputView] becomeFirstResponder];
 }
 

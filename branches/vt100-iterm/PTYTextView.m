@@ -51,7 +51,8 @@ static PTYTextView* instance = nil;
   [textScroller setBottomBufferHeight:5.0];
   [textScroller setBounces:YES];
   [textScroller setContentSize:frame.size];
-  [textScroller setScrollerIndicatorStyle:kUIScrollerIndicatorWhite];
+// 0.3 toolchain maybe doesn't see this? doesn't compile for me (gabe.schine)
+//  [textScroller setScrollerIndicatorStyle:kUIScrollerIndicatorWhite];
 
   [self refresh];
 

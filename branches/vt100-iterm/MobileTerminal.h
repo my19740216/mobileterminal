@@ -6,6 +6,8 @@
 @class SubProcess;
 @class VT100Screen;
 @class VT100Terminal;
+@class GestureView;
+@class PieView;
 
 @interface MobileTerminal : UIApplication
 // TODO?
@@ -15,6 +17,8 @@
   PTYTextView* textView;
   UIScroller* textScroller;
   ShellKeyboard* keyboardView;
+  GestureView* gestureView;
+  PieView* pieView;
 
   SubProcess* process;
   VT100Screen* screen;

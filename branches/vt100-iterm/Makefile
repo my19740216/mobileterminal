@@ -9,7 +9,8 @@ all:	Terminal
 
 Terminal: main.o MobileTerminal.o  ShellKeyboard.o SubProcess.o \
 	VT100Screen.o VT100Terminal.o PTYTextView.o  \
-        ColorMap.o PTYTile.o Settings.o
+        ColorMap.o PTYTile.o Settings.o \
+        GestureView.o PieView.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
 %.o:	%.m
@@ -22,6 +23,7 @@ package: Terminal
 	cp Info.plist Terminal.app/Info.plist
 	cp icon.png Terminal.app/icon.png
 	cp Default.png Terminal.app/Default.png
+	cp pie.png Terminal.app/pie.png
 
 dist: package
 	zip -r Terminal.zip Terminal.app/
