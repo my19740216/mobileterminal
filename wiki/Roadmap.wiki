@@ -27,24 +27,28 @@ The vt100 branch has great support for gestures (for arrow, tab, escape keys), s
 
 The vt100-iterm branch has more stable support for color, but has drawing bugs that need to be fixed.
 
-= Short Term =
+= Near =
 
 The current phase will move support for vt100 into the main branch.  This will fix most bugs which are open in the Issues section, which are related to strange wrapping and un-handled characters.
 
-Combining the vt100 and vt100-iterm branches will be a little tricky;  In general I think we should use the CoreGraphics based terminal from vt100-iterm, but keep all of the awesome UI gestures from the vt100 branch.  Porting the pie chart is a work in progress.
-
+Combining the vt100 and vt100-iterm branches will be a little tricky;  In general I think we should use the CoreGraphics based terminal from vt100-iterm, but keep all of the awesome UI gestures from the vt100 branch.  Porting the pie chart and gestures will also be key, so that current users of vt100 can enjoy all of the same features.
 
 = Medium Term =
 
+  * Suspend / Resume - Terminal should resume right where you leave it when exiting.
+  * Preferences - Font, size, width/height of the terminal
+  * Integration with MobileFinder - support for launching with an arbitrary start directory, or running arbitrary commands at startup.
 
-
-
-
-= Long Term =
+= Far =
  
+Longer out, we should do some UI work in the following areas.  Some of these features have open bugs:
+
+  * Preferences for custom meta keys
+  * Landscape keyboard layout as well as keyboard hiding (full screen).
 
 
 
+ 
  
  
  
