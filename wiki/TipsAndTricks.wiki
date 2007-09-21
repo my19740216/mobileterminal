@@ -3,7 +3,7 @@
 
 = Introduction =
 
-This page is a collection of tips and tricks that people have found useful.  Please feel free to leave your own in the comments.
+This page is a collection of tips and tricks that people have found useful.  Please feel free to leave your own in the comments, but put feature requests in the Issues section.
 
 = Tips =
 
@@ -28,3 +28,4 @@ http://www.thebends.org/~allen/code/iphone-apps/binary/openssh-4.6p1/README
 
 Binary packages:
 http://www.thebends.org/~allen/code/iphone-apps/binary/openssh-4.6p1-iphone-binary.tar.gz
+ 
