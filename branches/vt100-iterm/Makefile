@@ -21,9 +21,9 @@ package: Terminal
 	mkdir -p Terminal.app
 	cp Terminal Terminal.app/Terminal
 	cp Info.plist Terminal.app/Info.plist
-	cp icon.png Terminal.app/icon.png
-	cp Default.png Terminal.app/Default.png
-	cp pie.png Terminal.app/pie.png
+	cp Resources/icon.png Terminal.app/icon.png
+	cp Resources/Default.png Terminal.app/Default.png
+	cp Resources/pie.png Terminal.app/pie.png
 
 dist: package
 	zip -r Terminal.zip Terminal.app/
