@@ -37,6 +37,7 @@
   [keyboardView setInputDelegate:self];
 
   UIView *mainView = [[UIView alloc] initWithFrame: frame];
+  [mainView addSubview:[keyboardView inputView]];
 
   [window orderFront: self];
   [window makeKey: self];
@@ -61,6 +62,11 @@
   [mainView addSubview:pieView];
   [pieView hideSlow:YES];
   [[keyboardView inputView] becomeFirstResponder];
+}
+
+- (void)applicationExited:(GSEvent *)event
+{
+  [process close];
 }
 
 // Process output from the shell and pass it to the screen

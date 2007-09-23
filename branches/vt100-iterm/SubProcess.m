@@ -84,10 +84,21 @@ int start_process(const char* path, char* const args[], char* const env[]) {
 
 - (void)dealloc
 {
-  if (fd != 0) {
-   close(fd);
-  }
+  [self close];
   [super dealloc];
+}
+
+- (void)close
+{
+  if (fd != 0) {
+    close(fd);
+    fd = 0;
+  }
+}
+
+- (BOOL)isRunning
+{
+  return (fd != 0) ? YES : NO;
 }
 
 - (int)write:(const char*)data length:(unsigned int)length
