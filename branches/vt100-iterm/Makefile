@@ -1,5 +1,5 @@
-CC=/usr/local/arm-apple-darwin/bin/gcc
-CFLAGS=-fsigned-char -Wall -Werror -O7
+CC=arm-apple-darwin-gcc
+CFLAGS=-Wall -Werror -O7
 LDFLAGS=-Wl,-syslibroot,$(HEAVENLY) -lobjc \
         -framework CoreFoundation -framework Foundation \
         -framework UIKit -framework LayerKit -framework CoreGraphics \

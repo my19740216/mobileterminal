@@ -3,6 +3,7 @@
 
 #import "MobileTerminal.h"
 #import <Foundation/Foundation.h>
+#import <GraphicsServices/GraphicsServices.h>
 #import "ShellKeyboard.h"
 #import "PTYTextView.h"
 #import "SubProcess.h"
