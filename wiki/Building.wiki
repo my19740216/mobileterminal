@@ -3,10 +3,10 @@
 
 = Introduction =
 
-This page is for developers who wish to build MobileTerminal and package it for binary distribution.  This page assumes that you have access to your iPhone and have a working [http://www.google.com/url?sa=t&ct=res&cd=1&url=http%3A%2F%2Fdeveloper.berlios.de%2Fprojects%2Fiphone-binutils%2F&ei=_rWwRsucMY24gQP8_5CuCA&usg=AFQjCNGmoQuFDFPJ8XVWAsHMwf8VYk-BoQ&sig2=kdfUORR2uWGpzwtaykEWWw iphone-binutils] toolchain.
+This page is for developers who wish to build MobileTerminal and package it for binary distribution.  This page assumes that you have access to your iPhone and have a working [http://code.google.com/p/iphone-dev toolchain].
 
 See these pages for more info on how to get prepared:
-  * http://iphone.fiveforty.net/wiki/index.php/Toolchain_Project -- Instructions for building the latest toolchain.
+  * http://code.google.com/p/iphone-dev/wiki/Building -- Instructions for building the latest toolchain.
 
 = Details =
 
