@@ -22,6 +22,10 @@
   // data source
   VT100Screen *dataSource;
   UIScroller *textScroller;
+
+  // cached font details
+  CGFontRef fontRef;
+  float fontSize;
 }
 
 + (PTYTextView*)sharedInstance;

@@ -10,6 +10,7 @@
 #import "Settings.h"
 
 #include <sys/time.h>
+#include <math.h>
 
 static PTYTextView* instance = nil;
 
@@ -71,6 +72,7 @@ static PTYTextView* instance = nil;
 #if DEBUG_ALLOC
   NSLog(@"%s: 0x%x", __PRETTY_FUNCTION__, self);
 #endif
+  CFRelease(fontRef);
   [super dealloc];
 
 #if DEBUG_ALLOC
@@ -172,15 +174,28 @@ static PTYTextView* instance = nil;
   [self drawRow:row tileRect:(CGRect)rect];
 }
 
+//XXX: put me in a standard header somewhere
+extern CGFontRef CGContextGetFont(CGContextRef);
+
 - (void)setupTextForContext:(CGContextRef)context
 {
   const char* font = [[[Settings sharedInstance] font] cString];
-  CGContextSelectFont(context, font, lineHeight, kCGEncodingMacRoman);
+
+  if(!fontRef) {
+    // First time through: cache the fontRef. This lookup is expensive.
+    fontSize = floor(lineHeight);
+    CGContextSelectFont(context, font, floor(lineHeight), kCGEncodingMacRoman);
+    fontRef = (CGFontRef)CFRetain(CGContextGetFont(context));
+  } else {
+    CGContextSetFont(context,fontRef);
+    CGContextSetFontSize(context,fontSize);
+  }
+
   CGContextSetRGBFillColor(context, 1, 1, 1, 1);
   CGContextSetTextDrawingMode(context, kCGTextFill);
-  // Flip text, for some reason its written upside down by default
-  CGAffineTransform translate =
-    CGAffineTransformMake(1, 0, 0, -1, 0, 1.0);
+
+  // Flip text, for some reason it's written upside down by default
+  CGAffineTransform translate = CGAffineTransformMake(1, 0, 0, -1, 0, 1.0);
   CGContextSetTextMatrix(context, translate);
 }
 
@@ -194,6 +209,9 @@ static PTYTextView* instance = nil;
   CGContextFillRect(context, rect);
 }
 
+//XXX: put me in a standard header somewhere
+bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
+
 - (void)drawChar:(CGContextRef)context
        character:(char)c
            color:(CGColorRef)color
@@ -203,7 +221,23 @@ static PTYTextView* instance = nil;
   CGContextSetRGBFillColor(context, components[0], components[1],
                                     components[2], components[3]);
   // TODO: Consider adjusting the text point based on the rotation above
-  CGContextShowTextAtPoint(context, point.x, point.y, &c, 1);
+  
+  // Use CGContextShowGlyphsWithAdvances() and make up the advances. Actually
+  // calculating advances is expensive and unnecessary for plotting one glyph.
+  
+  //Get the glyph
+  CGGlyph glyphs[1] = { 0 };
+  unichar chars[1];
+  chars[0] = (unichar)c;
+  CGFontGetGlyphsForUnichars(fontRef, chars, glyphs, 1);
+  
+  //one character, nothing to advance from, so this isn't really important.
+  CGSize advances[1];
+  advances[0] = CGSizeMake(0.0,0.0);
+  
+  //plot the one glyph
+  CGContextSetTextPosition( context, floor(point.x), floor(point.y) );
+  CGContextShowGlyphsWithAdvances(context,glyphs,advances,1);
 }
 
 - (void)drawRow:(unsigned int)row tileRect:(CGRect)rect
@@ -220,10 +254,19 @@ static PTYTextView* instance = nil;
   int width = [dataSource width];
   screen_char_t *theLine = [dataSource getLineAtIndex:row];
   int column;
+
+  // Avoid painting each black square individually. First paint the whole 
+  // row with the background color  
+  [self drawBox:context color:[[ColorMap sharedInstance] colorForCode:DEFAULT_BG_COLOR_CODE]
+     boxRect:CGRectMake(rect.origin.x, rect.origin.y, charWidth * width, lineHeight)];
+
+  //now specially paint any exceptional backgrounds
   for (column = 0; column < width; column++) {
     unsigned int bgcode = theLine[column].bg_color;
-    CGColorRef bg = [[ColorMap sharedInstance] colorForCode:bgcode];
-    [self drawBox:context color:bg boxRect:charRect];
+    if(bgcode != DEFAULT_BG_COLOR_CODE) {
+      CGColorRef bg = [[ColorMap sharedInstance] colorForCode:bgcode];
+      [self drawBox:context color:bg boxRect:charRect];
+    }
     charRect.origin.x += charWidth;
   }
 
