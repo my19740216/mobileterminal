@@ -49,7 +49,7 @@ static PTYTextView* instance = nil;
   [textScroller addSubview:self];
   [textScroller setAllowsRubberBanding:YES];
   [textScroller displayScrollerIndicators];
-  [textScroller setBottomBufferHeight:5.0];
+  [textScroller setBottomBufferHeight:10.0];
   [textScroller setBounces:YES];
   [textScroller setContentSize:frame.size];
 // 0.3 toolchain maybe doesn't see this? doesn't compile for me (gabe.schine)
