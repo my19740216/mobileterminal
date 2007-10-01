@@ -1218,8 +1218,8 @@ autorelease]; */
   NSLog(@"%s(%d):-[VT100Screen setTermType:%@]",
       __FILE__, __LINE__, termtype);
 #endif
-//  if (termType) [termType release];
-//  termType = [termtype retain];
+  if (termType) [termType release];
+  termType = [termtype retain];
 
   NSRange range = [termType rangeOfString:@"xterm"];
   allowKeypadMode = range.location != NSNotFound;
