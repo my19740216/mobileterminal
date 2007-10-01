@@ -10,6 +10,7 @@
 #import "VT100Terminal.h"
 #import "VT100Screen.h"
 #import "GestureView.h"
+#import "PieView.h"
 
 @implementation MobileTerminal
 
