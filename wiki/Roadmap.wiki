@@ -5,37 +5,9 @@
 
 This document is a proposal for current plans for MobileTerminal development, to provide some visibility into what people are working on.   This document should be updated occasionally with the current state of the project, with some short term milestones.
 
-= Background =
-
-Currently there are three branches of MobileTerminal:
-
-  * trunk - Outdated, No vt100 support
-  * vt100 - vt100 support using attributed strings and HTML (based on 
-  * vt100-iterm - vt100 support using CoreGraphics (based on iTerm)
-
-Features from both of the vt100 and vt100-iterm branches are close to being ported back into the trunk (main branch).
-
-=== trunk ===
-
-No support for vt100, but has support for some support keyboard hiding which aren't in the other branches.
-
-=== vt100 ===
-
-The vt100 branch has great support for gestures (for arrow, tab, escape keys), some bugs in color support (thought to be bugs with the built-in NSAttributedString) and is the most common vt100 version used.
-
-=== vt100-iterm ===
-
-The vt100-iterm branch has more stable support for color, but has drawing bugs that need to be fixed.
-
 = Near =
 
-The current phase will move support for vt100 into the main branch.  This will fix most bugs which are open in the Issues section, which are related to strange wrapping and un-handled characters.
-
-Combining the vt100 and vt100-iterm branches will be a little tricky;  In general I think we should use the CoreGraphics based terminal from vt100-iterm, but keep all of the awesome UI gestures from the vt100 branch.  Porting the pie chart and gestures will also be key, so that current users of vt100 can enjoy all of the same features.
-
-= Medium Term =
-
-  * Suspend / Resume - Terminal should resume right where you leave it when exiting.
+  * Make compatible with the official Apple SDK if possible, when released.
   * Preferences - Font, size, width/height of the terminal
   * Integration with MobileFinder - support for launching with an arbitrary start directory, or running arbitrary commands at startup.
 
