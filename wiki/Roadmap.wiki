@@ -5,16 +5,10 @@
 
 This document is a proposal for current plans for MobileTerminal development, to provide some visibility into what people are working on.   This document should be updated occasionally with the current state of the project, with some short term milestones.
 
-= Near =
+= Planned Features =
 
   * Make compatible with the official Apple SDK if possible, when released.
   * Preferences - Font, size, width/height of the terminal
-  * Integration with MobileFinder - support for launching with an arbitrary start directory, or running arbitrary commands at startup.
-
-= Far =
- 
-Longer out, we should do some UI work in the following areas.  Some of these features have open bugs:
-
   * Preferences for custom meta keys
   * Landscape keyboard layout as well as keyboard hiding (full screen).
 
