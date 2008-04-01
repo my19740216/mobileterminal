@@ -1,4 +1,5 @@
 #summary log of changes :-)
+#labels Featured
 
 = CHANGELOG =
 
