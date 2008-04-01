@@ -5,7 +5,7 @@
 == r250 ==
 
   * multiple terminals added (code merged from the multi branch) 
-    this feature works best if the Default_MobileTerminal?.png and FSO_MobileTerminal?.png images are copied to /System/CoreServices/SpringBoard.app 
+    this feature works best if the `Default_MobileTerminal?.png` and `FSO_MobileTerminal?.png` images are copied to `/System/CoreServices/SpringBoard.app`
 
   * landscape mode added
 
