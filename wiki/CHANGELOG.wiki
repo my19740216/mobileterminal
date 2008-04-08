@@ -3,7 +3,7 @@
 
 = CHANGELOG =
 
-== 270 ==
+== r270 ==
 
   * configurable menu
     * two modes: 
