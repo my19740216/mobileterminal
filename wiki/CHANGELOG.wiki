@@ -3,6 +3,25 @@
 
 = CHANGELOG =
 
+== 270 ==
+
+  * configurable menu
+    * two modes: 
+      * tap mode: single tap to open, single tap for item/submenu activation
+      * swipe mode: hold to open, swipe to open submenu, release to activate item
+    * special commands (prefixed with the dot symbol):
+      * `*!` enter
+      * `*<` cursor left
+      * `*>` cursor right
+      * `*esc` escape
+      * `*del` delete
+      * `*home` `*end` `*pgup` `*pgdown` `*up` `*down` dito
+      * `*A` - `*Z` Ctrl-Keys
+      * `*keepmenu` menu stays on screen when in tap mode
+      * `*back` loads previous submenu after item activation
+
+  * bug fix: setTerminalType reenabled (makes lynx and nano work again)
+
 == r265 ==
 
   * terminal arguments preferences added
