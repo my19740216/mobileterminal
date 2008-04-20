@@ -3,6 +3,22 @@
 
 = CHANGELOG =
 
+== r278 ==
+
+  * configurable gestures:
+    * short single finger swipes 
+    * long single finger swipes
+    * double finger swipes
+    
+  * special menu/gesture commands added:
+      * `[CONF]` open the settings
+      * `[PREV]` switch to previous terminal
+      * `[NEXT]` switch to nex terminal
+      * `[KEYB]` toggle keyboard
+      * `[CTRL]` control key mode
+
+  * minor bug fixes
+
 == r270 ==
 
   * configurable menu
