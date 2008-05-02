@@ -3,6 +3,13 @@
 
 = CHANGELOG =
 
+== r282 ==
+
+  * suspend/resume problems solved
+    * resume after suspend with keyboard hidden works now
+    * resume after suspend with preferences open works now
+  * minor cosmetic changes
+
 == r278 ==
 
   * configurable gestures:
