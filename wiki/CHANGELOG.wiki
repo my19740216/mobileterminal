@@ -5,6 +5,14 @@
 
 == r282 ==
 
+  * terminal color preferences added:
+    * text foreground, background, bold 
+    * cursor foreground, background
+  * cursor character displays now
+  * ctrl-key mode indicated by cursor color invert 
+
+== r282 ==
+
   * suspend/resume problems solved
     * resume after suspend with keyboard hidden works now
     * resume after suspend with preferences open works now
