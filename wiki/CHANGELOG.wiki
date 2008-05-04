@@ -3,7 +3,11 @@
 
 = CHANGELOG =
 
-== r282 ==
+== r286 ==
+
+  * bug fix: color preference changes immediately visible
+
+== r284 ==
 
   * terminal color preferences added:
     * text foreground, background, bold 
