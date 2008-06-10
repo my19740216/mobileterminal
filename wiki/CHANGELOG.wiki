@@ -3,6 +3,11 @@
 
 = CHANGELOG =
 
+== r296 ==
+
+  * unstable branch merged into the trunk
+  * code cleaned up and restructured
+
 == r286 ==
 
   * bug fix: color preference changes immediately visible
