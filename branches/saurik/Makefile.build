@@ -2,32 +2,45 @@ CC=/usr/local/bin/arm-apple-darwin-gcc
 
 CFLAGS=-Wall -O7
 
+ifeq ($(PKG_ARCH),iphoneos-arm)
+QUARTZ=QuartzCore -framework ImageIO
+i20=-I/apl/i20
+else
+QUARTZ=LayerKit
+i20=
+endif
+
 LDFLAGS=-lobjc -framework CoreFoundation -framework Foundation \
-        -framework UIKit -framework LayerKit -framework CoreGraphics \
-        -framework GraphicsServices -lcurses  -lobjc
+        -framework UIKit -framework $(QUARTZ) -framework CoreGraphics \
+        -framework GraphicsServices -lcurses  -lobjc \
+	-F${PKG_ROOT}/System/Library/PrivateFrameworks
 
-all:	Terminal
+all:	svnversion Terminal
 
-Terminal: main.o \
-					MobileTerminal.o \
-					VT100Screen.o VT100Terminal.o \
-					PTYTextView.o \
-					Color.o \
-					ColorMap.o \
-					Settings.o \
-					Keyboard.o \
-					SubProcess.o \
-					GestureView.o \
-					Menu.o \
-          PieView.o \
-					Preferences.o \
-					Constants.o \
-          Tools.o \
-					Log.o
+svnversion:
+	python ./Sources/Misc/svnversion.py
+
+Terminal: Sources/main.o \
+					Sources/MobileTerminal.o \
+					Sources/Terminal/VT100Screen.o \
+					Sources/Terminal/VT100Terminal.o \
+					Sources/UI/PTYTextView.o \
+					Sources/Misc/Color.o \
+					Sources/Misc/ColorMap.o \
+					Sources/Misc/Settings.o \
+					Sources/UI/Keyboard.o \
+					Sources/Terminal/SubProcess.o \
+					Sources/UI/GestureView.o \
+					Sources/UI/Menu.o \
+          Sources/UI/PieView.o \
+					Sources/UI/Preferences.o \
+					Sources/Misc/Constants.o \
+          Sources/Misc/Tools.o \
+					Sources/Misc/Log.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
 %.o:	%.m
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@ $(i20) -ISources/{,Misc,Terminal,UI} -I.
 
 depend:
 	@makedepend *.m &> /dev/null

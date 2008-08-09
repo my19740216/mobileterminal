@@ -24,7 +24,7 @@
   width = 45;
   fontSize = 12;
   fontWidth = 0.6f;
-  font = @"CourierNewBold";
+  font = @"CourierNewPS-BoldMT";
   args = @"";
   
   return self;
@@ -62,7 +62,7 @@
 }
 
 - (RGBAColor*) colors {
-  return colors;
+  return _colors;
 }
 
 //_______________________________________________________________________________
@@ -97,11 +97,11 @@
 {
   self = [super init];
 
-  terminalConfigs = [NSArray arrayWithObjects:
+  terminalConfigs = [[NSArray arrayWithObjects:
                      [[TerminalConfig alloc] init],
                      [[TerminalConfig alloc] init],
                      [[TerminalConfig alloc] init],
-                     [[TerminalConfig alloc] init], nil];
+                     [[TerminalConfig alloc] init], nil] retain];
   
   gestureFrameColor = RGBAColorMake(1.0f, 1.0f, 1.0f, 0.05f);
   multipleTerminals = NO;
@@ -154,7 +154,7 @@
     [tc setObject:[NSNumber numberWithInt:45]     forKey:@"width"];
     [tc setObject:[NSNumber numberWithInt:12]     forKey:@"fontSize"];
     [tc setObject:[NSNumber numberWithFloat:0.6f] forKey:@"fontWidth"];
-    [tc setObject:@"CourierNewBold" forKey:@"font"];
+    [tc setObject:@"CourierNewPS-BoldMT" forKey:@"font"];
     [tc setObject:(i > 0 ? @"clear" : @"") forKey:@"args"];
 
     NSMutableArray * ca = [NSMutableArray arrayWithCapacity:NUM_TERMINAL_COLORS];

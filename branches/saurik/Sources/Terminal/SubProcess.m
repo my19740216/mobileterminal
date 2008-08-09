@@ -140,7 +140,7 @@ int start_process(const char* path, char* const args[], char* const env[]) {
   if (arg != nil && [arg length] > 0) 
   {    
     // A command line argument was passed to the program
-    const char* path = [arg cString];
+    const char* path = [arg UTF8String];
     struct stat st;
     if ((stat(path, &st) == 0) && ((st.st_mode & S_IFDIR) != 0)) // it's a path, issue a cd command
     {
@@ -150,7 +150,7 @@ int start_process(const char* path, char* const args[], char* const env[]) {
     } 
     else // just print the command 
     {
-      write(fd, [arg cString], [arg length]);
+      write(fd, [arg UTF8String], [arg length]);
       write(fd, "\n", 1);
     }
   }
@@ -186,7 +186,7 @@ int start_process(const char* path, char* const args[], char* const env[]) {
 {
   // HACK: Just pretend the message came from the child
   NSLog(message);
-  [delegate handleStreamOutput:[message cString] length:[message length] identifier:termid];
+  [delegate handleStreamOutput:[message UTF8String] length:[message length] identifier:termid];
 }
 
 - (void)setWidth:(int)width height:(int)height

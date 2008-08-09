@@ -13,6 +13,11 @@
 #import "Tools.h"
 #include <math.h>
 
+@protocol UITouchCompatibility
+- (CGPoint)locationInView:(UIView *)view;
+- (CGPoint)previousLocationInView:(UIView *)view;
+@end
+
 @implementation GestureView
 
 //_______________________________________________________________________________
@@ -77,9 +82,23 @@
 
 //_______________________________________________________________________________
 
+- (BOOL)beginTrackingWithTouch:(id)touch withEvent:(id)event {
+    return [self beginTrackingAt:[touch locationInView:self] withEvent:event];
+}
+
+- (BOOL)continueTrackingWithTouch:(id)touch withEvent:(id)event {
+    return [self continueTrackingAt:[touch locationInView:self] previous:[touch previousLocationInView:self] withEvent:event];
+}
+
+- (void)endTrackingWithTouch:(id)touch withEvent:(id)event {
+    return [self endTrackingAt:[touch locationInView:self] previous:[touch previousLocationInView:self] withEvent:event];
+}
+
+//_______________________________________________________________________________
+
 - (void) mouseDown:(GSEvent*)event
 {
-	mouseDownPos = [delegate viewPointForWindowPoint:GSEventGetLocationInWindow(event)];
+	mouseDownPos = [delegate viewPointForWindowPoint:GSEventGetLocationInWindow(event).origin];
   [delegate showMenu:mouseDownPos];
 	
 	[super mouseDown:event];
@@ -132,7 +151,7 @@
 	
 	if (![[MenuView sharedInstance] visible])
 	{
-		CGPoint end = [delegate viewPointForWindowPoint:GSEventGetLocationInWindow(event)];
+		CGPoint end = [delegate viewPointForWindowPoint:GSEventGetLocationInWindow(event).origin];
 		CGPoint vector = CGPointMake(end.x - mouseDownPos.x, end.y - mouseDownPos.y);
 
 		float r = sqrtf(vector.x*vector.x + vector.y*vector.y);
@@ -168,7 +187,7 @@
 		}
     else if (r < 10.0f)
     {
-      mouseDownPos = [delegate viewPointForWindowPoint:GSEventGetLocationInWindow(event)];
+      mouseDownPos = [delegate viewPointForWindowPoint:GSEventGetLocationInWindow(event).origin];
       if ([[MenuView sharedInstance] visible])
       {
         [[MenuView sharedInstance] hide];

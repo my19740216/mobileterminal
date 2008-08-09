@@ -3,6 +3,7 @@
 //  Terminal
 
 #import <Foundation/Foundation.h>
+#import <CoreGraphics/CGImage.h>
 
 //_______________________________________________________________________________
 

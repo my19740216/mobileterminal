@@ -21,7 +21,7 @@
 	aFileHandle = [NSFileHandle fileHandleForWritingAtPath:aFile];
 	[aFileHandle truncateFileAtOffset:[aFileHandle seekToEndOfFile]];
 	
-	[aFileHandle writeData:[[NSString stringWithFormat: @"%@\n", str] dataUsingEncoding:nil]];
+	[aFileHandle writeData:[[NSString stringWithFormat: @"%@\n", str] dataUsingEncoding:kCFStringEncodingUTF8]];
 }
 
 //_______________________________________________________________________________

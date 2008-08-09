@@ -9,12 +9,12 @@
 @interface ShellKeyboard : UIKeyboard<KeyboardInputProtocol>
 {
   id inputDelegate;
-  UITextView* inputView;
+  id handler;
 }
 
 - (id)initWithFrame:(CGRect)frame;
-- (UITextView*)inputView;
 - (void)setInputDelegate:(id)delegate;
 - (void)handleKeyPress:(unichar)c;
+- (void)enable;
 
 @end

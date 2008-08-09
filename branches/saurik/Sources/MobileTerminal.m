@@ -17,8 +17,16 @@
 #import <Foundation/Foundation.h>
 #import <GraphicsServices/GraphicsServices.h>
 #import <UIKit/UIView-Geometry.h>
-#import <LayerKit/LKAnimation.h>
 #import <CoreGraphics/CoreGraphics.h>
+
+#ifdef __OBJC2__
+#import <QuartzCore/CoreAnimation.h>
+#define LKAnimation CAAnimation
+#define LKTimingFunction CAMediaTimingFunction
+#define LKTransition CATransition
+#else
+#import <LayerKit/LKAnimation.h>
+#endif
 
 //_______________________________________________________________________________
 //_______________________________________________________________________________
@@ -55,7 +63,7 @@ static MobileTerminal * application;
 	[settings registerDefaults];
 	[settings readUserDefaults];
 
-  menu = [Menu menuWithArray:[settings menu]];
+  menu = [[Menu menuWithArray:[settings menu]] retain];
   
 	activeTerminal = 0;
 	
@@ -76,10 +84,10 @@ static MobileTerminal * application;
   	
 	for (numTerminals = 0; numTerminals < ([settings multipleTerminals] ? MAXTERMINALS : 1); numTerminals++)
 	{
-		VT100Terminal * terminal = [[VT100Terminal alloc] init];
-		VT100Screen   * screen   = [[VT100Screen alloc] initWithIdentifier: numTerminals];
-		SubProcess    * process  = [[SubProcess alloc] initWithDelegate:self identifier: numTerminals];
-		UIScroller    * scroller = [[UIScroller alloc] init];
+		VT100Terminal * terminal = [[[VT100Terminal alloc] init] autorelease];
+		VT100Screen   * screen   = [[[VT100Screen alloc] initWithIdentifier: numTerminals] autorelease];
+		SubProcess    * process  = [[[SubProcess alloc] initWithDelegate:self identifier: numTerminals] autorelease];
+		UIScroller    * scroller = [[[UIScroller alloc] init] autorelease];
 		
 		[screens   addObject: screen];
 		[terminals addObject: terminal];
@@ -89,10 +97,10 @@ static MobileTerminal * application;
 		[screen setTerminal:terminal];
 		[terminal setScreen:screen];		
 		
-		PTYTextView * textview = [[PTYTextView alloc] initWithFrame: CGRectMake(0.0f, 0.0f, 320.0f, 244.0f)
+		PTYTextView * textview = [[[PTYTextView alloc] initWithFrame: CGRectMake(0.0f, 0.0f, 320.0f, 244.0f)
 																												 source: screen
 																											 scroller: scroller
-																										 identifier: numTerminals];		
+																										 identifier: numTerminals] autorelease];		
 		[textviews addObject:textview];
 	}
 	
@@ -110,7 +118,6 @@ static MobileTerminal * application;
 		[mainView addSubview:[scrollers objectAtIndex:i]];
   }
   [mainView addSubview:keyboardView];	
-  [mainView addSubview:[keyboardView inputView]];
   [mainView addSubview:gestureView];
 	[mainView addSubview:[MenuView sharedInstance]];
 	activeView = mainView;
@@ -129,7 +136,7 @@ static MobileTerminal * application;
   [[MenuView sharedInstance] hideSlow:YES];
 
   // Input focus
-  [[keyboardView inputView] becomeFirstResponder];
+  [keyboardView enable];
 		
 	if (numTerminals > 1)
 	{
@@ -161,10 +168,9 @@ static MobileTerminal * application;
 		[keyboardView setAlpha:0.0f];		
   }  
 	
-	[mainView addSubview:[keyboardView inputView]];
 	[mainView bringSubviewToFront:gestureView];
 	[mainView bringSubviewToFront:[MenuView sharedInstance]];
-	[[keyboardView inputView] becomeFirstResponder];
+    [keyboardView enable];
 	
 	[self setActiveTerminal:0];
 	[self updateStatusBar];
@@ -194,7 +200,6 @@ static MobileTerminal * application;
   if (activeView != mainView) // preferences active
     [self togglePreferences];
   
-  [[keyboardView inputView] removeFromSuperview];
   [keyboardView removeFromSuperview];
 	
 	for (i = 0; i < MAXTERMINALS; i++)
@@ -350,7 +355,7 @@ static MobileTerminal * application;
   }
   else
   {
-    [[self activeProcess] write:[input cString] length:[input length]];
+    [[self activeProcess] write:[input UTF8String] length:[input length]];
   }    
 }
 
@@ -398,7 +403,7 @@ static MobileTerminal * application;
 {
 	if (numTerminals > 1)
 	{
-		CGPoint pos = GSEventGetLocationInWindow(event);
+		CGPoint pos = GSEventGetLocationInWindow(event).origin;
 		float width = landscape ? window.frame.size.height : window.frame.size.width;
 		if (pos.x > width/2 && pos.x < width*3/4)
 		{
@@ -686,6 +691,7 @@ static MobileTerminal * application;
 																											 scroller: scroller
 																										 identifier: numTerminals];		
 		[textviews addObject:textview];		
+		[processes addObject: process];
 	}
 
 	[self addStatusBarImageNamed:[NSString stringWithFormat:@"MobileTerminal0"] removeOnAbnormalExit:YES];

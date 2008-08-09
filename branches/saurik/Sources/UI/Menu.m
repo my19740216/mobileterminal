@@ -8,7 +8,7 @@
 #import "Settings.h"
 #import "Log.h"
 #import <UIKit/CDStructures.h>
-#import "UIGradient.h"
+#import <UIKit/UIGradient.h>
 
 //_______________________________________________________________________________
 //_______________________________________________________________________________
@@ -127,7 +127,7 @@
 + (Menu*) menuWithArray:(NSArray*)array
 {
   int i;
-  Menu * menu = [[Menu alloc] init];
+  Menu * menu = [[[Menu alloc] init] autorelease];
   for (i = 0; i < 12; i++)
   {
     MenuItem * item = [[menu items] objectAtIndex:i];

@@ -247,11 +247,13 @@ extern CGFontRef CGContextGetFont(CGContextRef);
 	if (!fontRef) 
 	{		
 		TerminalConfig * config = [[[Settings sharedInstance] terminalConfigs] objectAtIndex:termid];
-		const char * font = [config.font cString];
+		const char * font = [config.font UTF8String];
     // First time through: cache the fontRef. This lookup is expensive.
 		fontSize = config.fontSize;
     CGContextSelectFont(context, font, floor(lineHeight), kCGEncodingMacRoman);
-    fontRef = (CGFontRef)CFRetain(CGContextGetFont(context));
+    fontRef = CGContextGetFont(context);
+    if (fontRef != NULL)
+    fontRef = (CGFontRef)CFRetain(fontRef);
   } 
 	else 
 	{

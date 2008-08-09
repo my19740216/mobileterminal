@@ -4,6 +4,7 @@
 
 #import "Tools.h"
 #import "Log.h"
+#include <ImageIO/CGImageDestination.h>
 
 //_______________________________________________________________________________
 //_______________________________________________________________________________
@@ -11,7 +12,7 @@
 BOOL writeImageToPNG (CGImageRef image, NSString * filePath) 
 {
   if (image == nil) { log(@"[ERROR] no image"); return NO; }
-  CFURLRef cfurl = CFURLCreateFromFileSystemRepresentation (NULL, (const UInt8 *)[filePath cString], [filePath length], 0);
+  CFURLRef cfurl = CFURLCreateFromFileSystemRepresentation (NULL, (const UInt8 *)[filePath UTF8String], [filePath length], 0);
   CGImageDestinationRef imageDest = CGImageDestinationCreateWithURL(cfurl, (CFStringRef)@"public.png", 1, nil);
   if (imageDest==nil) { log(@"[ERROR] no image destination"); return NO; }  
   CGImageDestinationAddImage(imageDest, image, nil);

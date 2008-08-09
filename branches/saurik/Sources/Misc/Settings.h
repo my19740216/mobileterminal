@@ -18,12 +18,13 @@
   NSString * font;
   NSString * args;
   
-  RGBAColor colors[NUM_TERMINAL_COLORS];
+  RGBAColor _colors[NUM_TERMINAL_COLORS];
 }
 
 - (NSString*) fontDescription;
+- (RGBAColor *) colors;
 
-@property RGBAColor * colors;
+@property (getter = colors) RGBAColor *colors;
 @property BOOL autosize;
 @property int width;
 @property int fontSize;

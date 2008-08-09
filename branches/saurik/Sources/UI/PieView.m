@@ -71,7 +71,7 @@ extern CGFontRef CGFontCreateWithFontName(CFStringRef name);
   float height = 14.0f;
 
   NSString *fontName = @"HelveticaBold";
-  CGContextSelectFont(context, [fontName cString], height, kCGEncodingMacRoman);
+  CGContextSelectFont(context, [fontName UTF8String], height, kCGEncodingMacRoman);
   CGFontRef font = CGContextGetFont(context);
 
   NSString * text = [self title];

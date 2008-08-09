@@ -1224,12 +1224,12 @@ autorelease]; */
   static int issetup = 0;
   if (!issetup) { issetup = 1;
   // this crashes on non-Cydia systems when called multiple times  
-  setupterm((char *)[termType cString], fileno(stdout), &r);
+  setupterm((char *)[termType UTF8String], fileno(stdout), &r);
   }
 
   if (r!=1) 
   {
-    log(@"Terminal type %s is not defined (%d)", [termType cString], r);
+    log(@"Terminal type %s is not defined (%d)", [termType UTF8String], r);
     for(i = 0; i < TERMINFO_KEYS; i ++) 
     {
       if (key_strings[i]) free(key_strings[i]);

@@ -8,9 +8,10 @@
 #import <UIKit/UIPreferencesControlTableCell.h>
 #import <UIKit/UIPreferencesTextTableCell.h>
 #import <UIKit/UISwitchControl.h>
-#import "UINavigationController.h"
+/* XXX: I hate this codebase*/
+#define UIInterfaceOrientation int
+#import <UIKit/UINavigationController.h>
 #import <UIKit/UIPickerView.h>
-#import <UIKit/UIPickerTable.h>
 #import <UIKit/UIPickerTableCell.h>
 #import "Color.h"
 
@@ -24,7 +25,7 @@
 
 //_______________________________________________________________________________
 
-@interface UIPickerTable (PickerTableExtensions)
+@interface UITable (PickerTableExtensions)
 @end
 
 @interface UIPickerView (PickerViewExtensions)
@@ -39,7 +40,7 @@
 	NSArray * fontNames;
 	
 	UIPickerView * fontPicker;
-	UIPickerTable * pickerTable;
+	UITable * pickerTable;
 	
 	NSString * selectedFont;
 }

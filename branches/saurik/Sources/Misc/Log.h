@@ -1,6 +1,7 @@
 
 #include <Foundation/Foundation.h>
 #include <CoreFoundation/CoreFoundation.h>
+#include <CoreGraphics/CGGeometry.h>
 
 #define logf(s,...)    [FileLog logFile:__FILE__ lineNumber:__LINE__ format:(s),##__VA_ARGS__]
 #define logfRect(s, r) [FileLog logFile:__FILE__ lineNumber:__LINE__ string:(s) rect:(r)] 

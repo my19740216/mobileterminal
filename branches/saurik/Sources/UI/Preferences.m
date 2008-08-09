@@ -13,12 +13,12 @@
 #import "Log.h"
 
 #import <UIKit/UISimpleTableCell.h> 
-#import "UIFieldEditor.h"
+#import <UIKit/UIFieldEditor.h>
 
 //_______________________________________________________________________________
 //_______________________________________________________________________________
 
-@implementation UIPickerTable (PickerTableExtensions)
+@implementation UITable (PickerTableExtensions)
 
 //_______________________________________________________________________________
 
@@ -40,7 +40,9 @@
 @implementation UIPickerView (PickerViewExtensions)
 
 -(float) tableRowHeight { return 22.0f; }
+#ifndef __OBJC2__
 -(id) delegate { return _delegate; }
+#endif
 
 //_______________________________________________________________________________
 
@@ -50,7 +52,7 @@
 	
 	for (c = 0; c < [self numberOfColumns]; c++)
 	{
-		UIPickerTable * table = [self tableForColumn:c];
+		UITable * table = [self tableForColumn:c];
 		for (r = 0; r < [table numberOfRows]; r++)
 		{
 			[[[table cellAtRow:r column:0] iconImageView] setFrame:CGRectMake(0,0,0,0)]; 
