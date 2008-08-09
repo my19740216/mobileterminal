@@ -7,7 +7,6 @@
 #import "GestureView.h"
 #import "Settings.h"
 #import "Log.h"
-#import <UIKit/CDStructures.h>
 #import <UIKit/UIGradient.h>
 
 //_______________________________________________________________________________

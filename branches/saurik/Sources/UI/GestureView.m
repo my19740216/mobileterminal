@@ -5,7 +5,6 @@
 #import "GestureView.h"
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import <UIKit/CDStructures.h>
 #import <GraphicsServices/GraphicsServices.h>
 #import "MobileTerminal.h"
 #import "Menu.h"
