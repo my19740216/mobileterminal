@@ -19,14 +19,7 @@
 #import <UIKit/UIView-Geometry.h>
 #import <CoreGraphics/CoreGraphics.h>
 
-#ifdef __OBJC2__
-#import <QuartzCore/CoreAnimation.h>
-#define LKAnimation CAAnimation
-#define LKTimingFunction CAMediaTimingFunction
-#define LKTransition CATransition
-#else
-#import <LayerKit/LKAnimation.h>
-#endif
+#import "iPhoneOS-Compat.h"
 
 //_______________________________________________________________________________
 //_______________________________________________________________________________

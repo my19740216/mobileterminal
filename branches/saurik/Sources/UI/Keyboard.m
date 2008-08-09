@@ -3,65 +3,7 @@
 #include <objc/runtime.h>
 #import <UIKit/UIDefaultKeyboardInput.h>
 
-/* iPhoneOS 2.0 Compatibility {{{ */
-#ifdef __OBJC2__
-@interface UICGColor : NSObject {
-}
-
-- (id) initWithCGColor:(CGColorRef)color;
-@end
-
-@interface UIFont {
-}
-
-- (UIFont *) fontWithSize:(CGFloat)size;
-@end
-
-@interface NSObject (iPhoneOS)
-- (CGColorRef) cgColor;
-- (CGColorRef) CGColor;
-- (void) set;
-@end
-
-@implementation NSObject (iPhoneOS)
-
-- (CGColorRef) cgColor {
-    return [self CGColor];
-}
-
-- (CGColorRef) CGColor {
-    return (CGColorRef) self;
-}
-
-- (void) set {
-    [[[[objc_getClass("UICGColor") alloc] initWithCGColor:[self CGColor]] autorelease] set];
-}
-
-@end
-
-@interface UITextView (iPhoneOS)
-- (void) setTextSize:(float)size;
-@end
-
-@implementation UITextView (iPhoneOS)
-
-- (void) setTextSize:(float)size {
-    [self setFont:[[self font] fontWithSize:size]];
-}
-
-@end
-
-@interface UIDefaultKeyboardInput (iPhoneOS)
-- (id)textInputTraits;
-@end
-
-@interface UITextInputTraits
-- (void)setAutocorrectionType:(int)type;
-- (void)setAutocapitalizationType:(int)type;
-- (void)setEnablesReturnKeyAutomatically:(BOOL)val;
-@end
-#endif
-/* }}} */
+#import "iPhoneOS-Compat.h"
 
 @interface TextInputHandler : UIDefaultKeyboardInput
 {
