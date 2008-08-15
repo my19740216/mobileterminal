@@ -12,6 +12,10 @@
 #import "PieView.h"
 #import "Log.h"
 
+#import "ColorWidgets.h"
+#import "PreferencesGroup.h"
+#import "PreferencesDataSource.h"
+
 #import <UIKit/UISimpleTableCell.h> 
 #import <UIKit/UIFieldEditor.h>
 
@@ -233,7 +237,7 @@
 {
 	self = [super initWithFrame:frame];
 
-	PreferencesGroups * prefGroups = [[PreferencesGroups alloc] init];
+	PreferencesDataSource * prefGroups = [[PreferencesDataSource alloc] init];
 	PreferencesGroup * group = [PreferencesGroup groupWithTitle:@"" icon:nil];
 	[prefGroups addGroup:group];
 	group.titleHeight = 220;
@@ -289,82 +293,13 @@
 //_______________________________________________________________________________
 //_______________________________________________________________________________
 
-@implementation ColorButton
-
--(id) initWithFrame:(CGRect)frame colorRef:(RGBAColorRef)c
-{
-	self = [super initWithFrame:frame];
-	
-  [self setBackgroundColor:colorWithRGBA(1,1,1,0)];
-  
-	colorRef = c;
-	
-	return self;
-}
-
-//_______________________________________________________________________________
-
--(RGBAColor) color 
-{
-	return * colorRef;
-}
-
-//_______________________________________________________________________________
-
--(void) setColorRef:(RGBAColorRef)cref
-{
-  colorRef = cref;
-  [self setNeedsDisplay];  
-}
-
-//_______________________________________________________________________________
-
--(void) drawRect:(struct CGRect)rect
-{
-  CGContextRef context = UICurrentContext();
-	CGContextSetFillColorWithColor(context, CGColorWithRGBAColor([self color]));
-  CGContextSetStrokeColorWithColor(context, colorWithRGBA(0.5,0.5,0.5,1));
-  
-  UIBezierPath * path = [UIBezierPath roundedRectBezierPath:CGRectMake(2, 2, rect.size.width-4, rect.size.height-4)
-                                         withRoundedCorners:0xffffffff
-                                           withCornerRadius:7.0f];	 
-  
-  [path fill];
-  [path stroke];
-
-  CGContextFlush(context);  
-}
-
-//_______________________________________________________________________________
-
-- (void) colorChanged:(NSArray*)colorValues
-{
-	*colorRef = RGBAColorMakeWithArray(colorValues);
-  [self setNeedsDisplay];
-}
-
-//_______________________________________________________________________________
-
-- (void) view: (UIView*) view handleTapWithCount:(int)count event:(id)event 
-{
-	PreferencesController * prefs = [PreferencesController sharedInstance];
-	[[prefs colorView] setColor:[self color]];
-	[[prefs colorView] setDelegate:self];
-	[prefs pushViewControllerWithView:[prefs colorView] navigationTitle:[[self superview] title]];
-}	
-
-@end
-
-//_______________________________________________________________________________
-//_______________________________________________________________________________
-
 @implementation ColorView
 
 -(id) initWithFrame:(CGRect)frame
 {
 	self = [super initWithFrame:frame];
 	
-  PreferencesGroups * prefGroups = [[PreferencesGroups alloc] init];
+  PreferencesDataSource * prefGroups = [[PreferencesDataSource alloc] init];
   PreferencesGroup * group;
 
   group = [PreferencesGroup groupWithTitle:@"Color" icon:nil];
@@ -448,7 +383,7 @@
 {
 	self = [super initWithFrame:frame];
 	
-	PreferencesGroups * prefGroups = [[PreferencesGroups alloc] init];
+	PreferencesDataSource * prefGroups = [[PreferencesDataSource alloc] init];
 	PreferencesGroup * group;
 
   group = [PreferencesGroup groupWithTitle:@"" icon:nil];
@@ -620,7 +555,7 @@
 	
   swipes = swipes_;
   
-	PreferencesGroups * prefGroups = [[PreferencesGroups alloc] init];
+	PreferencesDataSource * prefGroups = [[PreferencesDataSource alloc] init];
 	menuGroup = [PreferencesGroup groupWithTitle:@"" icon:nil];
   
 	GestureTableCell * cell = [[GestureTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 235.0f)];
@@ -791,7 +726,7 @@
 {
 	self = [super initWithFrame:frame];
 	
-	PreferencesGroups * prefGroups = [[PreferencesGroups alloc] init];
+	PreferencesDataSource * prefGroups = [[PreferencesDataSource alloc] init];
 	menuGroup = [PreferencesGroup groupWithTitle:@"" icon:nil];
 
 	MenuTableCell * cell = [[MenuTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 235.0f)];
@@ -1007,7 +942,7 @@
 {
 	if (!settingsView)
 	{
-		PreferencesGroups * prefGroups = [[PreferencesGroups alloc] init];
+		PreferencesDataSource * prefGroups = [[PreferencesDataSource alloc] init];
 		PreferencesGroup * group;
     
     // ------------------------------------------------------------- menu & gestures
@@ -1124,7 +1059,7 @@
 {
 	if (!aboutView)
 	{
-		PreferencesGroups * aboutGroups = [[[PreferencesGroups alloc] init] retain];
+		PreferencesDataSource * aboutGroups = [[[PreferencesDataSource alloc] init] retain];
 		PreferencesGroup * group;
 
 		group = [PreferencesGroup groupWithTitle:@"MobileTerminal" icon:nil];
@@ -1343,399 +1278,3 @@
 }
 
 @end
-
-//_______________________________________________________________________________
-//_______________________________________________________________________________
-
-@implementation ColorTableCell
-
-- (void) drawRect:(CGRect)rect
-{
-  CGContextRef context = UICurrentContext();
-	CGContextSetFillColorWithColor(context, CGColorWithRGBAColor(color));
-  CGContextSetStrokeColorWithColor(context, colorWithRGBA(0.0,0.0,0.0,0.8));
-    
-  UIBezierPath * path = [UIBezierPath roundedRectBezierPath:CGRectMake(10, 2, rect.size.width-20, rect.size.height-4)
-                                         withRoundedCorners:0xffffffff
-                                           withCornerRadius:7.0f];	 
-
-  [path fill];
-  [path stroke];
-  
-  CGContextFlush(context);  
-}
-
-//_______________________________________________________________________________
-
-- (void) setColor:(RGBAColor)color_
-{
-  color = color_;
-  [self setNeedsDisplay];
-}
-
-@end
-
-//_______________________________________________________________________________
-//_______________________________________________________________________________
-
-@implementation PreferencesGroups
-
-//_______________________________________________________________________________
-
-- (id) init 
-{
-	if ((self = [super init])) 
-	{
-		groups = [[NSMutableArray arrayWithCapacity:1] retain];
-	}
-	
-	return self;
-}
-
-//_______________________________________________________________________________
-
-- (void) addGroup: (PreferencesGroup*) group 
-{
-	[groups addObject: group];
-}
-
-//_______________________________________________________________________________
-
-- (PreferencesGroup*) groupAtIndex: (int) index 
-{
-	return [groups objectAtIndex: index];
-}
-
-//_______________________________________________________________________________
-
-- (int) groups 
-{
-	return [groups count];
-}
-
-//_______________________________________________________________________________
-
-- (int) numberOfGroupsInPreferencesTable: (UIPreferencesTable*)table 
-{
-	return [groups count];
-}
-
-//_______________________________________________________________________________
-
-- (int) preferencesTable: (UIPreferencesTable*) table numberOfRowsInGroup: (int) group 
-{
-	return [[groups objectAtIndex: group] rows];
-}
-
-//_______________________________________________________________________________
-
-- (UIPreferencesTableCell*) preferencesTable: (UIPreferencesTable*)table cellForGroup: (int)group  
-{
-	return [[groups objectAtIndex: group] title];
-} 
-
-//_______________________________________________________________________________
-
-- (float) preferencesTable: (UIPreferencesTable*)table heightForRow: (int)row inGroup: (int)group withProposedHeight: (float)proposed  
-{
-	if (row == -1)
-	{
-		return [[groups objectAtIndex: group] titleHeight];
-	} 
-	else 
-	{
-    UIPreferencesTableCell * cell = [[groups objectAtIndex: group] row:row];
-    if ([cell respondsToSelector:@selector(getHeight)])
-    {
-      float height;
-      SEL sel = @selector(getHeight);
-      NSMethodSignature * sig = [[cell class] instanceMethodSignatureForSelector:sel];
-      NSInvocation * invocation = [NSInvocation invocationWithMethodSignature:sig];
-      [invocation setTarget:cell];
-      [invocation setSelector:sel];
-      [invocation invoke];
-      [invocation getReturnValue:&height];
-      return height;      
-    }
-    else
-      return proposed;
-	}
-}
-
-//_______________________________________________________________________________
-
-- (UIPreferencesTableCell*) preferencesTable: (UIPreferencesTable*)table cellForRow: (int)row inGroup: (int)group 
-{
-	return [[groups objectAtIndex: group] row: row];
-}
-
-@end
-
-//_______________________________________________________________________________
-//_______________________________________________________________________________
-
-@implementation PreferencesGroup
-
-@synthesize title;
-@synthesize titleHeight;
-
-//_______________________________________________________________________________
-
-+ (id) groupWithTitle: (NSString*) title icon: (UIImage*) icon 
-{
-	return [[PreferencesGroup alloc] initWithTitle: title icon: icon];
-}
-
-//_______________________________________________________________________________
-
-- (id) initWithTitle: (NSString*) title_ icon: (UIImage*) icon 
-{
-	if ((self = [super init])) 
-	{
-		title = [[[UIPreferencesTableCell alloc] init] retain];
-		[title setTitle: title_];
-		if (icon)  [title setIcon: icon];			
-		titleHeight = ([title_ length] > 0) ? 40.0f : 14.0f;		
-		cells = [[NSMutableArray arrayWithCapacity:1] retain];
-	}
-	
-	return self;
-}
-
-//_______________________________________________________________________________
-
-- (void) removeCell:(id)cell
-{
-	if ([cells containsObject:cell])
-		[cells removeObject:cell];
-}
-
-//_______________________________________________________________________________
-
-- (void) addCell: (id) cell 
-{
-	if (![cells containsObject:cell])
-		[cells addObject:cell];
-}
-
-//_______________________________________________________________________________
-
-- (id) addSwitch: (NSString*) label 
-{
-	return [self addSwitch:label on:NO target:nil action:nil];
-}
-
-//_______________________________________________________________________________
-
-- (id) addSwitch: (NSString*)label target:(id)target action:(SEL)action
-{
-	return [self addSwitch:label on:NO target:target action:action];
-}
-
-//_______________________________________________________________________________
-
-- (id) addSwitch: (NSString*) label on: (BOOL) on 
-{
-	return [self addSwitch:label on:on target:nil action:nil];
-}
-
-//_______________________________________________________________________________
-
-- (id) addSwitch:(NSString*)label on:(BOOL)on target:(id)target action:(SEL)action
-{
-	UIPreferencesControlTableCell* cell = [[UIPreferencesControlTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
-	[cell setTitle: label];
-	[cell setShowSelection:NO];
-	UISwitchControl * sw = [[UISwitchControl alloc] initWithFrame: CGRectMake(206.0f, 9.0f, 96.0f, 48.0f)];
-	[sw setValue: (on ? 1.0f : 0.0f)];
-	[sw addTarget:target action:action forEvents:64];
-	[cell setControl:sw];	
-	[cells addObject: cell];
-	return cell;
-}
-
-//_______________________________________________________________________________
-
-- (id) addMenuSwitch: (NSString*)label target:(id)target action:(SEL)action
-{
-	UIPreferencesControlTableCell* cell = [[UIPreferencesControlTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
-	[cell setTitle: label];
-	[cell setShowSelection:NO];
-	UISwitchControl * sw = [[UISwitchControl alloc] initWithFrame: CGRectMake(206.0f, 9.0f, 96.0f, 48.0f)];
-	[sw setValue:0.0f];
-	[sw addTarget:target action:action forEvents:64];
-	[cell setControl:sw];	
-	[cells addObject: cell];
-	return cell;
-}
-
-//_______________________________________________________________________________
-
-- (id) addIntValueSlider:(NSString*)label range:(NSRange)range target:(id)target action:(SEL)action
-{
-	UIPreferencesControlTableCell* cell = [[UIPreferencesControlTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
-	[cell setTitle: label];
-	[cell setShowSelection:NO];
-	UISliderControl * sc = [[UISliderControl alloc] initWithFrame: CGRectMake(100.0f, 1.0f, 200.0f, 40.0f)];
-	[sc addTarget:target action:action forEvents:7|64];
-	
-	[sc setAllowsTickMarkValuesOnly:YES];
-	[sc setNumberOfTickMarks:range.length+1];
-	[sc setMinValue:range.location];
-	[sc setMaxValue:NSMaxRange(range)];
-	[sc setValue:range.location];
-	[sc setShowValue:YES];
-	[sc setContinuous:NO];
-	
-	[cell setControl:sc];	
-	[cells addObject: cell];
-	return cell;
-}
-
-//_______________________________________________________________________________
-
-- (id) addFloatValueSlider: (NSString*)label minValue:(float)minValue maxValue:(float)maxValue target:(id)target action:(SEL)action
-{
-	UIPreferencesControlTableCell* cell = [[UIPreferencesControlTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
-	[cell setTitle: label];
-	[cell setShowSelection:NO];
-	UISliderControl * sc = [[UISliderControl alloc] initWithFrame: CGRectMake(100.0f, 1.0f, 200.0f, 40.0f)];
-	[sc addTarget:target action:action forEvents:7|64];
-	
-	[sc setAllowsTickMarkValuesOnly:NO];
-	[sc setMinValue:minValue];
-	[sc setMaxValue:maxValue];
-	[sc setValue:minValue];
-	[sc setShowValue:YES];
-	[sc setContinuous:YES];
-	
-	[cell setControl:sc];	
-	[cells addObject: cell];
-	return cell;
-}
-
-//_______________________________________________________________________________
-
--(id) addPageButton: (NSString*) label
-{
-	return [self addPageButton:label value:nil];
-}
-
-//_______________________________________________________________________________
-
--(id) addPageButton: (NSString*) label value:(NSString*)value
-{
-	UIPreferencesTextTableCell * cell = [[UIPreferencesTextTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
-	[cell setTitle: label];
-	[cell setValue: value];
-	[cell setShowDisclosure:YES];
-	[cell setDisclosureClickable: NO];
-	[cell setDisclosureStyle: 2];
-	[[cell textField] setEnabled:NO];
-	[cells addObject: cell];
-	
-	[[cell textField] setTapDelegate:[PreferencesController sharedInstance]];
-	[cell setTapDelegate:[PreferencesController sharedInstance]];
-	
-	return cell;
-}
-
-//_______________________________________________________________________________
-
--(id) addColorPageButton:(NSString*)label colorRef:(RGBAColorRef)color
-{
-	UIPreferencesTextTableCell * cell = [[UIPreferencesTextTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
-	[cell setTitle: label];
-	[cell setShowDisclosure:YES];
-	[cell setDisclosureClickable: NO];
-	[cell setDisclosureStyle: 2];
-	[[cell textField] setEnabled:NO];
-	[cells addObject: cell];
-	
-	ColorButton * colorButton = [[ColorButton alloc] initWithFrame:CGRectMake(240,3,39,39) colorRef:color];
-	[cell addSubview:colorButton];
-	
-	[colorButton setTapDelegate:colorButton];
-	[[cell textField] setTapDelegate:colorButton];
-	[cell setTapDelegate:colorButton];
-	
-	return colorButton;
-}
-
-//_______________________________________________________________________________
-
--(id) addValueField:(NSString*)label value:(NSString*)value
-{
-	UIPreferencesTextTableCell * cell = [[UIPreferencesTextTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
-	[cell setTitle: label];
-	[cell setValue: value];
-	[[cell textField] setEnabled:NO];
-	[[cell textField] setHorizontallyCenterText:YES];
-	[cells addObject: cell];	
-	return cell;
-}
-
-//_______________________________________________________________________________
-
--(id) addTextField:(NSString*)label value:(NSString*)value
-{
-	UIPreferencesTextTableCell * cell = [[UIPreferencesTextTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
-	[cell setTitle: label];
-  [cell setValue: value];
-	[[cell textField] setHorizontallyCenterText:NO];
-	[[cell textField] setEnabled:YES];
-	[cells addObject: cell];	
-	return cell;
-}
-
-//_______________________________________________________________________________
-
--(id) addColorField
-{
-	ColorTableCell * cell = [[ColorTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
-  [cell setDrawsBackground:NO];
-	[cells addObject: cell];
-	return cell;
-}
-
-//_______________________________________________________________________________
-
-- (int) rows 
-{
-	return [cells count];
-}
-
-//_______________________________________________________________________________
-
-- (UIPreferencesTableCell*) row: (int) row 
-{
-	if (row == -1) 
-	{
-		return nil;
-	} 
-	else 
-	{
-		return [cells objectAtIndex:row];
-	}
-}
-
-//_______________________________________________________________________________
-
-- (NSString*) stringValueForRow: (int) row 
-{
-	UIPreferencesTextTableCell* cell = (UIPreferencesTextTableCell*)[self row: row];
-	return [[cell textField] text];
-}
-
-//_______________________________________________________________________________
-
-- (BOOL) boolValueForRow: (int) row 
-{
-	UIPreferencesControlTableCell * cell = (UIPreferencesControlTableCell*)[self row: row];
-	UISwitchControl * sw = [cell control];
-	return [sw value] == 1.0f;
-}
-
-@end
-
-

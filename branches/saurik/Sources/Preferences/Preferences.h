@@ -17,6 +17,8 @@
 
 @class MobileTerminal;
 @class TerminalConfig;
+@class ColorButton;
+@class ColorTableCell;
 @class PreferencesGroup;
 @class PieView;
 @class PieButton;
@@ -66,30 +68,6 @@
 -(void) selectFont:(NSString*)font size:(int)size width:(float)width;
 -(void) sizeSelected:(UISliderControl*)control;
 -(void) widthSelected:(UISliderControl*)control;
-
-@end
-
-//_______________________________________________________________________________
-
-@interface ColorTableCell : UIPreferencesTableCell
-{
-  RGBAColor color;
-}
-
-- (void) setColor:(RGBAColor)color;
-
-@end
-
-//_______________________________________________________________________________
-
-@interface ColorButton : UIView
-{
-	RGBAColorRef colorRef;
-}
-
-- (id) initWithFrame:(CGRect)frame colorRef:(RGBAColorRef)c;
-- (void) colorChanged:(NSArray*)colorValues;
-- (void) setColorRef:(RGBAColorRef)colorRef;
 
 @end
 
@@ -205,63 +183,6 @@
 - (void) selectButtonAtIndex:(int)index;
 - (void) update;
 - (MenuView*) menuView;
-
-@end
-
-//_______________________________________________________________________________
-
-@interface PreferencesGroup : NSObject 
-{
-	UIPreferencesTableCell * title;
-	NSMutableArray * cells;
-	NSMutableArray * keys;
-	float titleHeight;
-	int tag;
-}
-
-+ (id) groupWithTitle:(NSString*) title icon:(UIImage*)icon;
-- (id) initWithTitle:(NSString*) title icon:(UIImage*)icon;
-- (void) addCell:(id)cell;
-- (void) removeCell:(id)cell;
-- (id) addSwitch:(NSString*)label;
-- (id) addSwitch:(NSString*)label target:(id)target action:(SEL)action;
-- (id) addSwitch:(NSString*)label on:(BOOL)on;
-- (id) addSwitch:(NSString*)label on:(BOOL)on target:(id)target action:(SEL)action;
-- (id) addIntValueSlider:(NSString*)label range:(NSRange)range target:(id)target action:(SEL)action;
-- (id) addFloatValueSlider: (NSString*)label minValue:(float)minValue maxValue:(float)maxValue target:(id)target action:(SEL)action;
-- (id) addPageButton:(NSString*)label;
-- (id) addPageButton:(NSString*)label value:(NSString*)value;
-- (id) addColorPageButton:(NSString*)label colorRef:(RGBAColorRef)color;
-- (id) addValueField:(NSString*)label value:(NSString*)value;
-- (id) addTextField:(NSString*)label value:(NSString*)value;
-- (id) addColorField;
-
-- (int) rows;
-- (BOOL) boolValueForRow: (int) row;
-- (UIPreferencesTableCell*) row: (int) row;
-- (NSString*) stringValueForRow: (int) row;
-
-@property (readwrite) float titleHeight;
-@property (readonly) UIPreferencesTableCell * title;
-@end
-
-//_______________________________________________________________________________
-
-@interface PreferencesGroups : NSObject 
-{
-	NSMutableArray * groups;
-}
-
-- (id) init;
-- (void) addGroup: (PreferencesGroup*) group;
-- (PreferencesGroup*) groupAtIndex: (int) index;
-- (int) groups;
-
-- (int) numberOfGroupsInPreferencesTable: (UIPreferencesTable*)table;
-- (int) preferencesTable: (UIPreferencesTable*) table numberOfRowsInGroup: (int) group;
-- (UIPreferencesTableCell*) preferencesTable: (UIPreferencesTable*)table cellForGroup: (int)group;
-- (float) preferencesTable: (UIPreferencesTable*)table heightForRow: (int)row inGroup: (int)group withProposedHeight: (float)proposed;
-- (UIPreferencesTableCell*) preferencesTable: (UIPreferencesTable*)table cellForRow: (int)row inGroup: (int)group;
 
 @end
 

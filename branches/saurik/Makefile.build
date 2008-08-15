@@ -33,14 +33,17 @@ Terminal: Sources/main.o \
 					Sources/UI/GestureView.o \
 					Sources/UI/Menu.o \
           Sources/UI/PieView.o \
-					Sources/UI/Preferences.o \
+					Sources/Preferences/ColorWidgets.m \
+					Sources/Preferences/Preferences.m \
+					Sources/Preferences/PreferencesGroup.m \
+					Sources/Preferences/PreferencesDataSource.m \
 					Sources/Misc/Constants.o \
           Sources/Misc/Tools.o \
 					Sources/Misc/Log.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
 %.o:	%.m
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@ $(i20) -ISources/{,Headers,Misc,Terminal,UI} -I.
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@ $(i20) -ISources/{,Headers,Misc,Preferences,Terminal,UI} -I.
 
 depend:
 	@makedepend *.m &> /dev/null
