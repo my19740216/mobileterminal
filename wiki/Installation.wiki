@@ -21,7 +21,7 @@ You should already have a Terminal.app (either from a binary distribution in the
 
 The objective is to copy Terminal.app and its contents to the /Applications/ folder on your iPhone.  You must also make sure that the Terminal binary inside the Terminal.app folder has the executable bit set.
 
-Here is an example of how to install Terminal.app once you have sshd working.  The default password for root on the iphone is documented elsewhere.  You should also figure out the IP address of your iphone.  It uses DHCP so you determine its IP just like any other machine on your network (not covered here).   The IP for my iphone is 10.0.1.25 in this example.
+Here is an example of how to install Terminal.app once you have sshd working.  The default password for root on the iphone is documented elsewhere.  You should also figure out the IP address of your iphone.  It uses DHCP so you can find its IP by going to Settings > General > Network > WiFi > (select the network you are connected to via the blue arrow to the right). Now you should see a list of info on you iPhone/iPod, including your IP Address.   The IP for my iphone is 10.0.1.25 in this example.
 
 {{{
    $ scp -rp Terminal.app root@10.0.1.25:/Applications/
@@ -34,3 +34,10 @@ If you don't have scp, and copied the files over using iphonedisk or iPhoneInter
 }}}
 
 You should also make sure that you have copied over /usr/bin/login, /bin/sh, and whatever other unix tools you will need to make sure they are also executable.  See iphone-binkit for a great binary distribution. 
+
+== Really Simple Way ==
+  # Open Cydia on your jailbroken 2.0 - 2.0.1 iPhone
+  # Go to the search tab
+  # Search for "MobileTerminal" it should have only one result
+  # Select Install and Confirm
+  # Done
