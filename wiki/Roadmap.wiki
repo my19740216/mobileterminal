@@ -10,7 +10,7 @@ This document is a proposal for current plans for MobileTerminal development, to
   * Make compatible with the official Apple SDK if possible, when released.
   * Preferences - Font, size, width/height of the terminal
   * Preferences for custom meta keys
-  * Landscape keyboard layout as well as keyboard hiding (full screen).
+  * `[Done]` Landscape keyboard layout as well as keyboard hiding (full screen).
 
 
 
