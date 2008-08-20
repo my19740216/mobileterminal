@@ -1,11 +1,16 @@
-#summary Frequently Asked Questions about the iPhone Terminal app
-#labels Featured
+#summary Frequently Asked Questions about running the iPhone Terminal app under iPhone OS release 1.1.4.
+#labels Deprecated
 
-= Frequently Asked Questions =
+= Frequently Asked Questions (for running MobileTerminal under 1.1.4) =
 
 Some questions seem to come back over and over again so I thought I'd try to summarize them...
 
 Lennart, 080226
+
+_NB: This FAQ was written a while back and is now mostly outdated.  It primarily applies to running MobileTerminal under the 1.1.X release of the iPhone firmware together with the BSD Subsystem 2.X.  It all works a lot better under 2.0 with Cydia, where no special tricks are needed._ 
+
+Lennart, 080820
+
 
 ----
 
