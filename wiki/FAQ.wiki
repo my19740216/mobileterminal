@@ -1,5 +1,4 @@
 #summary Frequently Asked Questions about running the iPhone Terminal app under iPhone OS release 1.1.4.
-#labels Deprecated
 
 = Frequently Asked Questions (for running MobileTerminal under 1.1.4) =
 
