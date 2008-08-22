@@ -18,6 +18,7 @@
 
 #import <UIKit/UISimpleTableCell.h> 
 #import <UIKit/UIFieldEditor.h>
+#import <UIKit/UISwitch.h>
 
 //_______________________________________________________________________________
 //_______________________________________________________________________________
@@ -271,7 +272,7 @@
 
 //_______________________________________________________________________________
 
-- (void) sizeSelected:(UISliderControl*)control
+- (void) sizeSelected:(UISlider*)control
 {
 	[control setValue:floor([control value])]; 
 	[[PreferencesController sharedInstance] setFontSize:(int)[control value]];
@@ -279,7 +280,7 @@
 
 //_______________________________________________________________________________
 
-- (void) widthSelected:(UISliderControl*)control
+- (void) widthSelected:(UISlider*)control
 {
 	[[PreferencesController sharedInstance] setFontWidth:[control value]];
 }
@@ -464,7 +465,7 @@
 
 //_______________________________________________________________________________
 
-- (void) autosizeSwitched:(UISliderControl*)control
+- (void) autosizeSwitched:(UISlider*)control
 {
 	BOOL autosize = ([control value] == 1.0f);
 	[config setAutosize:autosize];
@@ -481,7 +482,7 @@
 
 //_______________________________________________________________________________
 
-- (void) widthSelected:(UISliderControl*)control
+- (void) widthSelected:(UISlider*)control
 {
 	[control setValue:floor([control value])];
 	[config setWidth:(int)[control value]];
@@ -759,7 +760,7 @@
 }
 
 //_______________________________________________________________________________
-- (void) submenuSwitched:(UISliderControl*)control
+- (void) submenuSwitched:(UISlider*)control
 {
   if ([control value] == 1)
   {
@@ -915,9 +916,9 @@
 }
 
 //_______________________________________________________________________________
--(void) multipleTerminalsSwitched:(UISwitchControl*)control
+-(void) multipleTerminalsSwitched:(UISwitch*)control
 {
-	BOOL multi = ([control value] == 1.0f);
+	BOOL multi = [control isOn];
 	[[Settings sharedInstance] setMultipleTerminals:multi];
 		
 	if (!multi)

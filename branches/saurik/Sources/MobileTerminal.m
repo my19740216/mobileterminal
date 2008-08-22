@@ -122,7 +122,7 @@ static MobileTerminal * application;
 	[window setContentView: contentView]; 
 	[window orderFront: self];
 	[window makeKey: self];
-	[window _setHidden: NO];
+	[window setHidden: NO];
 	[window retain];	
 			
   // Shows momentarily and hides so the user knows its there

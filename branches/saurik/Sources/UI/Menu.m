@@ -213,7 +213,7 @@
 	self = [super initWithFrame:frame];
 
   item = nil;
-  CDAnonymousStruct4 buttonPieces = {
+  CDAnonymousStruct10 buttonPieces = {
 		.left   = { .origin = { .x = 0.0f,  .y = 0.0f }, .size = { .width = 12.0f, .height = MENU_BUTTON_HEIGHT } },
 		.middle = { .origin = { .x = 12.0f, .y = 0.0f }, .size = { .width = 20.0f, .height = MENU_BUTTON_HEIGHT } },
 		.right  = { .origin = { .x = 32.0f, .y = 0.0f }, .size = { .width = 12.0f, .height = MENU_BUTTON_HEIGHT } },

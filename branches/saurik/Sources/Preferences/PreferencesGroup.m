@@ -3,7 +3,8 @@
 #import <UIKit/UIPreferencesControlTableCell.h>
 #import <UIKit/UIPreferencesTableCell.h>
 #import <UIKit/UIPreferencesTextTableCell.h>
-#import <UIKit/UISwitchControl.h>
+#import <UIKit/UISlider.h>
+#import <UIKit/UISwitch.h>
 
 #import "Color.h"
 #import "ColorWidgets.h"
@@ -65,8 +66,8 @@
     UIPreferencesControlTableCell *cell = [[UIPreferencesControlTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
     [cell setTitle:label];
     [cell setShowSelection:NO];
-    UISwitchControl *sw = [[UISwitchControl alloc] initWithFrame:CGRectMake(206.0f, 9.0f, 96.0f, 48.0f)];
-    [sw setValue: (on ? 1.0f : 0.0f)];
+    UISwitch *sw = [[UISwitch alloc] initWithFrame:CGRectMake(206.0f, 9.0f, 96.0f, 48.0f)];
+    [sw setOn:on];
     [sw addTarget:target action:action forEvents:64];
     [cell setControl:sw];
     [cells addObject:cell];
@@ -78,8 +79,8 @@
     UIPreferencesControlTableCell *cell = [[UIPreferencesControlTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
     [cell setTitle:label];
     [cell setShowSelection:NO];
-    UISwitchControl *sw = [[UISwitchControl alloc] initWithFrame:CGRectMake(206.0f, 9.0f, 96.0f, 48.0f)];
-    [sw setValue:0.0f];
+    UISwitch *sw = [[UISwitch alloc] initWithFrame:CGRectMake(206.0f, 9.0f, 96.0f, 48.0f)];
+    [sw setOn:NO];
     [sw addTarget:target action:action forEvents:64];
     [cell setControl:sw];
     [cells addObject:cell];
@@ -91,7 +92,7 @@
     UIPreferencesControlTableCell *cell = [[UIPreferencesControlTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
     [cell setTitle:label];
     [cell setShowSelection:NO];
-    UISliderControl *sc = [[UISliderControl alloc] initWithFrame:CGRectMake(100.0f, 1.0f, 200.0f, 40.0f)];
+    UISlider *sc = [[UISlider alloc] initWithFrame:CGRectMake(100.0f, 1.0f, 200.0f, 40.0f)];
     [sc addTarget:target action:action forEvents:7|64];
 
     [sc setAllowsTickMarkValuesOnly:YES];
@@ -112,7 +113,7 @@
     UIPreferencesControlTableCell *cell = [[UIPreferencesControlTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
     [cell setTitle:label];
     [cell setShowSelection:NO];
-    UISliderControl *sc = [[UISliderControl alloc] initWithFrame:CGRectMake(100.0f, 1.0f, 200.0f, 40.0f)];
+    UISlider *sc = [[UISlider alloc] initWithFrame:CGRectMake(100.0f, 1.0f, 200.0f, 40.0f)];
     [sc addTarget:target action:action forEvents:7|64];
 
     [sc setAllowsTickMarkValuesOnly:NO];
@@ -224,8 +225,8 @@
 - (BOOL)boolValueForRow:(int)row 
 {
     UIPreferencesControlTableCell *cell = (UIPreferencesControlTableCell *)[self row:row];
-    UISwitchControl *sw = [cell control];
-    return [sw value] == 1.0f;
+    UISwitch *sw = [cell control];
+    return [sw isOn];
 }
 
 @end

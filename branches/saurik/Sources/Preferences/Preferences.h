@@ -7,7 +7,7 @@
 #import <UIKit/UIPreferencesTable.h>
 #import <UIKit/UIPreferencesControlTableCell.h>
 #import <UIKit/UIPreferencesTextTableCell.h>
-#import <UIKit/UISwitchControl.h>
+#import <UIKit/UISlider.h>
 /* XXX: I hate this codebase*/
 #define UIInterfaceOrientation int
 #import <UIKit/UINavigationController.h>
@@ -59,15 +59,15 @@
 @interface FontView : UIPreferencesTable
 {
 	FontChooser * fontChooser;
-	UISliderControl * sizeSlider;
-	UISliderControl * widthSlider;
+	UISlider * sizeSlider;
+	UISlider * widthSlider;
 }
 
 -(FontChooser*) fontChooser;
 -(id) initWithFrame:(CGRect)frame;
 -(void) selectFont:(NSString*)font size:(int)size width:(float)width;
--(void) sizeSelected:(UISliderControl*)control;
--(void) widthSelected:(UISliderControl*)control;
+-(void) sizeSelected:(UISlider*)control;
+-(void) widthSelected:(UISlider*)control;
 
 @end
 
@@ -80,10 +80,10 @@
   RGBAColor color;
   
   ColorTableCell  * colorField;
-  UISliderControl * redSlider;
-  UISliderControl * greenSlider;
-  UISliderControl * blueSlider;
-  UISliderControl * alphaSlider;
+  UISlider * redSlider;
+  UISlider * greenSlider;
+  UISlider * blueSlider;
+  UISlider * alphaSlider;
 }	
 
 -(RGBAColor) color;
@@ -98,8 +98,8 @@
 {
 	id                  fontButton;
   UITextField       * argumentField;
-	UISliderControl   * widthSlider;
-	UISliderControl   * autosizeSwitch;
+	UISlider   * widthSlider;
+	UISlider   * autosizeSwitch;
 	PreferencesGroup  * sizeGroup;
 	UIPreferencesControlTableCell * widthCell;
 
@@ -116,8 +116,8 @@
 -(void) fontChanged;
 -(id) initWithFrame:(CGRect)frame;
 -(void) setTerminalIndex:(int)terminal;
--(void) autosizeSwitched:(UISliderControl*)control;
--(void) widthSelected:(UISliderControl*)control;
+-(void) autosizeSwitched:(UISlider*)control;
+-(void) widthSelected:(UISlider*)control;
 
 @end
 
@@ -173,7 +173,7 @@
   UITextField       * titleField;
   UITextField       * commandField;
   UIPreferencesControlTableCell * submenuControl;
-  UISliderControl   * submenuSwitch;
+  UISlider   * submenuSwitch;
   UIPushButton      * openSubmenu;
   MenuView          * menuView; 
 }
