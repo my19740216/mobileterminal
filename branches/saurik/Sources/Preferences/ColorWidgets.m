@@ -1,8 +1,5 @@
 #import "ColorWidgets.h"
 
-#import "iPhoneOS-Compat.h"
-#import <syslog.h>
-
 @implementation ColorButton
 
 - (id)initWithFrame:(CGRect)frame colorRef:(RGBAColorRef)c

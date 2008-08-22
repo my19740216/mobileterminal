@@ -3,8 +3,6 @@
 #include <objc/runtime.h>
 #import <UIKit/UIDefaultKeyboardInput.h>
 
-#import "iPhoneOS-Compat.h"
-
 @interface TextInputHandler : UIDefaultKeyboardInput
 {
   ShellKeyboard* shellKeyboard;

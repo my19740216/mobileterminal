@@ -18,7 +18,7 @@
 #import <GraphicsServices/GraphicsServices.h>
 #import <UIKit/UIView-Geometry.h>
 #import <CoreGraphics/CoreGraphics.h>
-
+#import <QuartzCore/CoreAnimation.h>
 #import "iPhoneOS-Compat.h"
 
 //_______________________________________________________________________________
@@ -747,11 +747,11 @@ static MobileTerminal * application;
 		}
 	}
 	
-	LKAnimation * animation = [LKTransition animation];
+	CAAnimation * animation = [CATransition animation];
 	[animation performSelector:@selector(setType:) withObject:@"oglFlip"];
 	[animation performSelector:@selector(setSubtype:) withObject:(activeView == mainView) ? @"fromRight" : @"fromLeft"];
 	[animation performSelector:@selector(setTransitionFlags:) withObject:[NSNumber numberWithInt:3]];
-	[animation setTimingFunction: [LKTimingFunction functionWithName: @"easeInEaseOut"]];
+	[animation setTimingFunction: [CAMediaTimingFunction functionWithName: @"easeInEaseOut"]];
 	[animation setSpeed: 0.25f];
 	[contentView addAnimation:(id)animation forKey:@"flip"];
 }

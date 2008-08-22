@@ -9,8 +9,6 @@
 #import "Color.h"
 #import "ColorWidgets.h"
 
-#import <syslog.h>
-
 @implementation PreferencesGroup
 
 @synthesize title;
