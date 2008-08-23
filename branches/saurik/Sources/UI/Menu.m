@@ -225,9 +225,9 @@
   [self setEnabled: YES];		
   [self setOpaque:NO];
   
-  [self setTitleColor:colorWithRGBA(0,0,0,1) forState:0]; // normal
-  [self setTitleColor:colorWithRGBA(1,1,1,1) forState:1]; // pressed
-  [self setTitleColor:colorWithRGBA(1,1,1,1) forState:4]; // selected  
+  [self setTitleColor:[UIColor blackColor] forState:0]; // normal
+  [self setTitleColor:[UIColor whiteColor] forState:1]; // pressed
+  [self setTitleColor:[UIColor whiteColor] forState:4]; // selected  
   
 	return self;
 }

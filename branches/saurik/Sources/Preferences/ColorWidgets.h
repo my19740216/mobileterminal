@@ -5,21 +5,21 @@
 
 @interface ColorButton : UIView
 {
-    RGBAColorRef colorRef;
+    UIColor **colorRef;
 }
 
-- (id)initWithFrame:(CGRect)frame colorRef:(RGBAColorRef)c;
+- (id)initWithFrame:(CGRect)frame colorRef:(UIColor **)c;
 - (void)colorChanged:(NSArray *)colorValues;
-- (void)setColorRef:(RGBAColorRef)colorRef;
+- (void)setColorRef:(UIColor **)colorRef;
 
 @end
 
 @interface ColorTableCell : UIPreferencesTableCell
 {
-    RGBAColor color;
+    UIColor *color;
 }
 
-- (void)setColor:(RGBAColor)color;
+- (void)setColor:(UIColor *)color;
 
 @end
 

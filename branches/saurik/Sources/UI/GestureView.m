@@ -27,7 +27,7 @@
   delegate = inputDelegate;
 	[super setTapDelegate: self];
 
-	[self setBackgroundColor:colorWithRGBA(0,0,0,0)];
+	[self setBackgroundColor:[UIColor clearColor]];
 	 
 	toggleKeyboardTimer = NULL;
 	gestureMode = NO;
@@ -361,7 +361,7 @@
 	CGRect rect = [self bounds];
 	rect.size.height -= 2;
 	CGContextRef context = UICurrentContext();
-	CGColorRef c = CGColorWithRGBAColor([[Settings sharedInstance] gestureFrameColor]);
+	CGColorRef c = [[[Settings sharedInstance] gestureFrameColor] CGColor];
 	const float pattern[2] = {1,4};
 	CGContextSetLineDash(context, 0, pattern, 2);
 	CGContextSetStrokeColorWithColor(context, c);

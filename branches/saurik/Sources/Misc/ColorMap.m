@@ -1,7 +1,12 @@
 // ColorMap.m
 #import "ColorMap.h"
-#import "Color.h"
+#import <UIKit/UIColor.h>
 #import "VT100Terminal.h"
+
+static UIColor * initWithRGB(float red, float green, float blue)
+{
+    return [[UIColor alloc] initWithRed:red green:green blue:blue alpha:1];
+}
 
 @implementation ColorMap
 
@@ -14,65 +19,64 @@
 
 - (id)init
 {
-  int i;
   self = [super init];
-
-  // System 7.5 colors, why not?
-  table[0]  = colorWithRGB(  0,   0, 0); // dark black
-  table[1]  = colorWithRGB(0.6,   0, 0); // darkRed
-  table[2]  = colorWithRGB(  0, 0.6, 0); // darkGreen
-  table[3]  = colorWithRGB(0.6, 0.4, 0); // darkYellow
-  table[4]  = colorWithRGB(  0,   0, 0.6); //  darkBlue
-  table[5]  = colorWithRGB(0.6,   0, 0.6); // darkMagenta
-  table[6]  = colorWithRGB(  0, 0.6, 0.6); // darkCyan
-  table[7]  = colorWithRGB(0.6, 0.6, 0.6); // darkWhite
-  table[8]  = colorWithRGB(0, 0, 0); // black
-  table[9]  = colorWithRGB(1, 0, 0); // red
-  table[10] = colorWithRGB(0, 1, 0); // green
-  table[11] = colorWithRGB(1, 1, 0); // yellow
-  table[12] = colorWithRGB(0, 0, 1); // blue
-  table[13] = colorWithRGB(1, 0, 1); // magenta
-  table[14] = colorWithRGB(0, 1, 1); // lcyan
-  table[15] = colorWithRGB(1, 1, 1); // white
+  if (self) {
+    // System 7.5 colors, why not?
+    table[0]  = initWithRGB(  0,   0, 0); // dark black
+    table[1]  = initWithRGB(0.6,   0, 0); // darkRed
+    table[2]  = initWithRGB(  0, 0.6, 0); // darkGreen
+    table[3]  = initWithRGB(0.6, 0.4, 0); // darkYellow
+    table[4]  = initWithRGB(  0,   0, 0.6); //  darkBlue
+    table[5]  = initWithRGB(0.6,   0, 0.6); // darkMagenta
+    table[6]  = initWithRGB(  0, 0.6, 0.6); // darkCyan
+    table[7]  = initWithRGB(0.6, 0.6, 0.6); // darkWhite
+    table[8]  = initWithRGB(0, 0, 0); // black
+    table[9]  = initWithRGB(1, 0, 0); // red
+    table[10] = initWithRGB(0, 1, 0); // green
+    table[11] = initWithRGB(1, 1, 0); // yellow
+    table[12] = initWithRGB(0, 0, 1); // blue
+    table[13] = initWithRGB(1, 0, 1); // magenta
+    table[14] = initWithRGB(0, 1, 1); // lcyan
+    table[15] = initWithRGB(1, 1, 1); // white
   
-  for (i = 0; i < MAXTERMINALS; i++)
-  {
-    int ti = i * NUM_TERMINAL_COLORS;
-    switch (i) { // bg color
-    case 1:  table[BG_COLOR+ti] = colorWithRGB(0.1, 0, 0);  break;
-    case 2:  table[BG_COLOR+ti] = colorWithRGB(0, 0, 0.1);  break;
-    case 3:  table[BG_COLOR+ti] = colorWithRGB(0, 0.1, 0);  break;
-    default: table[BG_COLOR+ti] = colorWithRGB(0, 0, 0);    break;
-    };
-    table[FG_COLOR+ti]        = colorWithRGB(1, 1, 1); // fg color
-    table[FG_COLOR_BOLD+ti]   = colorWithRGB(1, 1, 0); // bold color
-    table[FG_COLOR_CURSOR+ti] = colorWithRGB(1, 0, 0); // cursor text color
-    table[BG_COLOR_CURSOR+ti] = colorWithRGB(1, 1, 0); // cursor color
+    int i;
+    for (i = 0; i < MAXTERMINALS; i++)
+    {
+      int ti = i * NUM_TERMINAL_COLORS;
+      switch (i) { // bg color
+          case 1:  table[BG_COLOR+ti] = initWithRGB(0.1, 0, 0);  break;
+          case 2:  table[BG_COLOR+ti] = initWithRGB(0, 0, 0.1);  break;
+          case 3:  table[BG_COLOR+ti] = initWithRGB(0, 0.1, 0);  break;
+          default: table[BG_COLOR+ti] = initWithRGB(0, 0, 0);    break;
+      }
+      table[FG_COLOR+ti]        = initWithRGB(1, 1, 1); // fg color
+      table[FG_COLOR_BOLD+ti]   = initWithRGB(1, 1, 0); // bold color
+      table[FG_COLOR_CURSOR+ti] = initWithRGB(1, 0, 0); // cursor text color
+      table[BG_COLOR_CURSOR+ti] = initWithRGB(1, 1, 0); // cursor color
+    }
   }
-  
-  for (i = 0; i < NUM_COLORS; i++) CGColorRetain(table[i]);
-  
   return self;
 }
 
 - (void)dealloc
 {
   int i;
-  for (i = 0; i < NUM_COLORS; i++) CGColorRelease(table[i]);
+  for (i = 0; i < NUM_COLORS; i++) [table[i] release];
   [super dealloc];
 }
 
-- (void)setTerminalColor:(CGColorRef)color atIndex:(int)index termid:(int)termid
+- (void)setTerminalColor:(UIColor *)color atIndex:(int)index termid:(int)termid
 {
   int i = BG_COLOR + termid * NUM_TERMINAL_COLORS + index;
-  CGColorRelease(table[i]);
-  table[i] = color;
-  CGColorRetain(table[i]);
+  if (table[i] != color) {
+    [table[i] release];
+    table[i] = [color retain];
+  }
 }
 
-- (CGColorRef)colorForCode:(unsigned int)index termid:(int)termid
+- (UIColor *)colorForCode:(unsigned int)index termid:(int)termid
 {
-  CGColorRef color;
+  UIColor *color;
 
   int ti = termid * NUM_TERMINAL_COLORS;
   if (index & COLOR_CODE_MASK) // special color?
@@ -105,14 +109,13 @@
 		else if (index < 232) 
 		{
       index -= 16;
-      CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
       float components[] = {
         (index/36) ? ((index / 36) * 40 + 55) / 256.0 : 0 ,
         (index%36)/6 ? (((index % 36) / 6) * 40 + 55 ) / 256.0:0 ,
         (index%6) ? ((index % 6) * 40 + 55) / 256.0:0,
         1.0
       };
-      color = CGColorCreate(colorSpace, components);
+      color = colorWithRGBA(components[0], components[1], components[2], 1);
     } 
 		else 
 		{

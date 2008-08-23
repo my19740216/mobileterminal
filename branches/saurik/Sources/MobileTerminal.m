@@ -19,7 +19,6 @@
 #import <UIKit/UIView-Geometry.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import <QuartzCore/CoreAnimation.h>
-#import "iPhoneOS-Compat.h"
 
 //_______________________________________________________________________________
 //_______________________________________________________________________________
@@ -104,7 +103,7 @@ static MobileTerminal * application;
   gestureView = [[GestureView alloc] initWithFrame:gestureFrame delegate:self];
 
   mainView = [[[UIView alloc] initWithFrame:frame] retain];
-  [mainView setBackgroundColor:colorWithRGB(0,0,0)];
+  [mainView setBackgroundColor:[UIColor blackColor]];
 	for (i = 0; i < numTerminals; i++)
   {
     [[scrollers objectAtIndex:i] setBackgroundColor:[[ColorMap sharedInstance] colorForCode:BG_COLOR_CODE termid:i]];
@@ -488,7 +487,7 @@ static MobileTerminal * application;
   {
     TerminalConfig * config = [[[Settings sharedInstance] terminalConfigs] objectAtIndex:i];
     for (c = 0; c < NUM_TERMINAL_COLORS; c++)
-      [[ColorMap sharedInstance] setTerminalColor:CGColorWithRGBAColor(config.colors[c]) atIndex:c termid:i];
+      [[ColorMap sharedInstance] setTerminalColor:config.colors[c] atIndex:c termid:i];
     [[scrollers objectAtIndex:i] setBackgroundColor:[[ColorMap sharedInstance] colorForCode:BG_COLOR_CODE termid:i]];
     [[textviews objectAtIndex:i] setNeedsDisplay];
   }

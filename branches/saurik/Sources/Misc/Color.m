@@ -7,62 +7,43 @@
 
 #import "Color.h"
 
-//_______________________________________________________________________________
-
-RGBAColor RGBAColorMake (float r, float g, float b, float a)
+UIColor *colorWithRGBA(float red, float green, float blue, float alpha)
 {
-	RGBAColor c;
-	c.r = r; c.g = g; c.b = b; c.a = a;
-	return c;
+	return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
 }
 
 //_______________________________________________________________________________
-
-RGBAColor RGBAColorMakeWithArray(NSArray * array)
-{
-	return RGBAColorMake(MIN(MAX(0, [[array objectAtIndex:0] floatValue]), 1), 
-											 MIN(MAX(0, [[array objectAtIndex:1] floatValue]), 1),
-											 MIN(MAX(0, [[array objectAtIndex:2] floatValue]), 1),
-											 MIN(MAX(0, [[array objectAtIndex:3] floatValue]), 1));
-}
-
 //_______________________________________________________________________________
 
-NSArray * RGBAColorToArray(RGBAColor c)
+@implementation UIColor(ArraySupport)
+
++ (UIColor *)colorWithArray:(NSArray *)array
 {
-	return [NSArray arrayWithObjects:	[NSNumber numberWithFloat:c.r],
-          [NSNumber numberWithFloat:MIN(MAX(0, c.g), 1)],
-          [NSNumber numberWithFloat:MIN(MAX(0, c.b), 1)],
-          [NSNumber numberWithFloat:MIN(MAX(0, c.a), 1)],
-          nil];
+    return [UIColor colorWithRed:MIN(MAX(0, [[array objectAtIndex:0] floatValue]), 1)
+                           green:MIN(MAX(0, [[array objectAtIndex:1] floatValue]), 1)
+                            blue:MIN(MAX(0, [[array objectAtIndex:2] floatValue]), 1)
+                           alpha:MIN(MAX(0, [[array objectAtIndex:3] floatValue]), 1)];
 }
 
+@end
+
+//_______________________________________________________________________________
 //_______________________________________________________________________________
 
-CGColorRef colorWithRGB(float red, float green, float blue)
+@implementation NSArray(ColorSupport)
+
++ (NSArray *)arrayWithColor:(UIColor *)color
 {
-  return colorWithRGBA(red, green, blue, 1);
+    const CGFloat * rgba = CGColorGetComponents([color CGColor]);
+
+    return [NSArray arrayWithObjects:
+           [NSNumber numberWithFloat:rgba[0]],
+           [NSNumber numberWithFloat:rgba[1]],
+           [NSNumber numberWithFloat:rgba[2]],
+           [NSNumber numberWithFloat:rgba[3]],
+           nil];
 }
 
-//_______________________________________________________________________________
+@end
 
-CGColorRef colorWithRGBA(float red, float green, float blue, float alpha)
-{
-	float rgba[4] = { MIN(MAX(0, red),   1), 
-                    MIN(MAX(0, green), 1), 
-                    MIN(MAX(0, blue),  1), 
-                    MIN(MAX(0, alpha), 1) };
-  
-	CGColorSpaceRef rgbColorSpace = (CGColorSpaceRef)[(id)CGColorSpaceCreateDeviceRGB() autorelease];
-	CGColorRef color = (CGColorRef)[(id)CGColorCreate(rgbColorSpace, rgba) autorelease];
-	return color;	
-}
-
-//_______________________________________________________________________________
-
-CGColorRef CGColorWithRGBAColor(RGBAColor c)
-{
-	return colorWithRGBA(c.r, c.g, c.b, c.a);
-}
-
-//_______________________________________________________________________________
+/* vim: set syntax=objc sw=4 ts=4 sts=4 expandtab textwidth=80 ff=unix: */

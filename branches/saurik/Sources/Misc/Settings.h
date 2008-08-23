@@ -18,13 +18,13 @@
   NSString * font;
   NSString * args;
   
-  RGBAColor _colors[NUM_TERMINAL_COLORS];
+  UIColor *_colors[NUM_TERMINAL_COLORS];
 }
 
 - (NSString*) fontDescription;
-- (RGBAColor *) colors;
+- (UIColor **) colors;
 
-@property (getter = colors) RGBAColor *colors;
+@property (getter = colors) UIColor **colors;
 @property BOOL autosize;
 @property int width;
 @property int fontSize;
@@ -41,13 +41,14 @@
 	NSString * arguments;
 	NSArray * terminalConfigs;
 	NSArray * menu;
-	RGBAColor gestureFrameColor;
+	UIColor *gestureFrameColor;
 	BOOL multipleTerminals;
   NSMutableDictionary * swipeGestures;
 }
 
 //_______________________________________________________________________________
 
+@property(nonatomic, retain) UIColor *gestureFrameColor;
 @property BOOL multipleTerminals;
 
 + (Settings*) sharedInstance;
@@ -64,8 +65,7 @@
 - (NSArray*) menu;
 - (NSDictionary*) swipeGestures;
 - (void) setCommand:(NSString*)command forGesture:(NSString*)zone;
-- (RGBAColor) gestureFrameColor;
-- (RGBAColorRef) gestureFrameColorRef;
+- (UIColor **) gestureFrameColorRef;
 
 //_______________________________________________________________________________
 

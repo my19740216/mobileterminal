@@ -19,15 +19,25 @@
 - (id)init
 {
   self = [super init];
-  
-  autosize = YES;
-  width = 45;
-  fontSize = 12;
-  fontWidth = 0.6f;
-  font = @"CourierNewPS-BoldMT";
-  args = @"";
-  
+  if (self) {
+    autosize = YES;
+    width = 45;
+    fontSize = 12;
+    fontWidth = 0.6f;
+    font = @"CourierNewPS-BoldMT";
+    args = @"";
+  }
   return self;
+}
+
+//_______________________________________________________________________________
+
+- (void)dealloc
+{
+    for (UIColor *c in _colors)
+        [c release];
+
+    [super dealloc];
 }
 
 //_______________________________________________________________________________
@@ -61,7 +71,7 @@
   }
 }
 
-- (RGBAColor*) colors {
+- (UIColor **) colors {
   return _colors;
 }
 
@@ -81,6 +91,9 @@
 //_______________________________________________________________________________
 
 @implementation Settings
+
+@synthesize gestureFrameColor;
+@synthesize multipleTerminals;
 
 //_______________________________________________________________________________
 
@@ -103,7 +116,7 @@
                      [[TerminalConfig alloc] init],
                      [[TerminalConfig alloc] init], nil] retain];
   
-  gestureFrameColor = RGBAColorMake(1.0f, 1.0f, 1.0f, 0.05f);
+  self.gestureFrameColor = colorWithRGBA(1, 1, 1, 0.05f);
   multipleTerminals = NO;
   menu = nil; 
   swipeGestures = nil;
@@ -114,7 +127,13 @@
 
 //_______________________________________________________________________________
 
-@synthesize multipleTerminals;
+- (void)dealloc
+{
+    [gestureFrameColor release];
+    [terminalConfigs release];
+
+    [super dealloc];
+}
 
 //_______________________________________________________________________________
 
@@ -161,24 +180,24 @@
     NSArray * colorValues;
 
     switch (i) { // bg color
-      default: colorValues = RGBAColorToArray(RGBAColorMake(0, 0, 0, 1));    break;
-      case 1:  colorValues = RGBAColorToArray(RGBAColorMake(0, 0.05, 0, 1)); break;
-      case 2:  colorValues = RGBAColorToArray(RGBAColorMake(0, 0, 0.1, 1));  break;
-      case 3:  colorValues = RGBAColorToArray(RGBAColorMake(0.1, 0, 0, 1));  break;
+      default: colorValues = [NSArray arrayWithColor:[UIColor blackColor]]; break;
+      case 1:  colorValues = [NSArray arrayWithColor:colorWithRGBA(0, 0.05f, 0, 1)]; break;
+      case 2:  colorValues = [NSArray arrayWithColor:colorWithRGBA(0, 0, 0.1f, 1)]; break;
+      case 3:  colorValues = [NSArray arrayWithColor:colorWithRGBA(0.1f, 0, 0, 1)]; break;
     };
     [ca addObject:colorValues];
     
-    [ca addObject:RGBAColorToArray(RGBAColorMake(1, 1, 1, 1))]; // fg color    
-    [ca addObject:RGBAColorToArray(RGBAColorMake(1, 1, 0, 1))]; // bold color
-    [ca addObject:RGBAColorToArray(RGBAColorMake(1, 0, 0, 1))]; // cursor text
-    [ca addObject:RGBAColorToArray(RGBAColorMake(1, 1, 0, 1))]; // cursor color
+    [ca addObject:[NSArray arrayWithColor:[UIColor whiteColor]]]; // fg color    
+    [ca addObject:[NSArray arrayWithColor:[UIColor yellowColor]]]; // bold color
+    [ca addObject:[NSArray arrayWithColor:[UIColor redColor]]]; // cursor text
+    [ca addObject:[NSArray arrayWithColor:[UIColor yellowColor]]]; // cursor color
     
     [tc setObject:ca forKey:@"colors"];
     [tcs addObject:tc];
   }
   [d setObject:tcs forKey:@"terminals"];
   
-  NSArray * colorValues = RGBAColorToArray(RGBAColorMake(1, 1, 1, 0.05f));
+  NSArray * colorValues = [NSArray arrayWithColor:colorWithRGBA(1, 1, 1, 0.05f)];
   [d setObject:colorValues forKey:@"gestureFrameColor"];
     
   [defaults registerDefaults:d];  
@@ -204,8 +223,8 @@
     config.args =        [tc objectForKey:@"args"];
     for (c = 0; c < NUM_TERMINAL_COLORS; c++)
     {
-      config.colors[c] = RGBAColorMakeWithArray([[tc objectForKey:@"colors"] objectAtIndex:c]);
-      [[ColorMap sharedInstance] setTerminalColor:CGColorWithRGBAColor(config.colors[c]) atIndex:c termid:i];
+      config.colors[c] = [[UIColor colorWithArray:[[tc objectForKey:@"colors"] objectAtIndex:c]] retain];
+      [[ColorMap sharedInstance] setTerminalColor:config.colors[c] atIndex:c termid:i];
     }
   }
 
@@ -213,7 +232,7 @@
   menu = [[defaults arrayForKey:@"menu"] retain];
   swipeGestures = [[NSMutableDictionary dictionaryWithCapacity:24] retain];
   [swipeGestures setDictionary:[defaults objectForKey:@"swipeGestures"]];
-  gestureFrameColor = RGBAColorMakeWithArray([defaults arrayForKey:@"gestureFrameColor"]);
+  self.gestureFrameColor = [UIColor colorWithArray:[defaults arrayForKey:@"gestureFrameColor"]];
 }
 
 //_______________________________________________________________________________
@@ -240,7 +259,7 @@
 
     for (c = 0; c < NUM_TERMINAL_COLORS; c++)
     {
-      colorValues = RGBAColorToArray(config.colors[c]); 
+      colorValues = [NSArray arrayWithColor:config.colors[c]]; 
       [ca addObject:colorValues]; 
     }
     
@@ -251,7 +270,7 @@
   [defaults setBool:multipleTerminals forKey:@"multipleTerminals"];
   [defaults setObject:[[MobileTerminal menu] getArray] forKey:@"menu"];
   [defaults setObject:swipeGestures forKey:@"swipeGestures"];
-  [defaults setObject:RGBAColorToArray(gestureFrameColor) forKey:@"gestureFrameColor"];
+  [defaults setObject:[NSArray arrayWithColor:gestureFrameColor] forKey:@"gestureFrameColor"];
   [defaults synchronize];
   [[[MobileTerminal menu] getArray] writeToFile:[NSHomeDirectory() stringByAppendingString:@"/Library/Preferences/com.googlecode.mobileterminal.menu.plist"] atomically:YES];
 }
@@ -268,8 +287,7 @@
 -(NSArray*)       terminalConfigs       { return terminalConfigs; }
 -(NSArray*)       menu                  { return menu; }
 -(NSDictionary*)  swipeGestures         { return swipeGestures; }
--(RGBAColor)      gestureFrameColor     { return gestureFrameColor; }
--(RGBAColorRef)   gestureFrameColorRef  { return &gestureFrameColor; }
+-(UIColor **)   gestureFrameColorRef  { return &gestureFrameColor; }
 -(NSString*)      arguments             { return arguments; }
 
 //_______________________________________________________________________________

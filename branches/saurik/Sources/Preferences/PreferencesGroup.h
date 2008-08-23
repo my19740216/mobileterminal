@@ -24,7 +24,7 @@
 - (id)addFloatValueSlider:(NSString *)label minValue:(float)minValue maxValue:(float)maxValue target:(id)target action:(SEL)action;
 - (id)addPageButton:(NSString *)label;
 - (id)addPageButton:(NSString *)label value:(NSString *)value;
-- (id)addColorPageButton:(NSString *)label colorRef:(RGBAColorRef)color;
+- (id)addColorPageButton:(NSString *)label colorRef:(UIColor **)color;
 - (id)addValueField:(NSString *)label value:(NSString *)value;
 - (id)addTextField:(NSString *)label value:(NSString *)value;
 - (id)addColorField;

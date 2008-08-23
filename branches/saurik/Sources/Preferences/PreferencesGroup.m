@@ -150,7 +150,7 @@
     return cell;
 }
 
-- (id)addColorPageButton:(NSString *)label colorRef:(RGBAColorRef)color
+- (id)addColorPageButton:(NSString *)label colorRef:(UIColor **)color
 {
     UIPreferencesTextTableCell *cell = [[UIPreferencesTextTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
     [cell setTitle:label];

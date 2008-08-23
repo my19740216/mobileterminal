@@ -39,17 +39,17 @@ extern CGFontRef CGFontCreateWithFontName(CFStringRef name);
   
   if (identifier % 2) {
       // gray
-      [self setTitleColor:colorWithRGBA(1,1,1,1) forState:0]; // normal
+      [self setTitleColor:[UIColor whiteColor] forState:0]; // normal
       [self setShadowColor:colorWithRGBA(.25,.25,.25,1) forState:0]; // normal
       _shadowOffset = CGSizeMake(0.0, 1.0);
   } else {
       // white
-      [self setTitleColor:colorWithRGBA(0,0,0,1) forState:0]; // normal
-      [self setShadowColor:colorWithRGBA(1,1,1,1) forState:0]; // normal
+      [self setTitleColor:[UIColor blackColor] forState:0]; // normal
+      [self setShadowColor:[UIColor whiteColor] forState:0]; // normal
       _shadowOffset = CGSizeMake(0.0, -1.0);
   }
-  [self setTitleColor:colorWithRGBA(1,1,1,1) forState:1]; // pressed
-  [self setTitleColor:colorWithRGBA(1,1,1,1) forState:4]; // selected  
+  [self setTitleColor:[UIColor whiteColor] forState:1]; // pressed
+  [self setTitleColor:[UIColor whiteColor] forState:4]; // selected  
   [self setShadowColor:colorWithRGBA(0.1,0.1,0.7,1) forState:1]; // pressed
   [self setShadowColor:colorWithRGBA(0.1,0.1,0.7,1) forState:4]; // selected
 
@@ -112,9 +112,9 @@ extern CGFontRef CGFontCreateWithFontName(CFStringRef name);
   CGContextSetFontSize(context, height); 
     
   CGContextSetTextDrawingMode(context, kCGTextFill); 
-  CGContextSetFillColorWithColor(context, [self titleColorForState:[self state]]);
+  CGContextSetFillColorWithColor(context, [[self titleColorForState:[self state]] CGColor]);
   //if (!([self state] & kPressed))
-  CGContextSetShadowWithColor(context, (!([self state] & kPressed)) ? _shadowOffset : CGSizeMake(0.0f, 1.0f), 0.0f, [self shadowColorForState:[self state]]);
+  CGContextSetShadowWithColor(context, (!([self state] & kPressed)) ? _shadowOffset : CGSizeMake(0.0f, 1.0f), 0.0f, [[self shadowColorForState:[self state]] CGColor]);
   
   CGPoint center = CGPointMake(-0.5f*textWidth, -0.25*height);
   CGPoint p = CGPointApplyAffineTransform(center, transform);

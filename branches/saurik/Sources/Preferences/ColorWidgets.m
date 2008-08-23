@@ -2,22 +2,30 @@
 
 @implementation ColorButton
 
-- (id)initWithFrame:(CGRect)frame colorRef:(RGBAColorRef)c
+- (id)initWithFrame:(CGRect)frame colorRef:(UIColor **)c
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setBackgroundColor:colorWithRGBA(1,1,1,0)];
+        [self setBackgroundColor:[UIColor clearColor]];
         colorRef = c;
     }
     return self;
 }
 
-- (RGBAColor)color 
+- (UIColor *)color 
 {
     return *colorRef;
 }
 
-- (void)setColorRef:(RGBAColorRef)cref
+- (void)setColor:(UIColor *)color
+{
+    if (*colorRef != color) {
+        [*colorRef release];
+        *colorRef = [color retain];
+    }
+}
+
+- (void)setColorRef:(UIColor **)cref
 {
     colorRef = cref;
     [self setNeedsDisplay];  
@@ -26,8 +34,8 @@
 - (void)drawRect:(struct CGRect)rect
 {
     CGContextRef context = UICurrentContext();
-    CGContextSetFillColorWithColor(context, CGColorWithRGBAColor([self color]));
-    CGContextSetStrokeColorWithColor(context, colorWithRGBA(0.5,0.5,0.5,1));
+    CGContextSetFillColorWithColor(context, [[self color] CGColor]);
+    CGContextSetStrokeColorWithColor(context, [colorWithRGBA(0.5,0.5,0.5,1) CGColor]);
 
     UIBezierPath *path = [UIBezierPath roundedRectBezierPath:CGRectMake(2, 2, rect.size.width-4, rect.size.height-4)
                                            withRoundedCorners:0xffffffff
@@ -41,7 +49,7 @@
 
 - (void)colorChanged:(NSArray *)colorValues
 {
-    *colorRef = RGBAColorMakeWithArray(colorValues);
+    [self setColor:[UIColor colorWithArray:colorValues]];
     [self setNeedsDisplay];
 }
 
@@ -65,8 +73,8 @@
 - (void)drawRect:(CGRect)rect
 {
     CGContextRef context = UICurrentContext();
-    CGContextSetFillColorWithColor(context, CGColorWithRGBAColor(color));
-    CGContextSetStrokeColorWithColor(context, colorWithRGBA(0.0,0.0,0.0,0.8));
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextSetStrokeColorWithColor(context, [colorWithRGBA(0.0,0.0,0.0,0.8) CGColor]);
 
     UIBezierPath *path = [UIBezierPath roundedRectBezierPath:CGRectMake(10, 2, rect.size.width-20, rect.size.height-4)
                                            withRoundedCorners:0xffffffff
@@ -78,10 +86,19 @@
     CGContextFlush(context);  
 }
 
-- (void)setColor:(RGBAColor)color_
+- (void)setColor:(UIColor *)color_
 {
-    color = color_;
-    [self setNeedsDisplay];
+    if (color != color_) {
+        [color release];
+        color = [color_ retain];
+        [self setNeedsDisplay];
+    }
+}
+
+- (void)dealloc
+{
+    [color release];
+    [super dealloc];
 }
 
 @end

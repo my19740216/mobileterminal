@@ -77,7 +77,7 @@
 {
   id delegate;
   
-  RGBAColor color;
+  UIColor *color;
   
   ColorTableCell  * colorField;
   UISlider * redSlider;
@@ -86,8 +86,8 @@
   UISlider * alphaSlider;
 }	
 
--(RGBAColor) color;
--(void) setColor:(RGBAColor)color;
+-(UIColor *) color;
+-(void) setColor:(UIColor *)color;
 -(void) setDelegate:(id)delegate;
 
 @end

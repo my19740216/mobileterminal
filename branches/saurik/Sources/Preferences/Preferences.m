@@ -325,21 +325,26 @@
 
 //_______________________________________________________________________________
 
--(RGBAColor) color 
+-(UIColor *) color 
 {
   return color;
 }
 
 //_______________________________________________________________________________
 
--(void) setColor:(RGBAColor)color_
+-(void) setColor:(UIColor *)color_
 {
-  color = color_;
-  [colorField  setColor:color];
-  [redSlider   setValue:color.r];
-  [greenSlider setValue:color.g];  
-  [blueSlider  setValue:color.b];  
-  [alphaSlider setValue:color.a];
+  if (color != color_) {
+    [color release];
+    color = [color_ retain];
+    [colorField  setColor:color];
+
+    const CGFloat *rgba = CGColorGetComponents([color CGColor]);
+    [redSlider   setValue:rgba[0]];
+    [greenSlider setValue:rgba[1]];  
+    [blueSlider  setValue:rgba[2]];  
+    [alphaSlider setValue:rgba[3]];
+  }
 }
 
 //_______________________________________________________________________________
@@ -360,15 +365,19 @@
 
 -(void) sliderChanged:(id)slider
 {
-  color = RGBAColorMake([redSlider value], [greenSlider value], [blueSlider value], [alphaSlider value]);
+  UIColor *c = colorWithRGBA([redSlider value], [greenSlider value], [blueSlider value], [alphaSlider value]);
+  if (color != c) {
+    [color release];
+    color = [c retain];
 
-  [colorField setColor:color];
+    [colorField setColor:color];
 
 	if ([self delegate] && [[self delegate] respondsToSelector:@selector(colorChanged:)])
 	{
-		NSArray * colorArray = RGBAColorToArray(color);
+        NSArray * colorArray = [NSArray arrayWithColor:color];
 		[[self delegate] performSelector:@selector(colorChanged:) withObject:colorArray];
 	}
+  }
 }
 
 @end
@@ -527,7 +536,7 @@
     CGContextSaveGState(context);
     CGContextAddPath(context, [_fillPath _pathRef]);
     CGContextClip(context);
-    CGContextSetFillColorWithColor(context, colorWithRGBA(0,0,0,1));
+    CGContextSetFillColorWithColor(context, [[UIColor blackColor] CGColor]);
     CGContextFillRect(context, fp8);
     CGContextRestoreGState(context);
 }
@@ -700,7 +709,7 @@
   CGContextSaveGState(context);
   CGContextAddPath(context, [_fillPath _pathRef]);
   CGContextClip(context);
-  CGContextSetFillColorWithColor(context, colorWithRGBA(0,0,0,1));
+  CGContextSetFillColorWithColor(context, [[UIColor blackColor] CGColor]);
   CGContextFillRect(context, fp8);
   CGContextRestoreGState(context);
 }

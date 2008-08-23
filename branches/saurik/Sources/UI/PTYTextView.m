@@ -347,7 +347,7 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
   // row with the background color  
 	
   [self drawBox:context 
-					color:[[ColorMap sharedInstance] colorForCode:BG_COLOR_CODE termid:termid]
+					color:[[[ColorMap sharedInstance] colorForCode:BG_COLOR_CODE termid:termid] CGColor]
 				boxRect:CGRectMake(rect.origin.x, rect.origin.y, charWidth * width, lineHeight)];
   
   // now specially paint any exceptional backgrounds
@@ -358,8 +358,8 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
         if(bgcode != bg1) {
             charRect.size.width = charWidth * (column - col1);
             if (bg1 != BG_COLOR_CODE) {
-                CGColorRef bg = [[ColorMap sharedInstance] colorForCode:bg1 termid:termid];
-                [self drawBox:context color:bg boxRect:charRect];
+                UIColor *bg = [[ColorMap sharedInstance] colorForCode:bg1 termid:termid];
+                [self drawBox:context color:[bg CGColor] boxRect:charRect];
             }
             charRect.origin.x += charRect.size.width;
             bg1 = bgcode;
@@ -368,8 +368,8 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
     }
     charRect.size.width = charWidth * (column - col1);
     if (bg1 != BG_COLOR_CODE) {
-        CGColorRef bg = [[ColorMap sharedInstance] colorForCode:bg1 termid:termid];
-        [self drawBox:context color:bg boxRect:charRect];
+        UIColor *bg = [[ColorMap sharedInstance] colorForCode:bg1 termid:termid];
+        [self drawBox:context color:[bg CGColor] boxRect:charRect];
     }
 
   // Fill a rectangle with the cursor. drawRow consideres scrollback buffer;
@@ -385,8 +385,8 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
     cursorRect.origin.x += cursorX * charWidth;
     BOOL ctrlMode = [[MobileTerminal application] controlKeyMode];
 
-    CGColorRef cursorColor = [[ColorMap sharedInstance] colorForCode:(ctrlMode ? CURSOR_TEXT : CURSOR_BG) termid:termid];
-    [self drawBox:context color:cursorColor boxRect:cursorRect];
+    UIColor *cursorColor = [[ColorMap sharedInstance] colorForCode:(ctrlMode ? CURSOR_TEXT : CURSOR_BG) termid:termid];
+    [self drawBox:context color:[cursorColor CGColor] boxRect:cursorRect];
     
     cursorSaveColor = theLine[cursorX].fg_color;
     theLine[cursorX].fg_color = ctrlMode ? CURSOR_BG : CURSOR_TEXT;
@@ -415,15 +415,15 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
     unsigned int fgcode = theLine[column].fg_color;
     if (fgcode != fg1) 
     {
-        CGColorRef fg = [[ColorMap sharedInstance] colorForCode:fg1 termid:termid];
-        [self drawChars:context characters:characters+col1 count:(column - col1) color:fg point:charRect.origin];
+        UIColor *fg = [[ColorMap sharedInstance] colorForCode:fg1 termid:termid];
+        [self drawChars:context characters:characters+col1 count:(column - col1) color:[fg CGColor] point:charRect.origin];
         charRect.origin.x += charWidth * (column - col1);
         fg1 = fgcode;
         col1 = column;
     }
   }
-  CGColorRef fg = [[ColorMap sharedInstance] colorForCode:fg1 termid:termid];
-  [self drawChars:context characters:characters+col1 count:(n-col1) color:fg point:charRect.origin];
+  UIColor *fg = [[ColorMap sharedInstance] colorForCode:fg1 termid:termid];
+  [self drawChars:context characters:characters+col1 count:(n-col1) color:[fg CGColor] point:charRect.origin];
 
   if (row == cursorY)
     theLine[cursorX].fg_color = cursorSaveColor;

@@ -6,6 +6,8 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import "Constants.h"
 
+@class UIColor;
+
 enum {
   BG_COLOR = 16,
   FG_COLOR,
@@ -17,11 +19,11 @@ enum {
 
 @interface ColorMap : NSObject
 {
-  CGColorRef table[NUM_COLORS];
+  UIColor *table[NUM_COLORS];
 }
 
 + (ColorMap*)sharedInstance;
-- (CGColorRef)colorForCode:(unsigned int)index termid:(int)termid;
-- (void)setTerminalColor:(CGColorRef)color atIndex:(int)index termid:(int)termid;
+- (UIColor *)colorForCode:(unsigned int)index termid:(int)termid;
+- (void)setTerminalColor:(UIColor *)color atIndex:(int)index termid:(int)termid;
 
 @end

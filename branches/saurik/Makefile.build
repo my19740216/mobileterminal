@@ -43,7 +43,7 @@ Terminal: Sources/main.o \
 	$(CC) $(LDFLAGS) -o $@ $^
 
 %.o:	%.m
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@ $(i20) -ISources/{,Headers,Misc,Preferences,Terminal,UI} -I.
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@ $(i20) -ISources/{,Misc,Preferences,Terminal,UI} -I.
 
 depend:
 	@makedepend *.m &> /dev/null
