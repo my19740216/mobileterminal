@@ -4,6 +4,7 @@
 
 #import "Menu.h"
 
+#import <UIKit/UIControl-UIControlPrivate.h>
 #import <UIKit/UIGradient.h>
 
 #import "GestureView.h"
@@ -530,7 +531,7 @@
 
     float components[11] = { 0.5647f, 0.6f, 0.6275f, 1.0f, 0.0f,
         0.29f, 0.321f, 0.3651f, 1.0f, 1.0f, 0 };
-    UIGradient *gradient = [[UIGradient alloc] initVerticalWithValues:(CDAnonymousStruct3 *)components];
+    UIGradient *gradient = [[UIGradient alloc] initVerticalWithValues:(CDAnonymousStruct11 *)components];
     [gradient fillRect:rect];
 
     CGContextFlush(context);

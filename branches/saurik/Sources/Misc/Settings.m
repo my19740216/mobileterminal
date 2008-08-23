@@ -40,8 +40,8 @@
 
 - (void)dealloc
 {
-    for (UIColor *c in _colors)
-        [c release];
+    for (int c = 0; c < NUM_TERMINAL_COLORS; ++c)
+        [_colors[c] release];
 
     [super dealloc];
 }

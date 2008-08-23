@@ -85,7 +85,7 @@
 
 - (void)endTrackingWithTouch:(id)touch withEvent:(id)event
 {
-    return [self endTrackingAt:[touch locationInView:self] previous:[touch previousLocationInView:self] withEvent:event];
+    [self endTrackingAt:[touch locationInView:self] previous:[touch previousLocationInView:self] withEvent:event];
 }
 
 - (void)mouseDown:(GSEvent *)event

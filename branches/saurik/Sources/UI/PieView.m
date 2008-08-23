@@ -1,5 +1,8 @@
 #import "PieView.h"
 
+#import <UIKit/UIControl-UIControlPrivate.h>
+#import <UIKit/UIImage-UIImageDeprecated.h>
+
 #import "Color.h"
 #import "Constants.h"
 #import "Log.h"

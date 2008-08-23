@@ -1,6 +1,6 @@
 CC=/usr/local/bin/arm-apple-darwin-gcc
 
-CFLAGS=-Wall -O7
+CFLAGS=-Wall -O7 -std=gnu99
 
 ifeq ($(PKG_ARCH),iphoneos-arm)
 QUARTZ=QuartzCore -framework ImageIO

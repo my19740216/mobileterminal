@@ -1,9 +1,10 @@
 #import "PreferencesGroup.h"
 
+#import <UIKit/UIControl-UIControlPrivate.h>
 #import <UIKit/UIPreferencesControlTableCell.h>
 #import <UIKit/UIPreferencesTableCell.h>
 #import <UIKit/UIPreferencesTextTableCell.h>
-#import <UIKit/UISlider.h>
+#import <UIKit/UIOldSliderControl.h>
 #import <UIKit/UISwitch.h>
 
 #import "Color.h"
@@ -90,7 +91,7 @@
     UIPreferencesControlTableCell *cell = [[UIPreferencesControlTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
     [cell setTitle:label];
     [cell setShowSelection:NO];
-    UISlider *sc = [[UISlider alloc] initWithFrame:CGRectMake(100.0f, 1.0f, 200.0f, 40.0f)];
+    UIOldSliderControl *sc = [[UIOldSliderControl alloc] initWithFrame:CGRectMake(100.0f, 1.0f, 200.0f, 40.0f)];
     [sc addTarget:target action:action forEvents:7|64];
 
     [sc setAllowsTickMarkValuesOnly:YES];
@@ -111,7 +112,7 @@
     UIPreferencesControlTableCell *cell = [[UIPreferencesControlTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
     [cell setTitle:label];
     [cell setShowSelection:NO];
-    UISlider *sc = [[UISlider alloc] initWithFrame:CGRectMake(100.0f, 1.0f, 200.0f, 40.0f)];
+    UIOldSliderControl *sc = [[UIOldSliderControl alloc] initWithFrame:CGRectMake(100.0f, 1.0f, 200.0f, 40.0f)];
     [sc addTarget:target action:action forEvents:7|64];
 
     [sc setAllowsTickMarkValuesOnly:NO];

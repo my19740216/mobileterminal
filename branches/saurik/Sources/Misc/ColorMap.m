@@ -2,8 +2,7 @@
 
 #import "ColorMap.h"
 
-#import <UIKit/UIColor.h>
-
+#import "Color.h"
 #import "VT100Terminal.h"
 
 static UIColor *initWithRGB(float red, float green, float blue)
