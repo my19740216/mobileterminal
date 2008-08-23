@@ -3,7 +3,7 @@
 
 #import "Color.h"
 
-@interface PreferencesGroup : NSObject 
+@interface PreferencesGroup : NSObject
 {
     UIPreferencesTableCell *title;
     NSMutableArray *cells;
@@ -11,6 +11,9 @@
     float titleHeight;
     int tag;
 }
+
+@property(readwrite) float titleHeight;
+@property(readonly) UIPreferencesTableCell *title;
 
 + (id)groupWithTitle:(NSString *)title icon:(UIImage *)icon;
 - (id)initWithTitle:(NSString *)title icon:(UIImage *)icon;
@@ -34,8 +37,6 @@
 - (UIPreferencesTableCell *)row:(int)row;
 - (NSString *)stringValueForRow:(int)row;
 
-@property(readwrite) float titleHeight;
-@property(readonly) UIPreferencesTableCell *title;
 @end
 
 /* vim: set syntax=objc sw=4 ts=4 sts=4 expandtab textwidth=80 ff=unix: */

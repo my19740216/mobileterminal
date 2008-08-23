@@ -14,17 +14,17 @@
 @synthesize title;
 @synthesize titleHeight;
 
-+ (id) groupWithTitle:(NSString *)title icon:(UIImage *)icon 
++ (id)groupWithTitle:(NSString *)title icon:(UIImage *)icon
 {
     return [[PreferencesGroup alloc] initWithTitle:title icon:icon];
 }
 
-- (id)initWithTitle:(NSString *)title_ icon:(UIImage *)icon 
+- (id)initWithTitle:(NSString *)title_ icon:(UIImage *)icon
 {
     if ((self = [super init])) {
         title = [[[UIPreferencesTableCell alloc] init] retain];
         [title setTitle:title_];
-        if (icon)  [title setIcon:icon];
+        if (icon) [title setIcon:icon];
         titleHeight = ([title_ length] > 0) ? 40.0f : 14.0f;
         cells = [[NSMutableArray arrayWithCapacity:1] retain];
     }
@@ -38,13 +38,13 @@
           [cells removeObject:cell];
 }
 
-- (void)addCell:(id)cell 
+- (void)addCell:(id)cell
 {
     if (![cells containsObject:cell])
               [cells addObject:cell];
 }
 
-- (id)addSwitch:(NSString *)label 
+- (id)addSwitch:(NSString *)label
 {
     return [self addSwitch:label on:NO target:nil action:nil];
 }
@@ -54,7 +54,7 @@
     return [self addSwitch:label on:NO target:target action:action];
 }
 
-- (id)addSwitch:(NSString *)label on:(BOOL)on 
+- (id)addSwitch:(NSString *)label on:(BOOL)on
 {
     return [self addSwitch:label on:on target:nil action:nil];
 }
@@ -200,12 +200,12 @@
     return cell;
 }
 
-- (int)rows 
+- (int)rows
 {
     return [cells count];
 }
 
-- (UIPreferencesTableCell *)row:(int)row 
+- (UIPreferencesTableCell *)row:(int)row
 {
     if (row == -1) {
         return nil;
@@ -214,13 +214,13 @@
     }
 }
 
-- (NSString *)stringValueForRow:(int)row 
+- (NSString *)stringValueForRow:(int)row
 {
     UIPreferencesTextTableCell *cell = (UIPreferencesTextTableCell *)[self row:row];
     return [[cell textField] text];
 }
 
-- (BOOL)boolValueForRow:(int)row 
+- (BOOL)boolValueForRow:(int)row
 {
     UIPreferencesControlTableCell *cell = (UIPreferencesControlTableCell *)[self row:row];
     UISwitch *sw = [cell control];

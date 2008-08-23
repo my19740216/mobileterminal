@@ -11,47 +11,42 @@
 
 @class VT100Screen;
 
-//_______________________________________________________________________________
-
 @interface PTYTile : UITile
-{
-}
 
 - (void)drawRect:(CGRect)rect;
 
 @end
 
 //_______________________________________________________________________________
+//_______________________________________________________________________________
 
 @interface PTYTextView : UITiledView
 {
-  // geometry
-  float lineHeight;
-  float lineWidth;
-  float charWidth;
-  int numberOfLines;
-	
-	int termid;
+    // geometry
+    float lineHeight;
+    float lineWidth;
+    float charWidth;
+    int numberOfLines;
 
-  // data source
-  VT100Screen *dataSource;
-  UIScroller *textScroller;
+    int termid;
 
-	CGPoint scrollOffset;
-	
-  // cached font details
-  CGFontRef fontRef;
-  float fontSize;
+    // data source
+    VT100Screen *dataSource;
+    UIScroller *textScroller;
+
+    CGPoint scrollOffset;
+
+    // cached font details
+    CGFontRef fontRef;
+    float fontSize;
 }
-
-//_______________________________________________________________________________
 
 + (Class)tileClass;
 
-- (id)initWithFrame:(CGRect)frame source:(VT100Screen*)screen scroller:(UIScroller*)scroller identifier:(int)index;
+- (id)initWithFrame:(CGRect)frame source:(VT100Screen *)screen scroller:(UIScroller *)scroller identifier:(int)index;
 - (void)dealloc;
 
-- (void)setSource:(VT100Screen*)screen;
+- (void)setSource:(VT100Screen *)screen;
 - (void)updateAll;
 
 - (void)drawTileFrame:(CGRect)frame tileRect:(CGRect)rect;
@@ -66,14 +61,10 @@
 - (void)willSlideIn;
 - (void)willSlideOut;
 
-- (void)drawBox:(CGContextRef)context
-          color:(CGColorRef)color
-        boxRect:(CGRect)rect;
+- (void)drawBox:(CGContextRef)context color:(CGColorRef)color boxRect:(CGRect)rect;
 
-- (void)drawChars:(CGContextRef)context
-       characters:(unichar*)characters
-           count:(int)count
-           color:(CGColorRef)color
-           point:(CGPoint)point;
+- (void)drawChars:(CGContextRef)context characters:(unichar *)characters count:(int)count color:(CGColorRef)color point:(CGPoint)point;
 
 @end
+
+/* vim: set syntax=objc sw=4 ts=4 sts=4 expandtab textwidth=80 ff=unix: */

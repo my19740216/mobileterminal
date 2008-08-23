@@ -2,8 +2,8 @@
 //  Color.m
 //  Terminal
 
-#import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
+#import <Foundation/Foundation.h>
 
 #import "Color.h"
 

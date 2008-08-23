@@ -3,7 +3,7 @@
 
 @class PreferencesGroup;
 
-@interface PreferencesDataSource : NSObject 
+@interface PreferencesDataSource : NSObject
 {
     NSMutableArray *groups;
 }
