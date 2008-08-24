@@ -50,20 +50,6 @@
     [shellKeyboard handleKeyPress:[character characterAtIndex:0]];
 }
 
-#if 0 // for Debugging
-- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector
-{
-    fprintf(stderr, "[%s]S-%s\n", class_getName(self->isa), sel_getName(selector));
-    return [super methodSignatureForSelector:selector];
-}
-
-- (BOOL)respondsToSelector:(SEL)selector
-{
-    fprintf(stderr, "[%s]R-%s\n", class_getName(self->isa), sel_getName(selector));
-    return [super respondsToSelector:selector];
-}
-#endif
-
 @end
 
 //_______________________________________________________________________________
@@ -80,6 +66,12 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [handler release];
+    [super dealloc];
+}
+
 - (void)setInputDelegate:(id)delegate;
 {
     inputDelegate = delegate;
@@ -94,13 +86,6 @@
 {
     [self activate];
     [[UIKeyboardImpl activeInstance] setDelegate:handler];
-}
-
-- (void)dealloc
-{
-    [handler release];
-
-    [super dealloc];
 }
 
 @end

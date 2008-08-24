@@ -603,10 +603,8 @@ static MobileTerminal *application;
 
 - (void)togglePreferences
 {
-    if (preferencesController == nil) {
+    if (preferencesController == nil)
         preferencesController = [PreferencesController sharedInstance];
-        [preferencesController initViewStack];
-    }
 
     if (activeView == mainView) {
         if (landscape) [self setOrientation:0];
@@ -625,6 +623,8 @@ static MobileTerminal *application;
         } else if (numTerminals == 1 && [settings multipleTerminals]) {
             [self createTerminals];
         }
+
+        [keyboardView enable];
     }
 
     CAAnimation *animation = [CATransition animation];

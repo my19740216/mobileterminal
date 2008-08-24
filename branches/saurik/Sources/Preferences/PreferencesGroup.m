@@ -3,12 +3,28 @@
 #import <UIKit/UIControl-UIControlPrivate.h>
 #import <UIKit/UIPreferencesControlTableCell.h>
 #import <UIKit/UIPreferencesTableCell.h>
-#import <UIKit/UIPreferencesTextTableCell.h>
 #import <UIKit/UIOldSliderControl.h>
 #import <UIKit/UISwitch.h>
 
 #import "Color.h"
 #import "ColorWidgets.h"
+
+
+@implementation TextTableCell
+
+@synthesize textChangedAction;
+
+ - (void)keyboardInputChanged:(UIFieldEditor *)fieldEditor
+{
+    if (textChangedAction)
+        [[self target] performSelector:textChangedAction
+                            withObject:[[fieldEditor proxiedView] text]];
+}
+
+@end
+
+//_______________________________________________________________________________
+//_______________________________________________________________________________
 
 @implementation PreferencesGroup
 
@@ -45,6 +61,8 @@
               [cells addObject:cell];
 }
 
+#pragma mark Switches
+
 - (id)addSwitch:(NSString *)label
 {
     return [self addSwitch:label on:NO target:nil action:nil];
@@ -73,123 +91,105 @@
     return cell;
 }
 
-- (id)addMenuSwitch:(NSString *)label target:(id)target action:(SEL)action
+#pragma mark Sliders
+
+static UIPreferencesControlTableCell * _addValueSlider(NSMutableArray *cells, NSString * label, id target, SEL action)
 {
     UIPreferencesControlTableCell *cell = [[UIPreferencesControlTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
     [cell setTitle:label];
     [cell setShowSelection:NO];
-    UISwitch *sw = [[UISwitch alloc] initWithFrame:CGRectMake(206.0f, 9.0f, 96.0f, 48.0f)];
-    [sw setOn:NO];
-    [sw addTarget:target action:action forEvents:64];
-    [cell setControl:sw];
+    UIOldSliderControl *sc = [[UIOldSliderControl alloc] initWithFrame:CGRectMake(100.0f, 1.0f, 200.0f, 40.0f)];
+    [sc addTarget:target action:action forEvents:7|64];
+    [sc setShowValue:YES];
+    [cell setControl:sc];
     [cells addObject:cell];
     return cell;
 }
 
 - (id)addIntValueSlider:(NSString *)label range:(NSRange)range target:(id)target action:(SEL)action
 {
-    UIPreferencesControlTableCell *cell = [[UIPreferencesControlTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
-    [cell setTitle:label];
-    [cell setShowSelection:NO];
-    UIOldSliderControl *sc = [[UIOldSliderControl alloc] initWithFrame:CGRectMake(100.0f, 1.0f, 200.0f, 40.0f)];
-    [sc addTarget:target action:action forEvents:7|64];
-
+    UIPreferencesControlTableCell *cell = _addValueSlider(cells, label, target, action);
+    UIOldSliderControl *sc = [cell control];
     [sc setAllowsTickMarkValuesOnly:YES];
     [sc setNumberOfTickMarks:range.length+1];
     [sc setMinValue:range.location];
     [sc setMaxValue:NSMaxRange(range)];
     [sc setValue:range.location];
-    [sc setShowValue:YES];
     [sc setContinuous:NO];
-
-    [cell setControl:sc];
-    [cells addObject:cell];
     return cell;
 }
 
 - (id)addFloatValueSlider:(NSString *)label minValue:(float)minValue maxValue:(float)maxValue target:(id)target action:(SEL)action
 {
     UIPreferencesControlTableCell *cell = [[UIPreferencesControlTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
-    [cell setTitle:label];
-    [cell setShowSelection:NO];
-    UIOldSliderControl *sc = [[UIOldSliderControl alloc] initWithFrame:CGRectMake(100.0f, 1.0f, 200.0f, 40.0f)];
-    [sc addTarget:target action:action forEvents:7|64];
-
+    UIOldSliderControl *sc = [cell control];
     [sc setAllowsTickMarkValuesOnly:NO];
     [sc setMinValue:minValue];
     [sc setMaxValue:maxValue];
     [sc setValue:minValue];
-    [sc setShowValue:YES];
     [sc setContinuous:YES];
+    return cell;
+}
 
-    [cell setControl:sc];
+#pragma mark Buttons
+
+static UIPreferencesTextTableCell *_addPageButton(NSMutableArray *cells, NSString *label)
+{
+    UIPreferencesTextTableCell *cell = [[UIPreferencesTextTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
+    [cell setTitle:label];
+    [cell setShowDisclosure:YES];
+    [cell setDisclosureClickable:NO];
+    [cell setDisclosureStyle: 2];
+    [[cell textField] setEnabled:NO];
     [cells addObject:cell];
     return cell;
 }
 
 - (id)addPageButton:(NSString *)label
 {
-    return [self addPageButton:label value:nil];
-}
-
-- (id)addPageButton:(NSString *)label value:(NSString *)value
-{
-    UIPreferencesTextTableCell *cell = [[UIPreferencesTextTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
-    [cell setTitle:label];
-    [cell setValue:value];
-    [cell setShowDisclosure:YES];
-    [cell setDisclosureClickable:NO];
-    [cell setDisclosureStyle: 2];
-    [[cell textField] setEnabled:NO];
-    [cells addObject:cell];
-
-#if 0 // FIXME
-    [[cell textField] setTapDelegate:[PreferencesController sharedInstance]];
-    [cell setTapDelegate:[PreferencesController sharedInstance]];
-#endif
-
+    UIPreferencesTextTableCell *cell = _addPageButton(cells, label);
+    [cell setShowSelection:YES];
     return cell;
 }
 
 - (id)addColorPageButton:(NSString *)label colorRef:(UIColor **)color
 {
-    UIPreferencesTextTableCell *cell = [[UIPreferencesTextTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
-    [cell setTitle:label];
-    [cell setShowDisclosure:YES];
-    [cell setDisclosureClickable:NO];
-    [cell setDisclosureStyle: 2];
-    [[cell textField] setEnabled:NO];
-    [cells addObject:cell];
-
+    UIPreferencesTextTableCell *cell = _addPageButton(cells, label);
     ColorButton *colorButton = [[ColorButton alloc] initWithFrame:CGRectMake(240,3,39,39) colorRef:color];
     [cell addSubview:colorButton];
-
-    [colorButton setTapDelegate:colorButton];
-    [[cell textField] setTapDelegate:colorButton];
-    [cell setTapDelegate:colorButton];
-
+    //FIXME: eh, return cell perhaps?
     return colorButton;
+}
+
+#pragma mark Fields
+
+static TextTableCell *_addField(NSMutableArray *cells, NSString *label, NSString *value)
+{
+    TextTableCell *cell = [[TextTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
+    [cell setTitle:label];
+    [cell setValue:value];
+    [cells addObject:cell];
+    return cell;
 }
 
 - (id)addValueField:(NSString *)label value:(NSString *)value
 {
-    UIPreferencesTextTableCell *cell = [[UIPreferencesTextTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
-    [cell setTitle:label];
-    [cell setValue:value];
-    [[cell textField] setTextCentersHorizontally:YES];
-    [[cell textField] setEnabled:NO];
-    [cells addObject:cell];
+    TextTableCell *cell = _addField(cells, label, value);
+    UITextField *textField = [cell textField];
+    [textField setTextCentersHorizontally:YES];
+    [textField setEnabled:NO];
     return cell;
 }
 
 - (id)addTextField:(NSString *)label value:(NSString *)value
 {
-    UIPreferencesTextTableCell *cell = [[UIPreferencesTextTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
-    [cell setTitle:label];
-    [cell setValue:value];
-    [[cell textField] setTextCentersHorizontally:NO];
-    [[cell textField] setEnabled:YES];
-    [cells addObject:cell];
+    TextTableCell *cell = _addField(cells, label, value);
+    UITextField *textField = [cell textField];
+    [textField setClearButtonMode:1];
+    [textField setTextCentersHorizontally:NO];
+    [textField setEnabled:YES];
+    [[textField textInputTraits] setAutocapitalizationType:0];
+    [[textField textInputTraits] setAutocorrectionType:1];
     return cell;
 }
 
@@ -200,6 +200,8 @@
     [cells addObject:cell];
     return cell;
 }
+
+#pragma mark Other
 
 - (int)rows
 {
