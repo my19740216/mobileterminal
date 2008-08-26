@@ -21,8 +21,6 @@
 #include "VT100Screen.h"
 #include "VT100Terminal.h"
 
-//_______________________________________________________________________________
-//_______________________________________________________________________________
 
 @implementation MobileTerminal
 
@@ -108,6 +106,7 @@ static MobileTerminal *application;
     activeView = mainView;
 
     contentView = [[UITransitionView alloc] initWithFrame: frame];
+    [contentView setDelegate:self];
     [contentView addSubview:mainView];
 
     window = [[UIWindow alloc] initWithFrame: frame];
@@ -603,10 +602,8 @@ static MobileTerminal *application;
 
 - (void)togglePreferences
 {
-    if (preferencesController == nil)
-        preferencesController = [PreferencesController sharedInstance];
-
     if (activeView == mainView) {
+        preferencesController = [[PreferencesController alloc] init];
         if (landscape) [self setOrientation:0];
         [contentView transition:0 toView:[preferencesController view]];
         activeView = [preferencesController view];
@@ -635,6 +632,20 @@ static MobileTerminal *application;
     [animation setSpeed: 0.25f];
     [contentView addAnimation:(id)animation forKey:@"flip"];
 }
+
+#pragma mark UITransitionView delegate methods
+
+- (void)transitionViewDidComplete:(UITransitionView *)transition
+                         fromView:(UIView *)from toView:(UIView *)to
+{
+    // If the Preferences view has just been closed, release it
+    if (to == mainView) {
+        [preferencesController release];
+        preferencesController = nil;
+    }
+}
+
+#pragma mark Properties
 
 - (SubProcess *)activeProcess
 {

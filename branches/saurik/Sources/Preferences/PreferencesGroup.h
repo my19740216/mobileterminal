@@ -3,6 +3,7 @@
 #import <UIKit/UIPreferencesTextTableCell.h>
 
 #import "Color.h"
+#import "ColorWidgets.h"
 
 
 @interface TextTableCell : UIPreferencesTextTableCell
@@ -11,6 +12,21 @@
 }
 
 @property(nonatomic, assign) SEL textChangedAction;
+
+@end
+
+//_______________________________________________________________________________
+//_______________________________________________________________________________
+
+
+@interface ColorPageButtonCell : UIPreferencesTextTableCell
+{
+    ColorSquare *colorSquare;
+}
+
+@property(nonatomic, readonly) ColorSquare *colorSquare;
+
+- (id)initWithFrame:(CGRect)frame colorRef:(UIColor **)colorRef_;
 
 @end
 

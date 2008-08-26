@@ -3,14 +3,15 @@
 
 #import "Color.h"
 
-@interface ColorButton : UIView
+@interface ColorSquare : UIView
 {
     UIColor **colorRef;
 }
 
+@property(nonatomic, retain) UIColor *color;
+
 - (id)initWithFrame:(CGRect)frame colorRef:(UIColor **)c;
 - (void)colorChanged:(NSArray *)colorValues;
-- (void)setColorRef:(UIColor **)colorRef;
 
 @end
 
@@ -22,7 +23,7 @@
     UIColor *color;
 }
 
-- (void)setColor:(UIColor *)color;
+@property(nonatomic, retain) UIColor *color;
 
 @end
 

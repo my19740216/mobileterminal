@@ -6,18 +6,21 @@
 
 #import <UIKit/UIKit.h>
 
-#import <UIKit/UISimpleTableCell.h>
-#import <UIKit/UIFieldEditor.h>
-
 #import <UIKit/UIBarButtonItem.h>
-#import <UIKit/UIPreferencesControlTableCell.h>
-#import <UIKit/UIPreferencesTextTableCell.h>
-#import <UIKit/UISwitch.h>
+#import <UIKit/UIBezierPath-UIInternal.h>
+#import <UIKit/UIFieldEditor.h>
+#import <UIKit/UIFont.h>
 #import <UIKit/UIOldSliderControl.h>
 /* XXX: I hate this codebase */
 #define UIInterfaceOrientation int
 #import <UIKit/UIPickerView.h>
 #import <UIKit/UIPickerTableCell.h>
+#import <UIKit/UIPreferencesControlTableCell.h>
+#import <UIKit/UIPreferencesTextTableCell.h>
+#import <UIKit/UIScreen.h>
+#import <UIKit/UISimpleTableCell.h>
+#import <UIKit/UISwitch.h>
+#import <UIKit/UIViewController-UINavigationControllerItem.h>
 
 #import "MobileTerminal.h"
 #import "Settings.h"
@@ -33,640 +36,6 @@
 #import "PreferencesDataSource.h"
 
 
-#if 0
-@interface UITable(PickerTableExtensions)
-@end
-
-@implementation UITable(PickerTableExtensions)
-
-- (void)_selectRow:(int)row byExtendingSelection:(BOOL)extend withFade:(BOOL)fade scrollingToVisible:(BOOL)scroll withSelectionNotifications:(BOOL)notify
-{
-    if (row >= 0) {
-        [[[self selectedTableCell] iconImageView] setFrame:CGRectMake(0,0,0,0)];
-        [super _selectRow:row byExtendingSelection:extend withFade:fade scrollingToVisible:scroll withSelectionNotifications:notify];
-        [[[self selectedTableCell] iconImageView] setFrame:CGRectMake(0,0,0,0)];
-    }
-}
-
-@end
-#endif
-
-//_______________________________________________________________________________
-//_______________________________________________________________________________
-
-@interface UIPickerView (PickerViewExtensions)
-@end
-
-@implementation UIPickerView (PickerViewExtensions)
-
-- (float)tableRowHeight
-{
-    return 22.0f;
-}
-
-- (void)_sendSelectionChanged
-{
-    for (int c = 0; c < [self numberOfColumns]; c++) {
-        UITable *table = [self tableForColumn:c];
-        for (int r = 0; r < [table numberOfRows]; r++)
-            [[[table cellAtRow:r column:0] iconImageView] setFrame:CGRectMake(0,0,0,0)];
-    }
-
-    if ([self delegate])
-        if ([[self delegate] respondsToSelector:@selector(fontSelectionDidChange)])
-               [[self delegate] performSelector:@selector(fontSelectionDidChange)];
-}
-
-@end
-
-//_______________________________________________________________________________
-//_______________________________________________________________________________
-
-@interface FontChooser : UIView
-{
-    id delegate;
-
-    NSArray *fontNames;
-
-    UIPickerView *fontPicker;
-    UITable *pickerTable;
-
-    NSString *selectedFont;
-}
-
-- (id)initWithFrame:(struct CGRect)rect;
-- (void)selectFont:(NSString *)font;
-- (void)createFontList;
-- (void)setDelegate:(id)delegate;
-
-@end
-
-@implementation FontChooser
-
-- (id)initWithFrame:(struct CGRect)rect
-{
-    self = [super initWithFrame:rect];
-    if (self) {
-        [self createFontList];
-
-        fontPicker = [[UIPickerView alloc] initWithFrame:[self bounds]];
-        [fontPicker setDelegate:self];
-
-        //pickerTable = [fontPicker createTableWithFrame:[self bounds]];
-        //[pickerTable setAllowsMultipleSelection:FALSE];
-
-        UITableColumn *fontColumn = [[UITableColumn alloc] initWithTitle: @"Font" identifier:@"font" width:rect.size.width];
-
-        [fontPicker columnForTable:fontColumn];
-
-        [self addSubview:fontPicker];
-    }
-
-    return self;
-}
-
-- (void)setDelegate:(id)aDelegate
-{
-    delegate = aDelegate;
-}
-
-- (id)delegate
-{
-    return delegate;
-}
-
-- (void)createFontList
-{
-    NSFileManager *fm = [NSFileManager defaultManager];
-
-    // hack to make compiler happy
-    // what could have been easy like:
-    // fontNames = [[fm directoryContentsAtPath:@"/var/Fonts" matchingExtension:@"ttf" options:0 keepExtension:NO] retain];
-    // now becomes:
-    SEL sel = @selector(directoryContentsAtPath:matchingExtension:options:keepExtension:);
-    NSMethodSignature *sig = [[fm class] instanceMethodSignatureForSelector:sel];
-    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sig];
-    NSString *path = @"/System/Library/Fonts/Cache";
-    NSString *ext = @"ttf";
-    int options = 0;
-    BOOL keep = NO;
-    [invocation setArgument:&path atIndex:2];
-    [invocation setArgument:&ext atIndex:3];
-    [invocation setArgument:&options atIndex:4];
-    [invocation setArgument:&keep atIndex:5];
-    [invocation setTarget:fm];
-    [invocation setSelector:sel];
-    [invocation invoke];
-    [invocation getReturnValue:&fontNames];
-    [fontNames retain];
-    // hack ends here
-}
-
-- (int)numberOfColumnsInPickerView:(UIPickerView *)picker
-{
-    return 1;
-}
-
-- (int)pickerView:(UIPickerView *)picker numberOfRowsInColumn:(int)col
-{
-    return [fontNames count];
-}
-
-- (UIPickerTableCell *)pickerView:(UIPickerView *)picker tableCellForRow:(int)row inColumn:(int)col
-{
-    UIPickerTableCell *cell = [[UIPickerTableCell alloc] init];
-
-    if (col == 0) {
-        [cell setTitle:[fontNames objectAtIndex:row]];
-    }
-
-    [[cell titleTextLabel] setFont:[UISimpleTableCell defaultFont]];
-    [cell setSelectionStyle:0];
-    [cell setShowSelection:YES];
-    [[cell iconImageView] setFrame:CGRectMake(0,0,0,0)];
-
-    return cell;
-}
-
-- (float)pickerView:(UIPickerView *)picker tableWidthForColumn:(int)col
-{
-    return [self bounds].size.width-40.0f;
-}
-
-- (int)rowForFont:(NSString *)fontName
-{
-    int i;
-    for (i = 0; i < [fontNames count]; i++) {
-        if ([[fontNames objectAtIndex:i] isEqualToString:fontName]) {
-            return i;
-        }
-    }
-    return 0;
-}
-
-- (void)selectFont:(NSString *)fontName
-{
-    selectedFont = fontName;
-    int row = [self rowForFont:fontName];
-    [fontPicker selectRow:row inColumn:0 animated:NO];
-    [[fontPicker tableForColumn:0] _selectRow:row byExtendingSelection:NO withFade:NO scrollingToVisible:YES withSelectionNotifications:YES];
-}
-
-- (NSString *)selectedFont
-{
-    int row = [fontPicker selectedRowForColumn:0];
-    return [fontNames objectAtIndex:row];
-}
-
-- (void)fontSelectionDidChange
-{
-    if ([self delegate] && [[self delegate] respondsToSelector:@selector(setFont:)])
-                              [[self delegate] performSelector:@selector(setFont:) withObject:[self selectedFont]];
-}
-
-@end
-
-//_______________________________________________________________________________
-//_______________________________________________________________________________
-
-@interface FontPage : UIViewController
-{
-    UIPreferencesTable *table;
-
-    FontChooser *fontChooser;
-    UIOldSliderControl *sizeSlider;
-    UIOldSliderControl *widthSlider;
-}
-
-- (FontChooser *)fontChooser;
-- (void)selectFont:(NSString *)font size:(int)size width:(float)width;
-- (void)sizeSelected:(UIOldSliderControl *)control;
-- (void)widthSelected:(UIOldSliderControl *)control;
-
-@end
-
-@implementation FontPage
-
-- (id)init
-{
-    self = [super initWithNibName:nil bundle:nil];
-    if (self) {
-        [self setTitle:@"Font"];
-    }
-    return self;
-}
-
-- (void)loadView
-{
-    PreferencesDataSource *prefSource = [[PreferencesDataSource alloc] init];
-    PreferencesGroup *group;
-
-    group = [PreferencesGroup groupWithTitle:nil icon:nil];
-    group.titleHeight = 220;
-    [prefSource addGroup:group];
-
-    CGSize screenSize = [UIHardware mainScreenSize];
-    CGRect chooserRect = CGRectMake(0, 0, screenSize.width, 210);
-    fontChooser = [[FontChooser alloc] initWithFrame:chooserRect];
-    [fontChooser setDelegate:self];
-
-    UIPreferencesControlTableCell *cell;
-    group = [PreferencesGroup groupWithTitle:nil icon:nil];
-    cell = [group addIntValueSlider:@"Size" range:NSMakeRange(7, 13) target:self action:@selector(sizeSelected:)];
-    sizeSlider = [cell control];
-    cell = [group addFloatValueSlider:@"Width" minValue:0.5f maxValue:1.0f target:self action:@selector(widthSelected:)];
-    widthSlider = [cell control];
-    [prefSource addGroup:group];
-
-    table = [[UIPreferencesTable alloc]
-        initWithFrame:CGRectMake(0, 0, screenSize.width, screenSize.height)];
-
-    [table addSubview:fontChooser];
-    [table setDataSource:prefSource];
-    [table reloadData];
-    [self setView:table];
-}
-
-- (void)dealloc
-{
-    [table setDataSource:nil];
-    [table setDelegate:nil];
-    [table release];
-
-    [super dealloc];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    TerminalConfig *config = [[[Settings sharedInstance] terminalConfigs]
-        objectAtIndex:[PreferencesController sharedInstance].terminalIndex];
-
-    [self selectFont:[config font]
-                size:[config fontSize] width:[config fontWidth]];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    int index = [PreferencesController sharedInstance].terminalIndex;
-    MobileTerminal *app = [MobileTerminal application];
-
-    if (index < [[app textviews] count])
-        [[[app textviews] objectAtIndex:index] resetFont];
-}
-
-#pragma mark Other
-
-- (void)selectFont:(NSString *)font size:(int)size width:(float)width
-{
-    [fontChooser selectFont:font];
-    [sizeSlider setValue:(float)size];
-    [widthSlider setValue:width];
-}
-
-- (void)sizeSelected:(UIOldSliderControl *)control
-{
-    [control setValue:floor([control value])];
-    [self setFontSize:(int)[control value]];
-}
-
-- (void)widthSelected:(UIOldSliderControl *)control
-{
-    [self setFontWidth:[control value]];
-}
-
-- (FontChooser *)fontChooser { return fontChooser; };
-
-#pragma mark FontChooser delegate methods
-
-- (void)setFontSize:(int)size
-{
-    TerminalConfig *config = [[[Settings sharedInstance] terminalConfigs]
-        objectAtIndex:[PreferencesController sharedInstance].terminalIndex];
-    [config setFontSize:size];
-}
-
-- (void)setFontWidth:(float)width
-{
-    TerminalConfig *config = [[[Settings sharedInstance] terminalConfigs]
-        objectAtIndex:[PreferencesController sharedInstance].terminalIndex];
-    [config setFontWidth:width];
-}
-
-- (void)setFont:(NSString *)font
-{
-    TerminalConfig *config = [[[Settings sharedInstance] terminalConfigs]
-        objectAtIndex:[PreferencesController sharedInstance].terminalIndex];
-    [config setFont:font];
-}
-
-@end
-
-//_______________________________________________________________________________
-//_______________________________________________________________________________
-
-@interface ColorPage : UIViewController
-{
-    UIPreferencesTable *table;
-
-    id delegate;
-
-    UIColor *color;
-
-    ColorTableCell *colorField;
-    UIOldSliderControl *redSlider;
-    UIOldSliderControl *greenSlider;
-    UIOldSliderControl *blueSlider;
-    UIOldSliderControl *alphaSlider;
-}
-
-@property(nonatomic, assign) id delegate;
-@property(nonatomic, retain) UIColor *color;
-
-@end
-
-@implementation ColorPage
-
-@synthesize color;
-
-- (id)init
-{
-    self = [super initWithNibName:nil bundle:nil];
-    if (self) {
-        [self setTitle:@"Colors"];
-    }
-    return self;
-}
-
-- (void)loadView
-{
-    PreferencesDataSource *prefSource = [[PreferencesDataSource alloc] init];
-    PreferencesGroup *group;
-
-    group = [PreferencesGroup groupWithTitle:@"Color" icon:nil];
-    colorField = [group addColorField];
-    [prefSource addGroup:group];
-
-    group = [PreferencesGroup groupWithTitle:@"Values" icon:nil];
-    redSlider = [[group addFloatValueSlider:@"Red" minValue:0 maxValue:1 target:self action:@selector(sliderChanged:)] control];
-    greenSlider = [[group addFloatValueSlider:@"Green" minValue:0 maxValue:1 target:self action:@selector(sliderChanged:)] control];
-    blueSlider = [[group addFloatValueSlider:@"Blue" minValue:0 maxValue:1 target:self action:@selector(sliderChanged:)] control];
-    [prefSource addGroup:group];
-
-    group = [PreferencesGroup groupWithTitle:nil icon:nil];
-    alphaSlider = [[group addFloatValueSlider:@"Alpha" minValue:0 maxValue:1 target:self action:@selector(sliderChanged:)] control];
-    [prefSource addGroup:group];
-
-    // -------------------------------------------------------- the table itself
-
-    CGSize screenSize = [UIHardware mainScreenSize];
-    table = [[UIPreferencesTable alloc]
-        initWithFrame:CGRectMake(0, 0, screenSize.width, screenSize.height)];
-    [table setDataSource:prefSource];
-    [table reloadData];
-    [self setView:table];
-}
-
-- (void)dealloc
-{
-    [color release];
-    [super dealloc];
-}
-
-- (void)sliderChanged:(id)slider
-{
-    UIColor *c = colorWithRGBA([redSlider value], [greenSlider value], [blueSlider value], [alphaSlider value]);
-    if (color != c) {
-        [color release];
-        color = [c retain];
-
-        [colorField setColor:color];
-
-        if ([self delegate] && [[self delegate] respondsToSelector:@selector(colorChanged:)]) {
-                     NSArray *colorArray = [NSArray arrayWithColor:color];
-                     [[self delegate] performSelector:@selector(colorChanged:) withObject:colorArray];
-        }
-    }
-}
-
-#pragma mark Properties
-
-- (id)delegate
-{
-    return [table delegate];
-}
-
-- (void)setDelegate:(id)delegate
-{
-    [table setDelegate:delegate];
-}
-
-- (void)setColor:(UIColor *)color_
-{
-    if (color != color_) {
-        [color release];
-        color = [color_ retain];
-        [colorField setColor:color];
-
-        const CGFloat *rgba = CGColorGetComponents([color CGColor]);
-        [redSlider setValue:rgba[0]];
-        [greenSlider setValue:rgba[1]];
-        [blueSlider setValue:rgba[2]];
-        [alphaSlider setValue:rgba[3]];
-    }
-}
-
-@end
-
-//_______________________________________________________________________________
-//_______________________________________________________________________________
-
-@interface TerminalPrefsPage : UIViewController
-{
-    UIPreferencesTable *table;
-
-    id fontButton;
-    UITextField *argumentField;
-    UIOldSliderControl *widthSlider;
-    UISwitch *autosizeSwitch;
-    PreferencesGroup *sizeGroup;
-    UIPreferencesControlTableCell *widthCell;
-
-    ColorButton *color0;
-    ColorButton *color1;
-    ColorButton *color2;
-    ColorButton *color3;
-    ColorButton *color4;
-
-    TerminalConfig *config;
-    int terminalIndex;
-}
-
-- (void)setTerminalIndex:(int)terminal;
-- (void)autosizeSwitched:(UIOldSliderControl *)control;
-- (void)widthSelected:(UIOldSliderControl *)control;
-
-@end
-
-@implementation TerminalPrefsPage
-
-- (id)init
-{
-    self = [super initWithNibName:nil bundle:nil];
-    if (self) {
-        [self setTitle:@"Terminal"];
-    }
-    return self;
-}
-
-- (void)loadView
-{
-    PreferencesDataSource *prefSource = [[PreferencesDataSource alloc] init];
-    PreferencesGroup *group;
-
-#if 0
-    group = [PreferencesGroup groupWithTitle:nil icon:nil];
-    fontButton = [group addPageButton:@"Font"];
-    [prefSource addGroup:group];
-
-    sizeGroup = [PreferencesGroup groupWithTitle:@"Size" icon:nil];
-    autosizeSwitch = [[sizeGroup addSwitch:@"Auto Adjust" target:self action:@selector(autosizeSwitched:)] control];
-    widthCell = [sizeGroup addIntValueSlider:@"Width" range:NSMakeRange(40, 60) target:self action:@selector(widthSelected:)];
-    widthSlider = [widthCell control];
-    [prefSource addGroup:sizeGroup];
-
-    group = [PreferencesGroup groupWithTitle:@"Arguments" icon:nil];
-    argumentField = [[group addTextField:nil value:nil] textField];
-    //[argumentField setEditingDelegate:self];
-    [prefSource addGroup:group];
-
-    group = [PreferencesGroup groupWithTitle:@"Colors" icon:nil];
-    color0 = [group addColorPageButton:@"Background" colorRef:nil];
-    color1 = [group addColorPageButton:@"Normal Text" colorRef:nil];
-    color2 = [group addColorPageButton:@"Bold Text" colorRef:nil];
-    color3 = [group addColorPageButton:@"Cursor Text" colorRef:nil];
-    color4 = [group addColorPageButton:@"Cursor Background" colorRef:nil];
-    [prefSource addGroup:group];
-#endif
-
-    // -------------------------------------------------------- the table itself
-
-    CGSize screenSize = [UIHardware mainScreenSize];
-    table = [[UIPreferencesTable alloc]
-        initWithFrame:CGRectMake(0, 0, screenSize.width, screenSize.height)];
-    [table setDataSource:prefSource];
-    [table setDelegate:self];
-    [table reloadData];
-    [table enableRowDeletion:YES animated:YES];
-    [self setView:table];
-}
-
-- (void)dealloc
-{
-    [table setDataSource:nil];
-    [table setDelegate:nil];
-    [table release];
-
-    [super dealloc];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    // Reset the table by deselecting the current selection
-#if 0
-    [table selectRow:-1 byExtendingSelection:NO withFade:animated];
-    [fontButton setValue:[config fontDescription]];
-#endif
-}
-
-#pragma mark Other
-
-- (BOOL)keyboardInput:(id)fieldEditor shouldInsertText:(NSString *)text isMarkedText:(BOOL)marked
-{
-    if ([text isEqualToString:@"\n"]) {
-              [config setArgs:[argumentField text]];
-              if ([table keyboard])
-                  [table setKeyboardVisible:NO animated:YES];
-    }
-    return YES;
-}
-
-- (void)setTerminalIndex:(int)index
-{
-    [PreferencesController sharedInstance].terminalIndex = index;
-    config = [[[Settings sharedInstance] terminalConfigs] objectAtIndex:index];
-
-    [fontButton setValue:[config fontDescription]];
-    [argumentField setText:[config args]];
-    [autosizeSwitch setOn:[config autosize]];
-    [widthSlider setValue:[config width]];
-    if ([config autosize])
-        [sizeGroup removeCell:widthCell];
-    else if (![config autosize])
-        [sizeGroup addCell:widthCell];
-
-    [color0 setColorRef:&config.colors[0]];
-    [color1 setColorRef:&config.colors[1]];
-    [color2 setColorRef:&config.colors[2]];
-    [color3 setColorRef:&config.colors[3]];
-    [color4 setColorRef:&config.colors[4]];
-
-    [table reloadData];
-}
-
-- (void)autosizeSwitched:(UIOldSliderControl *)control
-{
-    BOOL autosize = ([control value] == 1.0f);
-    [config setAutosize:autosize];
-    if (autosize)
-        [sizeGroup removeCell:widthCell];
-    else
-        [sizeGroup addCell:widthCell];
-    [table reloadData];
-}
-
-- (void)widthSelected:(UIOldSliderControl *)control
-{
-    [control setValue:floor([control value])];
-    [config setWidth:(int)[control value]];
-    [config setWidth:(int)[control value]];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    if ([table keyboard])
-        [table setKeyboardVisible:NO animated:NO];
-}
-
-#pragma mark Delegate methods
-
-- (void)tableRowSelected:(NSNotification *)notification
-{
-#if 0
-    int row = [[notification object] selectedRow];
-    UIPreferencesTableCell *cell = [table cellAtRow:row column:0];
-    if (cell == fontButton)
-        [[self navigationController] pushViewController:[[[FontPage alloc]
-                                        initWithNibName:nil bundle:nil] autorelease] animated:YES];
-    else if (cell == color0) {
-        ColorPage *cp = [[ColorPage alloc] initWithNib:nil bundle:nil];
-        //[cp setColor:[color0
-    }
-
-    //[[self navigationController] pushViewController:newMenuPrefs animated:YES];
-#if 0
-    else if (cell == color1)
-    else if (cell == color2)
-    else if (cell == color3)
-    else if (cell == color4)
-#endif
-#endif
-}
-
-@end
-
-//_______________________________________________________________________________
-//_______________________________________________________________________________
-
 @interface MenuTableCell : UIPreferencesTableCell
 {
     MenuView *menu;
@@ -675,6 +44,8 @@
 @property(nonatomic, readonly) MenuView *menu;
 
 @end
+
+//______________________________________________________________________________
 
 @implementation MenuTableCell
 
@@ -721,8 +92,8 @@
 
 @end
 
-//_______________________________________________________________________________
-//_______________________________________________________________________________
+//______________________________________________________________________________
+//______________________________________________________________________________
 
 @interface MenuPrefsPage : UIViewController
 {
@@ -734,7 +105,7 @@
     MenuButton *editButton;
 
     UITextField *titleField;
-    UIPreferencesTextTableCell *commandFieldCell;
+    TextTableCell *commandFieldCell;
     UIPreferencesControlTableCell *submenuSwitchCell;
     UISwitch *submenuSwitch;
 
@@ -745,10 +116,12 @@
 
 - (id)initWithMenu:(Menu *)menu_ title:(NSString *)title;
 //- (void)menuButtonPressed:(MenuButton *)button;
-//- (void)selectButtonAtIndex:(int)index;
-//- (void)update;
+- (void)selectButtonAtIndex:(int)index;
+- (void)update;
 
 @end
+
+//______________________________________________________________________________
 
 @implementation MenuPrefsPage
 
@@ -780,10 +153,10 @@
 
     // ------------------------------------------------- button title text field
  
-    UIPreferencesTextTableCell *titleFieldCell = [menuGroup addTextField:@"Title" value:nil];
+    TextTableCell *titleFieldCell = [menuGroup addTextField:@"Title" value:nil];
     [titleFieldCell setTarget:self];
-    [titleFieldCell setReturnAction:@selector(onTextReturn)];
     [titleFieldCell setTextChangedAction:@selector(onTextChanged:)];
+    [titleFieldCell setReturnAction:@selector(onTextReturn)];
     titleField = [titleFieldCell textField];
     [titleField setPlaceholder:@"<button label>"];
 
@@ -808,9 +181,8 @@
 
     // -------------------------------------------------------- the table itself
  
-    CGSize screenSize = [UIHardware mainScreenSize];
     table = [[UIPreferencesTable alloc]
-        initWithFrame:CGRectMake(0, 0, screenSize.width, screenSize.height)];
+        initWithFrame:[[UIScreen mainScreen] applicationFrame]];
     [table setDataSource:prefSource];
     [table setDelegate:self];
     [table reloadData];
@@ -818,10 +190,6 @@
     [self setView:table];
 
     // Select the first button in the button grid
-#if 0
-    [menuView selectButton:[menuView buttonAtIndex:0]];
-    [self menuButtonPressed:[menuView buttonAtIndex:0]];
-#endif
     [self selectButtonAtIndex:0];
 }
 
@@ -870,7 +238,7 @@
     // Animate the enabling/disabling of the Submenu switch
     [UIView beginAnimations:@"slideSwitch"];
     if (isNavi) {
-        [[submenuSwitchCell _disclosureView] addTarget:self action:@selector(openSubmenuAction) forEvents:64];
+        [[submenuSwitchCell disclosureView] addTarget:self action:@selector(openSubmenuAction) forControlEvents:64];
         [submenuSwitch setOrigin:CGPointMake(156.0f, 9.0f)];
     } else {
         [submenuSwitch setOrigin:CGPointMake(206.0f, 9.0f)];
@@ -880,7 +248,7 @@
     [table reloadData];
 }
 
-# pragma mark MenuView delegate methods
+# pragma mark MenuView callback methods
 
 - (BOOL)shouldLoadMenuWithButton:(MenuButton *)button
 {
@@ -893,7 +261,7 @@
     [self update];
 }
 
-#pragma mark TextTableCell delegate methods
+#pragma mark TextTableCell callback methods
 
 - (void)onTextChanged:(NSString *)text
 {
@@ -948,8 +316,8 @@
 
 @end
 
-//_______________________________________________________________________________
-//_______________________________________________________________________________
+//______________________________________________________________________________
+//______________________________________________________________________________
 
 @interface GestureTableCell : UIPreferencesTableCell
 {
@@ -959,6 +327,8 @@
 @property(nonatomic, readonly) PieView *pieView;
 
 @end
+
+//______________________________________________________________________________
 
 @implementation GestureTableCell
 
@@ -1003,8 +373,8 @@
 
 @end
 
-//_______________________________________________________________________________
-//_______________________________________________________________________________
+//______________________________________________________________________________
+//______________________________________________________________________________
 
 @interface GesturePrefsPage : UIViewController
 {
@@ -1021,8 +391,11 @@
 @property(nonatomic, readonly) PieView *pieView;
 
 - (id)initWithSwipes:(int)swipes_;
+- (void)pieButtonPressed:(PieButton *)button;
 
 @end
+
+//______________________________________________________________________________
 
 @implementation GesturePrefsPage
 
@@ -1047,7 +420,7 @@
  
     GestureTableCell *cell = [[GestureTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 235.0f)];
     pieView = [cell pieView];
-    NSMutableDictionary * sg = [[Settings sharedInstance] swipeGestures];
+    NSDictionary * sg = [[Settings sharedInstance] swipeGestures];
     for (int i = 0; i < 8; i++) {
         NSString *command = [sg objectForKey:ZONE_KEYS[(i + 8 - 2) % 8 + swipes * 8]];
         if (command != nil)
@@ -1058,7 +431,7 @@
 
     // ------------------------------------------------------ command text field
  
-    UIPreferencesTextTableCell *commandFieldCell = [menuGroup addTextField:@"Command" value:nil];
+    TextTableCell *commandFieldCell = [menuGroup addTextField:@"Command" value:nil];
     [commandFieldCell setTarget:self];
     [commandFieldCell setTextChangedAction:@selector(onCommandChanged:)];
     [commandFieldCell setReturnAction:@selector(onCommandReturn)];
@@ -1084,9 +457,8 @@
 
     // -------------------------------------------------------- the table itself
 
-    CGSize screenSize = [UIHardware mainScreenSize];
     table = [[UIPreferencesTable alloc]
-        initWithFrame:CGRectMake(0, 0, screenSize.width, screenSize.height)];
+        initWithFrame:[[UIScreen mainScreen] applicationFrame]];
     [table setDataSource:prefSource];
     [table setDelegate:self];
     [table reloadData];
@@ -1134,7 +506,7 @@
     [table reloadData];
 }
 
-# pragma mark PieView delegate methods
+# pragma mark PieView callback methods
 
 - (void)pieButtonPressed:(PieButton *)button
 {
@@ -1142,7 +514,7 @@
     [self update];
 }
 
-#pragma mark TextTableCell delegate methods
+#pragma mark TextTableCell callback methods
 
 - (void)onCommandChanged:(NSString *)text
 {
@@ -1166,14 +538,595 @@
 
 @end
 
-//_______________________________________________________________________________
-//_______________________________________________________________________________
+//______________________________________________________________________________
+//______________________________________________________________________________
+
+@interface FontChooser : UIView
+{
+    UIPickerView *fontPicker;
+    UITable *pickerTable;
+
+    NSMutableArray *fontNames;
+
+    id delegate;
+
+}
+
+@property(nonatomic, assign) id delegate;
+
+- (void)createFontList;
+- (void)selectFont:(NSString *)font;
+- (int)rowForFont:(NSString *)fontName;
+
+@end
+
+//______________________________________________________________________________
+
+@implementation FontChooser
+
+@synthesize delegate;
+
+- (id)initWithFrame:(struct CGRect)rect
+{
+    self = [super initWithFrame:rect];
+    if (self) {
+        [self createFontList];
+        fontPicker = [[UIPickerView alloc] initWithFrame:[self bounds]];
+        [fontPicker setDelegate:self];
+        [self addSubview:fontPicker];
+    }
+
+    return self;
+}
+
+- (void)dealloc
+{
+    [fontPicker setDelegate:nil];
+    [fontPicker release];
+    [fontNames release];
+
+    [super dealloc];
+}
+
+#pragma mark Other
+
+- (void)createFontList
+{
+    fontNames = [[NSMutableArray alloc] init];
+    NSArray *familyNames = [UIFont familyNames];
+    for (NSArray *name in familyNames)
+        [fontNames addObjectsFromArray:[UIFont fontNamesForFamilyName:name]];
+    [fontNames sortUsingSelector:@selector(compare:)];
+}
+
+- (void)selectFont:(NSString *)fontName
+{
+    int row = [self rowForFont:fontName];
+    [fontPicker selectRow:row inColumn:0 animated:NO];
+    [[fontPicker selectedTableCellForColumn:0] setChecked:YES];
+}
+
+#pragma mark UIPickerView delegate methods
+
+- (int)numberOfComponentsInPickerView:(UIPickerView *)picker
+{
+    return 1;
+}
+
+- (int)pickerView:(UIPickerView *)picker numberOfRowsInComponent:(int)col
+{
+    return [fontNames count];
+}
+
+- (int)rowForFont:(NSString *)fontName
+{
+    int count = [fontNames count];
+    for (int i = 0; i < count; i++)
+        if ([[fontNames objectAtIndex:i] isEqualToString:fontName])
+            return i;
+    return 0;
+}
+
+#pragma mark UIPickerView delegate methods
+
+- (float)pickerView:(UIPickerView *)picker rowHeightForComponent:(int)component
+{
+    return 40.0f;
+}
+
+- (UIPickerTableCell *)pickerView:(UIPickerView *)picker tableCellForRow:(int)row inColumn:(int)col
+{
+    UIPickerTableCell *cell = [[UIPickerTableCell alloc] init];
+    NSString *fontName = [fontNames objectAtIndex:row];
+    [cell setTitle:fontName];
+    [[cell titleTextLabel] setFont:[UIFont fontWithName:fontName size:22.0f]];
+    return cell;
+}
+
+- (void)pickerView:(UIPickerView *)picker didSelectRow:(int)row inComponent:(int)component
+{
+    if ([delegate respondsToSelector:@selector(setFont:)])
+        [delegate performSelector:@selector(setFont:)
+                       withObject:[fontNames objectAtIndex:row]];
+}
+
+@end
+
+//______________________________________________________________________________
+//______________________________________________________________________________
+
+@interface FontPage : UIViewController
+{
+    UIPreferencesTable *table;
+    PreferencesDataSource *prefSource;
+
+    FontChooser *fontChooser;
+    UIOldSliderControl *sizeSlider;
+    UIOldSliderControl *widthSlider;
+
+    @private
+        int terminalIndex_;
+        TerminalConfig *config_;
+}
+
+- (FontChooser *)fontChooser;
+- (void)selectFont:(NSString *)font size:(int)size width:(float)width;
+- (void)sizeSelected:(UIOldSliderControl *)control;
+- (void)widthSelected:(UIOldSliderControl *)control;
+
+- (void)setFont:(NSString *)font;
+- (void)setFontSize:(int)size;
+- (void)setFontWidth:(float)width;
+
+@end
+
+//______________________________________________________________________________
+
+@implementation FontPage
+
+- (id)init
+{
+    self = [super initWithNibName:nil bundle:nil];
+    if (self) {
+        [self setTitle:@"Font"];
+        // For convenience, store the index and a pointer to the configuration
+        // for the selected terminal
+        terminalIndex_ =
+            [(PreferencesController *)[self navigationController] terminalIndex];
+        config_ = [[[Settings sharedInstance] terminalConfigs]
+            objectAtIndex:terminalIndex_];
+
+    }
+    return self;
+}
+
+- (void)loadView
+{
+    prefSource = [[PreferencesDataSource alloc] init];
+    PreferencesGroup *group;
+
+    // -------------------------------------------------- empty space for picker
+
+    group = [PreferencesGroup groupWithTitle:nil icon:nil];
+    group.titleHeight = 220;
+    [prefSource addGroup:group];
+
+    // ------------------------------------------------------------- font picker
+
+#if 0
+    CGSize screenSize = [UIHardware mainScreenSize];
+    CGRect chooserRect = CGRectMake(0, 0, screenSize.width, 210);
+#else
+    CGRect chooserRect = [[UIScreen mainScreen] bounds];
+    chooserRect.size.height = 210;
+#endif
+    fontChooser = [[FontChooser alloc] initWithFrame:chooserRect];
+    [fontChooser setDelegate:self];
+
+    // -------------------------------------------------- size and width sliders
+
+    UIPreferencesControlTableCell *cell;
+    group = [PreferencesGroup groupWithTitle:nil icon:nil];
+    cell = [group addIntValueSlider:@"Size" range:NSMakeRange(7, 13) target:self action:@selector(sizeSelected:)];
+    sizeSlider = [cell control];
+    cell = [group addFloatValueSlider:@"Width" minValue:0.5f maxValue:1.0f target:self action:@selector(widthSelected:)];
+    widthSlider = [cell control];
+    [prefSource addGroup:group];
+
+    // -------------------------------------------------------- the table itself
+
+    table = [[UIPreferencesTable alloc]
+        initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+    [table addSubview:fontChooser];
+    [table setDataSource:prefSource];
+    [table reloadData];
+    [self setView:table];
+}
+
+- (void)dealloc
+{
+    [table setDataSource:nil];
+    [table setDelegate:nil];
+    [table release];
+    [prefSource release];
+
+    [super dealloc];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self selectFont:[config_ font]
+                size:[config_ fontSize] width:[config_ fontWidth]];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    MobileTerminal *app = [MobileTerminal application];
+    if (terminalIndex_ < [[app textviews] count])
+        [[[app textviews] objectAtIndex:terminalIndex_] resetFont];
+}
+
+#pragma mark Other
+
+- (void)selectFont:(NSString *)font size:(int)size width:(float)width
+{
+    [fontChooser selectFont:font];
+    [sizeSlider setValue:(float)size];
+    [widthSlider setValue:width];
+}
+
+- (void)sizeSelected:(UIOldSliderControl *)control
+{
+    [control setValue:floor([control value])];
+    [self setFontSize:(int)[control value]];
+}
+
+- (void)widthSelected:(UIOldSliderControl *)control
+{
+    [self setFontWidth:[control value]];
+}
+
+- (FontChooser *)fontChooser { return fontChooser; };
+
+#pragma mark FontChooser delegate methods
+
+- (void)setFont:(NSString *)font
+{
+    [config_ setFont:font];
+}
+
+#pragma mark Size/width slider methods
+
+- (void)setFontSize:(int)size
+{
+    [config_ setFontSize:size];
+}
+
+- (void)setFontWidth:(float)width
+{
+    [config_ setFontWidth:width];
+}
+
+@end
+
+//______________________________________________________________________________
+//______________________________________________________________________________
+
+@interface ColorPage : UIViewController
+{
+    UIPreferencesTable *table;
+    PreferencesDataSource *prefSource;
+
+    ColorTableCell *colorField;
+    UIOldSliderControl *redSlider;
+    UIOldSliderControl *greenSlider;
+    UIOldSliderControl *blueSlider;
+    UIOldSliderControl *alphaSlider;
+
+    UIColor *color;
+    id delegate;
+}
+
+@property(nonatomic, retain) UIColor *color;
+
+- (id)initWithColor:(UIColor *)color_ delegate:(id)delegate_ title:(NSString *)title;
+- (void)update;
+
+@end
+
+//______________________________________________________________________________
+
+@implementation ColorPage
+
+@synthesize color;
+
+- (id)initWithColor:(UIColor *)color_ delegate:(id)delegate_ title:(NSString *)title
+{
+    self = [super initWithNibName:nil bundle:nil];
+    if (self) {
+        [self setTitle:title];
+        color = [color_ retain];
+        delegate = delegate_;
+    }
+    return self;
+}
+
+- (void)loadView
+{
+    prefSource = [[PreferencesDataSource alloc] init];
+    PreferencesGroup *group;
+
+    // ------------------------------------------------------------- color field
+
+    group = [PreferencesGroup groupWithTitle:@"Color" icon:nil];
+    colorField = [group addColorField];
+    [prefSource addGroup:group];
+
+    // ------------------------------------------------------------- rgb sliders
+
+    group = [PreferencesGroup groupWithTitle:@"Values" icon:nil];
+    redSlider = [[group addFloatValueSlider:@"Red" minValue:0 maxValue:1 target:self action:@selector(sliderChanged:)] control];
+    greenSlider = [[group addFloatValueSlider:@"Green" minValue:0 maxValue:1 target:self action:@selector(sliderChanged:)] control];
+    blueSlider = [[group addFloatValueSlider:@"Blue" minValue:0 maxValue:1 target:self action:@selector(sliderChanged:)] control];
+    [prefSource addGroup:group];
+
+    // ------------------------------------------------------------ alpha slider
+
+    group = [PreferencesGroup groupWithTitle:nil icon:nil];
+    alphaSlider = [[group addFloatValueSlider:@"Alpha" minValue:0 maxValue:1 target:self action:@selector(sliderChanged:)] control];
+    [prefSource addGroup:group];
+
+    // -------------------------------------------------------- the table itself
+
+    table = [[UIPreferencesTable alloc]
+        initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+    [table setDataSource:prefSource];
+    [table reloadData];
+    [self setView:table];
+
+    // Set the initial values of the color field and sliders
+    [self update];
+}
+
+- (void)dealloc
+{
+    [color release];
+    [table setDataSource:nil];
+    [table setDelegate:nil];
+    [table release];
+    [prefSource release];
+
+    [super dealloc];
+}
+
+- (void)update
+{
+    [colorField setColor:color];
+
+    const CGFloat *rgba = CGColorGetComponents([color CGColor]);
+    [redSlider setValue:rgba[0]];
+    [greenSlider setValue:rgba[1]];
+    [blueSlider setValue:rgba[2]];
+    [alphaSlider setValue:rgba[3]];
+}
+
+#pragma mark Slider callbacks
+
+- (void)sliderChanged:(id)slider
+{
+    UIColor *c = colorWithRGBA([redSlider value], [greenSlider value], [blueSlider value], [alphaSlider value]);
+    if (color != c) {
+        [color release];
+        color = [c retain];
+
+        [colorField setColor:color];
+
+        if ([delegate respondsToSelector:@selector(colorChanged:)]) {
+            NSArray *colorArray = [NSArray arrayWithColor:color];
+            [delegate performSelector:@selector(colorChanged:) withObject:colorArray];
+        }
+    }
+}
+
+#pragma mark Properties
+
+- (void)setColor:(UIColor *)color_
+{
+    if (color != color_) {
+        [color release];
+        color = [color_ retain];
+        [self update];
+    }
+}
+
+@end
+
+//______________________________________________________________________________
+//______________________________________________________________________________
+
+@interface TerminalPrefsPage : UIViewController
+{
+    UIPreferencesTable *table;
+    PreferencesDataSource *prefSource;
+
+    UIPreferencesTextTableCell *fontButton;
+    PreferencesGroup *sizeGroup;
+    UISwitch *autosizeSwitch;
+    UITextField *argumentField;
+    UIOldSliderControl *widthSlider;
+    UIPreferencesControlTableCell *widthCell;
+
+    ColorPageButtonCell *color0;
+    ColorPageButtonCell *color1;
+    ColorPageButtonCell *color2;
+    ColorPageButtonCell *color3;
+    ColorPageButtonCell *color4;
+
+    TerminalConfig *config;
+}
+
+@end
+
+//______________________________________________________________________________
+
+@implementation TerminalPrefsPage
+
+- (id)initWithIndex:(int)index
+{
+    self = [super initWithNibName:nil bundle:nil];
+    if (self) {
+        [self setTitle:[NSString stringWithFormat:@"Terminal %d", index + 1]];
+        config = [[[Settings sharedInstance] terminalConfigs] objectAtIndex:index];
+    }
+    return self;
+}
+
+- (void)loadView
+{
+    prefSource = [[PreferencesDataSource alloc] init];
+    PreferencesGroup *group;
+
+    // ------------------------------------------------------------- font button
+
+    group = [PreferencesGroup groupWithTitle:nil icon:nil];
+    fontButton = [group addPageButton:@"Font"];
+    [prefSource addGroup:group];
+
+    // -------------------------------------------------------------- line width
+
+    sizeGroup = [PreferencesGroup groupWithTitle:@"Line Width" icon:nil];
+    autosizeSwitch = [[sizeGroup addSwitch:@"Auto Adjust" target:self action:@selector(autosizeSwitched:)] control];
+    [autosizeSwitch setOn:[config autosize]];
+    widthCell = [sizeGroup addIntValueSlider:@"Width" range:NSMakeRange(40, 60) target:self action:@selector(widthSelected:)];
+    widthSlider = [widthCell control];
+    [widthSlider setValue:[config width]];
+    if ([config autosize])
+        [sizeGroup removeCell:widthCell];
+    else
+        [sizeGroup addCell:widthCell];
+    [prefSource addGroup:sizeGroup];
+
+    // --------------------------------------------------------------- arguments
+
+    group = [PreferencesGroup groupWithTitle:@"Arguments" icon:nil];
+    TextTableCell *argumentFieldCell = [group addTextField:nil value:nil];
+    [argumentFieldCell setTarget:self];
+    [argumentFieldCell setReturnAction:@selector(onArgumentReturn)];
+    argumentField = [argumentFieldCell textField];
+    [argumentField setPlaceholder:@"<command-line arguments>"];
+    [argumentField setText:[config args]];
+    [prefSource addGroup:group];
+
+    // ------------------------------------------------------------------ colors
+
+    group = [PreferencesGroup groupWithTitle:@"Colors" icon:nil];
+    color0 = [group addColorPageButton:@"Background" colorRef:&config.colors[0]];
+    color1 = [group addColorPageButton:@"Normal Text" colorRef:&config.colors[1]];
+    color2 = [group addColorPageButton:@"Bold Text" colorRef:&config.colors[2]];
+    color3 = [group addColorPageButton:@"Cursor Text" colorRef:&config.colors[3]];
+    color4 = [group addColorPageButton:@"Cursor Background" colorRef:&config.colors[4]];
+    [prefSource addGroup:group];
+
+    // -------------------------------------------------------- the table itself
+
+    table = [[UIPreferencesTable alloc]
+        initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+    [table setDataSource:prefSource];
+    [table setDelegate:self];
+    [table reloadData];
+    [table enableRowDeletion:YES animated:YES];
+    [self setView:table];
+}
+
+- (void)dealloc
+{
+    [table setDataSource:nil];
+    [table setDelegate:nil];
+    [table release];
+    [prefSource release];
+
+    [super dealloc];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    // Reset the table by deselecting the current selection
+    [table selectRow:-1 byExtendingSelection:NO withFade:animated];
+    [fontButton setValue:[config fontDescription]];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    // Though this keyboard is not used for input, it still shows up
+    [table setKeyboardVisible:NO animated:NO];
+}
+
+#pragma mark Size callback methods
+
+- (void)autosizeSwitched:(UISwitch *)control
+{
+    BOOL autosize = [control isOn];
+    [config setAutosize:autosize];
+    if (autosize)
+        [sizeGroup removeCell:widthCell];
+    else
+        [sizeGroup addCell:widthCell];
+    [table reloadData];
+}
+
+- (void)widthSelected:(UIOldSliderControl *)control
+{
+    [control setValue:floor([control value])];
+    [config setWidth:(int)[control value]];
+    [config setWidth:(int)[control value]];
+}
+
+#pragma mark TextTableCell callback methods
+
+- (void)onArgumentReturn
+{
+    [config setArgs:[argumentField text]];
+
+    // Manually hide the table's keyboard
+    [table setKeyboardVisible:NO animated:YES];
+}
+
+#pragma mark Delegate methods
+
+- (void)tableRowSelected:(NSNotification *)notification
+{
+    int row = [[notification object] selectedRow];
+    UIPreferencesTableCell *cell = [table cellAtRow:row column:0];
+    if (cell) {
+        UIViewController *vc = nil;
+
+        if (cell == fontButton)
+            vc = [[FontPage alloc] init];
+        else if ([cell isMemberOfClass:[ColorPageButtonCell class]]) {
+            ColorSquare *cs = [(ColorPageButtonCell *)cell colorSquare];
+            vc = [[ColorPage alloc] initWithColor:[cs color]
+                delegate:cs title:[cell title]];
+        }
+
+        if (vc) {
+            [[self navigationController] pushViewController:vc animated:YES];
+            [vc release];
+        }
+    }
+}
+
+@end
+
+//______________________________________________________________________________
+//______________________________________________________________________________
 
 @interface AboutPage : UIViewController
 {
     UIPreferencesTable *table;
 }
 @end
+
+//______________________________________________________________________________
 
 @implementation AboutPage
 
@@ -1221,9 +1174,8 @@
     [group addValueField:nil value:@"ashikase"];
     [prefSource addGroup:group];
 
-    CGSize screenSize = [UIHardware mainScreenSize];
     table = [[UIPreferencesTable alloc]
-        initWithFrame:CGRectMake(0, 0, screenSize.width, screenSize.height)];
+        initWithFrame:[[UIScreen mainScreen] applicationFrame]];
     [table setDataSource:prefSource];
     [table setDelegate:self];
     [table reloadData];
@@ -1257,8 +1209,8 @@
 
 @end
 
-//_______________________________________________________________________________
-//_______________________________________________________________________________
+//______________________________________________________________________________
+//______________________________________________________________________________
 
 @interface PreferencesPage : UIViewController
 {
@@ -1274,6 +1226,8 @@
 }
 
 @end
+
+//______________________________________________________________________________
 
 @implementation PreferencesPage
 
@@ -1339,9 +1293,8 @@
 
     // -------------------------------------------------------- the table itself
 
-    CGSize screenSize = [UIHardware mainScreenSize];
     table = [[UIPreferencesTable alloc]
-        initWithFrame:CGRectMake(0, 0, screenSize.width, screenSize.height)];
+        initWithFrame:[[UIScreen mainScreen] applicationFrame]];
     [table setDataSource:prefSource];
     [table setDelegate:self];
     [table reloadData];
@@ -1397,16 +1350,18 @@
             vc = [[MenuPrefsPage alloc] initWithMenu:nil title:nil];
         else if ([title isEqualToString:@"Gestures"])
             vc = [[GesturePrefsPage alloc] initWithSwipes:0];
+#if 0
         else if ([title isEqualToString:@"Long Swipes"])
             vc = [[GesturePrefsPage alloc]initWithSwipes:1];
         else if ([title isEqualToString:@"Two Finger Swipes"])
             vc = [[GesturePrefsPage alloc]initWithSwipes:2];
+#endif
         else if ([title isEqualToString:@"About"])
             vc = [[AboutPage alloc] init];
-        else {
-            //terminalIndex = [[title substringFromIndex:9] intValue] - 1;
-            //[[self terminalView] setTerminalIndex:terminalIndex];
-            vc = [[TerminalPrefsPage alloc] init];
+        else if (![title isEqualToString:@"Multiple Terminals"]) {
+            // Must be a Terminal cell
+            terminalIndex = [[title substringFromIndex:9] intValue] - 1;
+            vc = [[TerminalPrefsPage alloc] initWithIndex:terminalIndex];
         }
 
         if (vc) {
@@ -1418,66 +1373,41 @@
 
 @end
 
-//_______________________________________________________________________________
-//_______________________________________________________________________________
-
-#if 0
-- (void)_didFinishPoppingViewController
-{
-    UIView *topView = [[self topViewController] view];
-    if (topView == menuView) {
-        [menuView removeFromSuperview];
-        [menuView autorelease];
-        menuView = nil;
-    } else if (topView == terminalView) {
-        [terminalView removeFromSuperview];
-        [terminalView autorelease];
-        terminalView = nil;
-    } else if (topView == gestureView) {
-        [gestureView removeFromSuperview];
-        [gestureView autorelease];
-        gestureView = nil;
-    } else if (topView == longSwipeView) {
-        [longSwipeView removeFromSuperview];
-        [longSwipeView autorelease];
-        longSwipeView = nil;
-    } else if (topView == twoFingerSwipeView) {
-        [twoFingerSwipeView removeFromSuperview];
-        [twoFingerSwipeView autorelease];
-        twoFingerSwipeView = nil;
-    }
-
-    [super _didFinishPoppingViewController];
-}
-
-#endif
-
-//_______________________________________________________________________________
-//_______________________________________________________________________________
+//______________________________________________________________________________
+//______________________________________________________________________________
 
 @implementation PreferencesController
-@synthesize terminalIndex;
 
-+ (PreferencesController *)sharedInstance
-{
-    static PreferencesController *instance = nil;
-    if (instance == nil)
-        instance = [[PreferencesController alloc] init];
-    return instance;
-}
+@synthesize terminalIndex;
 
 - (id)init
 {
     self = [super init];
     if (self) {
         [[self navigationBar] setBarStyle:1];
-
-        UIViewController *prefsPage = [[PreferencesPage alloc] init];
-        [self pushViewController:prefsPage animated:NO];
-        [prefsPage release];
     }
     return self;
 }
+
+- (void)dealloc
+{
+    [prefsPage release];
+    [super dealloc];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    // TODO: Confirm that this method is only called once, on initial view;
+    //       if so, it is not necessary to store the pointer as an instance
+    //       member
+    if (prefsPage == nil) {
+        prefsPage = [[PreferencesPage alloc] init];
+        [self pushViewController:prefsPage animated:NO];
+        [super viewWillAppear:animated];
+    }
+}
+
+#pragma mark UINavigationBar delegate methods
 
 - (void)navigationBar:(id)bar buttonClicked:(int)button
 {

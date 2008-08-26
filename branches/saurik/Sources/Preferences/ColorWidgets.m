@@ -1,6 +1,7 @@
 #import "ColorWidgets.h"
 
-@implementation ColorButton
+
+@implementation ColorSquare
 
 - (id)initWithFrame:(CGRect)frame colorRef:(UIColor **)c
 {
@@ -11,6 +12,29 @@
     }
     return self;
 }
+
+- (void)drawRect:(struct CGRect)rect
+{
+    CGContextRef context = UICurrentContext();
+    CGContextSetFillColorWithColor(context, [[self color] CGColor]);
+    CGContextSetStrokeColorWithColor(context, [colorWithRGBA(0.5,0.5,0.5,1) CGColor]);
+
+    UIBezierPath *path = [UIBezierPath roundedRectBezierPath:
+        CGRectMake(2, 2, rect.size.width-4, rect.size.height-4)
+        withRoundedCorners:0xffffffff withCornerRadius:7.0f];	 
+    [path fill];
+    [path stroke];
+
+    CGContextFlush(context);  
+}
+
+- (void)colorChanged:(NSArray *)colorValues
+{
+    [self setColor:[UIColor colorWithArray:colorValues]];
+    [self setNeedsDisplay];
+}
+
+#pragma mark Properties
 
 - (UIColor *)color 
 {
@@ -25,44 +49,6 @@
     }
 }
 
-- (void)setColorRef:(UIColor **)cref
-{
-    colorRef = cref;
-    [self setNeedsDisplay];  
-}
-
-- (void)drawRect:(struct CGRect)rect
-{
-    CGContextRef context = UICurrentContext();
-    CGContextSetFillColorWithColor(context, [[self color] CGColor]);
-    CGContextSetStrokeColorWithColor(context, [colorWithRGBA(0.5,0.5,0.5,1) CGColor]);
-
-    UIBezierPath *path = [UIBezierPath roundedRectBezierPath:CGRectMake(2, 2, rect.size.width-4, rect.size.height-4)
-                                           withRoundedCorners:0xffffffff
-                                             withCornerRadius:7.0f];	 
-
-    [path fill];
-    [path stroke];
-
-    CGContextFlush(context);  
-}
-
-- (void)colorChanged:(NSArray *)colorValues
-{
-    [self setColor:[UIColor colorWithArray:colorValues]];
-    [self setNeedsDisplay];
-}
-
-- (void)view:(UIView *)view handleTapWithCount:(int)count event:(id)event 
-{
-#if 0 // FIXME
-    PreferencesController *prefs = [PreferencesController sharedInstance];
-    [[prefs colorView] setColor:[self color]];
-    [[prefs colorView] setDelegate:self];
-    [prefs pushViewControllerWithView:[prefs colorView] navigationTitle:[[self superview] title]];
-#endif
-}
-
 @end
 
 //_______________________________________________________________________________
@@ -70,21 +56,30 @@
 
 @implementation ColorTableCell
 
+@synthesize color;
+
 - (void)drawRect:(CGRect)rect
 {
     CGContextRef context = UICurrentContext();
     CGContextSetFillColorWithColor(context, [color CGColor]);
     CGContextSetStrokeColorWithColor(context, [colorWithRGBA(0.0,0.0,0.0,0.8) CGColor]);
 
-    UIBezierPath *path = [UIBezierPath roundedRectBezierPath:CGRectMake(10, 2, rect.size.width-20, rect.size.height-4)
-                                           withRoundedCorners:0xffffffff
-                                             withCornerRadius:7.0f];	 
-
+    UIBezierPath *path = [UIBezierPath roundedRectBezierPath:
+        CGRectMake(10, 2, rect.size.width - 20, rect.size.height - 4)
+        withRoundedCorners:0xffffffff withCornerRadius:7.0f];	 
     [path fill];
     [path stroke];
 
     CGContextFlush(context);  
 }
+
+- (void)dealloc
+{
+    [color release];
+    [super dealloc];
+}
+
+#pragma mark Properties
 
 - (void)setColor:(UIColor *)color_
 {
@@ -93,12 +88,6 @@
         color = [color_ retain];
         [self setNeedsDisplay];
     }
-}
-
-- (void)dealloc
-{
-    [color release];
-    [super dealloc];
 }
 
 @end

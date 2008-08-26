@@ -7,7 +7,6 @@
 #import <UIKit/UISwitch.h>
 
 #import "Color.h"
-#import "ColorWidgets.h"
 
 
 @implementation TextTableCell
@@ -23,8 +22,35 @@
 
 @end
 
-//_______________________________________________________________________________
-//_______________________________________________________________________________
+//______________________________________________________________________________
+//______________________________________________________________________________
+
+
+@implementation ColorPageButtonCell
+
+@synthesize colorSquare;
+
+- (id)initWithFrame:(CGRect)frame colorRef:(UIColor **)colorRef_
+{
+    self = [super initWithFrame:frame];
+    if (self && colorRef_) {
+        colorSquare = [[ColorSquare alloc] initWithFrame:
+            CGRectMake(240,3,39,39) colorRef:colorRef_];
+        [self addSubview:colorSquare];
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    [colorSquare release];
+    [super dealloc];
+}
+
+@end
+
+//______________________________________________________________________________
+//______________________________________________________________________________
 
 @implementation PreferencesGroup
 
@@ -80,7 +106,8 @@
 
 - (id)addSwitch:(NSString *)label on:(BOOL)on target:(id)target action:(SEL)action
 {
-    UIPreferencesControlTableCell *cell = [[UIPreferencesControlTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
+    UIPreferencesControlTableCell *cell = [[UIPreferencesControlTableCell alloc]
+        initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
     [cell setTitle:label];
     [cell setShowSelection:NO];
     UISwitch *sw = [[UISwitch alloc] initWithFrame:CGRectMake(206.0f, 9.0f, 96.0f, 48.0f)];
@@ -95,7 +122,8 @@
 
 static UIPreferencesControlTableCell * _addValueSlider(NSMutableArray *cells, NSString * label, id target, SEL action)
 {
-    UIPreferencesControlTableCell *cell = [[UIPreferencesControlTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
+    UIPreferencesControlTableCell *cell = [[UIPreferencesControlTableCell alloc]
+        initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
     [cell setTitle:label];
     [cell setShowSelection:NO];
     UIOldSliderControl *sc = [[UIOldSliderControl alloc] initWithFrame:CGRectMake(100.0f, 1.0f, 200.0f, 40.0f)];
@@ -121,7 +149,7 @@ static UIPreferencesControlTableCell * _addValueSlider(NSMutableArray *cells, NS
 
 - (id)addFloatValueSlider:(NSString *)label minValue:(float)minValue maxValue:(float)maxValue target:(id)target action:(SEL)action
 {
-    UIPreferencesControlTableCell *cell = [[UIPreferencesControlTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
+    UIPreferencesControlTableCell *cell = _addValueSlider(cells, label, target, action);
     UIOldSliderControl *sc = [cell control];
     [sc setAllowsTickMarkValuesOnly:NO];
     [sc setMinValue:minValue];
@@ -133,10 +161,11 @@ static UIPreferencesControlTableCell * _addValueSlider(NSMutableArray *cells, NS
 
 #pragma mark Buttons
 
-static UIPreferencesTextTableCell *_addPageButton(NSMutableArray *cells, NSString *label)
+static UIPreferencesTextTableCell *_addPageButton(NSMutableArray *cells,
+        UIPreferencesTextTableCell *cell, NSString *label)
 {
-    UIPreferencesTextTableCell *cell = [[UIPreferencesTextTableCell alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
     [cell setTitle:label];
+    [cell setShowSelection:YES];
     [cell setShowDisclosure:YES];
     [cell setDisclosureClickable:NO];
     [cell setDisclosureStyle: 2];
@@ -147,18 +176,18 @@ static UIPreferencesTextTableCell *_addPageButton(NSMutableArray *cells, NSStrin
 
 - (id)addPageButton:(NSString *)label
 {
-    UIPreferencesTextTableCell *cell = _addPageButton(cells, label);
-    [cell setShowSelection:YES];
+    UIPreferencesTextTableCell *cell = [[UIPreferencesTextTableCell alloc]
+        initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f)];
+    _addPageButton(cells, cell, label);
     return cell;
 }
 
-- (id)addColorPageButton:(NSString *)label colorRef:(UIColor **)color
+- (id)addColorPageButton:(NSString *)label colorRef:(UIColor **)colorRef
 {
-    UIPreferencesTextTableCell *cell = _addPageButton(cells, label);
-    ColorButton *colorButton = [[ColorButton alloc] initWithFrame:CGRectMake(240,3,39,39) colorRef:color];
-    [cell addSubview:colorButton];
-    //FIXME: eh, return cell perhaps?
-    return colorButton;
+    ColorPageButtonCell *cell = [[ColorPageButtonCell alloc]
+        initWithFrame:CGRectMake(0.0f, 0.0f, 300.0f, 48.0f) colorRef:colorRef];
+    _addPageButton(cells, cell, label);
+    return cell;
 }
 
 #pragma mark Fields
