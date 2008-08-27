@@ -34,14 +34,29 @@ UIColor *colorWithRGBA(float red, float green, float blue, float alpha)
 
 + (NSArray *)arrayWithColor:(UIColor *)color
 {
-    const CGFloat * rgba = CGColorGetComponents([color CGColor]);
+    size_t num = CGColorGetNumberOfComponents([color CGColor]);
+    const CGFloat * vals = CGColorGetComponents([color CGColor]);
 
-    return [NSArray arrayWithObjects:
-           [NSNumber numberWithFloat:rgba[0]],
-           [NSNumber numberWithFloat:rgba[1]],
-           [NSNumber numberWithFloat:rgba[2]],
-           [NSNumber numberWithFloat:rgba[3]],
+    NSArray *colorArray = nil;
+    if (num == 2) {
+        // Grayscale (white and alpha components)
+        colorArray = [NSArray arrayWithObjects:
+           [NSNumber numberWithFloat:vals[0]],
+           [NSNumber numberWithFloat:vals[0]],
+           [NSNumber numberWithFloat:vals[0]],
+           [NSNumber numberWithFloat:vals[1]],
            nil];
+    } else {
+        // Assume RGBA (as we don not use CMYK) 
+        colorArray = [NSArray arrayWithObjects:
+           [NSNumber numberWithFloat:vals[0]],
+           [NSNumber numberWithFloat:vals[1]],
+           [NSNumber numberWithFloat:vals[2]],
+           [NSNumber numberWithFloat:vals[3]],
+           nil];
+    }
+
+    return colorArray;
 }
 
 @end
