@@ -15,7 +15,7 @@
 
 - (void)drawRect:(struct CGRect)rect
 {
-    CGContextRef context = UICurrentContext();
+    CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetFillColorWithColor(context, [[self color] CGColor]);
     CGContextSetStrokeColorWithColor(context, [colorWithRGBA(0.5,0.5,0.5,1) CGColor]);
 
@@ -60,7 +60,7 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    CGContextRef context = UICurrentContext();
+    CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetFillColorWithColor(context, [color CGColor]);
     CGContextSetStrokeColorWithColor(context, [colorWithRGBA(0.0,0.0,0.0,0.8) CGColor]);
 

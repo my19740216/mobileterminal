@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     }
 
     UIApplicationUseLegacyEvents(1);
-    int ret = UIApplicationMain(argc, argv, [MobileTerminal class]);
+    int ret = UIApplicationMain(argc, argv, @"MobileTerminal", @"MobileTerminal");
 
     [pool release];
     return ret;

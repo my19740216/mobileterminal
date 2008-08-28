@@ -74,7 +74,7 @@
 - (void)drawBackgroundInRect:(struct CGRect)fp8 withFade:(float)fp24
 {
     [super drawBackgroundInRect: fp8 withFade: fp24];
-    CGContextRef context = UICurrentContext();
+    CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSaveGState(context);
     CGContextAddPath(context, [_fillPath _pathRef]);
     CGContextClip(context);
@@ -355,7 +355,7 @@
 - (void)drawBackgroundInRect:(struct CGRect)fp8 withFade:(float)fp24
 {
     [super drawBackgroundInRect: fp8 withFade: fp24];
-    CGContextRef context = UICurrentContext();
+    CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSaveGState(context);
     CGContextAddPath(context, [_fillPath _pathRef]);
     CGContextClip(context);

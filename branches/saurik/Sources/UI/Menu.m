@@ -517,7 +517,7 @@
 
 - (void)drawRect:(struct CGRect)rect
 {
-    CGContextRef context = UICurrentContext();
+    CGContextRef context = UIGraphicsGetCurrentContext();
     float w = rect.size.width;
     float h = rect.size.height;
     CGContextBeginPath (context);

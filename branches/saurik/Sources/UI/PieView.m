@@ -62,7 +62,7 @@ extern CGFontRef CGFontCreateWithFontName(CFStringRef name);
 
 - (void)drawTitleAtPoint:(CGPoint)point width:(float)width
 {
-    CGContextRef context = UICurrentContext();
+    CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSaveGState(context);
 
     float height = 14.0f;

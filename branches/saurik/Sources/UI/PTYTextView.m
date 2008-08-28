@@ -292,7 +292,7 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
 {
     //if (DEBUGLOG) log(@"row %d", row);
 
-    CGContextRef context = UICurrentContext();
+    CGContextRef context = UIGraphicsGetCurrentContext();
 
     [dataSource acquireLock];
 
