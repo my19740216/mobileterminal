@@ -1,5 +1,7 @@
 #summary How to build and release MobileTerminal
-#labels Featured
+#labels Featured,Deprecated
+
+*STATUS: This page has been marked deprecated since it is very likely to be out of date*
 
 = Introduction =
 
