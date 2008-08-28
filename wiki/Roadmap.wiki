@@ -1,5 +1,5 @@
 #summary Roadmap
-#labels Featured,Phase-Design
+#labels Phase-Design
 
 = Introduction =
 
