@@ -3,7 +3,8 @@
 // Terminal
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+#import <CoreGraphics/CoreGraphics.h>
+#import <UIKit/UIControl.h>
 
 struct GSPathPoint {
     char unk0;

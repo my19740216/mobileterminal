@@ -2,7 +2,8 @@
 // Menu.h
 // Terminal
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import <UIKit/UIView.h>
 
 #import "Constants.h"
 #import "Tools.h"
@@ -15,20 +16,21 @@
     Menu *submenu;
     NSString *title;
     NSString *command;
+
+    id delegate;
 }
+
+@property(nonatomic, readonly) Menu *menu;
+@property(nonatomic, retain) Menu *submenu;
+@property(nonatomic, copy) NSString *title;
+@property(nonatomic, copy) NSString *command;
+@property(nonatomic, copy) NSString *commandString;
+@property(nonatomic, assign) id delegate;
 
 - (id)initWithMenu:(Menu *)menu;
 
-- (int)index;
 - (BOOL)hasSubmenu;
-- (Menu *)menu;
-- (Menu *)submenu;
-- (void)setSubmenu:(Menu *)menu;
-- (NSString *)title;
-- (void)setTitle:(NSString *)title;
-- (NSString *)command;
-- (void)setCommand:(NSString *)command;
-
+- (int)index;
 - (NSDictionary *)getDict;
 
 @end
@@ -42,15 +44,15 @@
     NSString *dot;
 }
 
+@property(nonatomic, readonly) NSArray *items;
+
++ (Menu *)menu;
 + (Menu *)menuWithArray:(NSArray *)array;
-+ (Menu *)menuWithItem:(MenuItem *)item;
-+ (Menu *)create;
 
 - (id)init;
+- (NSArray *)getArray;
 - (int)indexOfItem:(MenuItem *)item;
 - (MenuItem *)itemAtIndex:(int)index;
-- (NSArray *)items;
-- (NSArray *)getArray;
 - (NSString *)dotStringWithCommand:(NSString *)command;
 
 @end
@@ -63,18 +65,12 @@
     MenuItem *item;
 }
 
-- (id)initWithFrame:(CGRect)frame;
+@property(nonatomic, retain) MenuItem *item;
 
-- (NSString *)command;
-- (NSString *)commandString;
-- (MenuItem *)item;
-- (void)setItem:(MenuItem *)item;
-- (void)setCommandString:(NSString *)commandString;
-- (void)setTitle:(NSString *)title;
 - (BOOL)isMenuButton;
 - (BOOL)isNavigationButton;
-- (Menu *)submenu;
 - (void)update;
+- (void)menuItemChanged:(MenuItem *)menuItem;
 
 @end
 
@@ -83,7 +79,6 @@
 
 @interface MenuView : UIView
 {
-    id delegate;
     MenuButton *activeButton;
     NSMutableArray *history;
 
@@ -93,32 +88,33 @@
     BOOL tapMode;
     BOOL visible;
     BOOL showsEmptyButtons;
+
+    id delegate;
 }
 
-@property BOOL visible;
+@property(nonatomic) BOOL tapMode;
+@property(nonatomic) BOOL visible;
+@property(nonatomic) BOOL showsEmptyButtons;
+@property(nonatomic, assign) id delegate;
 
 + (MenuView *)sharedInstance;
 
 - (void)loadMenu;
-- (void)popMenu;
-- (void)pushMenu:(Menu *)menu;
 - (void)loadMenu:(Menu *)menu;
-- (void)showAtPoint:(CGPoint)p;
-- (void)showAtPoint:(CGPoint)p delay:(float)delay;
-- (void)fadeInAtPoint:(CGPoint)p;
-- (void)fadeIn;
-- (void)hide;
-- (void)stopTimer;
-- (void)setTapMode:(BOOL)tapMode;
-- (void)hideSlow:(BOOL)slow;
-- (id)delegate;
-- (void)setDelegate:(id)delegate;
-- (void)setShowsEmptyButtons:(BOOL)aBool;
+- (void)pushMenu:(Menu *)menu;
+- (void)popMenu;
+- (MenuButton *)buttonAtIndex:(int)index;
+- (void)selectButton:(MenuButton *)button;
+- (void)deselectButton:(MenuButton *)button;
 - (void)handleTrackingAt:(CGPoint)point;
 - (NSString *)handleTrackingEnd;
-- (MenuButton *)buttonAtIndex:(int)index;
-- (void)deselectButton:(MenuButton *)button;
-- (void)selectButton:(MenuButton *)button;
+- (void)stopTimer;
+- (void)showAtPoint:(CGPoint)p;
+- (void)showAtPoint:(CGPoint)p delay:(float)delay;
+- (void)fadeIn;
+- (void)fadeInAtPoint:(CGPoint)p;
+- (void)hide;
+- (void)hideSlow:(BOOL)slow;
 
 @end
 

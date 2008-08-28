@@ -229,9 +229,9 @@
     BOOL isMenu = [editButton isMenuButton];
     BOOL isNavi = [editButton isNavigationButton];
 
-    [titleField setText:[editButton title]];
+    [titleField setText:[editButton.item title]];
     [commandFieldCell setUserInteractionEnabled:!isMenu];
-    [[commandFieldCell textField] setText:[editButton commandString]];
+    [[commandFieldCell textField] setText:[editButton.item commandString]];
     [submenuSwitch setOn:isMenu];
     [submenuSwitchCell setShowDisclosure:isNavi animated:YES];
 
@@ -265,7 +265,7 @@
 
 - (void)onTextChanged:(NSString *)text
 {
-    [editButton setTitle:text];
+    [editButton.item setTitle:text];
 }
 
 - (void)onTextReturn
@@ -283,9 +283,9 @@
     [table setKeyboardVisible:NO animated:YES];
 
     NSString *text = [[commandFieldCell textField] text];
-    [editButton setCommandString:[NSString stringWithString:text]];
-    if ([editButton title] == nil || [[editButton title] length] == 0) {
-        [editButton setTitle:text];
+    [editButton.item setCommandString:[NSString stringWithString:text]];
+    if ([editButton.item title] == nil || [[editButton.item title] length] == 0) {
+        [editButton.item setTitle:text];
         [titleField setText:text];
     }
 
@@ -296,18 +296,15 @@
 
 - (void)submenuSwitched:(UISwitch *)control
 {
-    if ([control isOn])
-        [Menu menuWithItem:[editButton item]];
-    else
-        [[editButton item] setSubmenu:nil];
-
+    [editButton.item setSubmenu:([control isOn] ? [Menu menu] : nil)];
+    // FIXME: shouldn't this update be in the setSubmenu method?
     [editButton update];
     [self update];
 }
 
 - (void)openSubmenuAction
 {
-    MenuItem *item = [editButton item];
+    MenuItem *item = editButton.item;
     MenuPrefsPage *newMenuPrefs = [[MenuPrefsPage alloc]
         initWithMenu:[item submenu] title:[item title]];
     [[self navigationController] pushViewController:newMenuPrefs animated:YES];

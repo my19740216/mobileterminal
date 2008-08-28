@@ -132,7 +132,8 @@
     // menu buttons
 
     NSArray *menuArray = [NSArray arrayWithContentsOfFile:@"/Applications/Terminal.app/menu.plist"];
-    if (menuArray == nil) menuArray = [[Menu create] getArray];
+    if (menuArray == nil)
+        menuArray = [[Menu menu] getArray];
     [d setObject:menuArray forKey:@"menu"];
 
     // swipe gestures
