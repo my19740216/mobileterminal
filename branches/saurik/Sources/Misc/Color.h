@@ -12,6 +12,7 @@ UIColor *colorWithRGBA(float red, float green, float blue, float alpha);
 @interface UIColor(ArraySupport)
 
 + (UIColor *)colorWithArray:(NSArray *)array;
+- (id)initWithArray:(NSArray *)array;
 
 @end
 
@@ -21,6 +22,7 @@ UIColor *colorWithRGBA(float red, float green, float blue, float alpha);
 @interface NSArray(ColorSupport)
 
 + (NSArray *)arrayWithColor:(UIColor *)color;
+- (id)initWithColor:(UIColor *)color;
 
 @end
 

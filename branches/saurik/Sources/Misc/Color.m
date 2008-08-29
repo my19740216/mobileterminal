@@ -19,10 +19,15 @@ UIColor *colorWithRGBA(float red, float green, float blue, float alpha)
 
 + (UIColor *)colorWithArray:(NSArray *)array
 {
-    return [UIColor colorWithRed:MIN(MAX(0, [[array objectAtIndex:0] floatValue]), 1)
-                           green:MIN(MAX(0, [[array objectAtIndex:1] floatValue]), 1)
-                            blue:MIN(MAX(0, [[array objectAtIndex:2] floatValue]), 1)
-                           alpha:MIN(MAX(0, [[array objectAtIndex:3] floatValue]), 1)];
+    return [[[UIColor alloc] initWithArray:array] autorelease];
+}
+
+- (id)initWithArray:(NSArray *)array
+{
+    return [self initWithRed:MIN(MAX(0, [[array objectAtIndex:0] floatValue]), 1)
+                       green:MIN(MAX(0, [[array objectAtIndex:1] floatValue]), 1)
+                        blue:MIN(MAX(0, [[array objectAtIndex:2] floatValue]), 1)
+                       alpha:MIN(MAX(0, [[array objectAtIndex:3] floatValue]), 1)];
 }
 
 @end
@@ -34,13 +39,17 @@ UIColor *colorWithRGBA(float red, float green, float blue, float alpha)
 
 + (NSArray *)arrayWithColor:(UIColor *)color
 {
+    return [[[NSArray alloc] initWithColor:color] autorelease];
+}
+
+- (id)initWithColor:(UIColor *)color
+{
     size_t num = CGColorGetNumberOfComponents([color CGColor]);
     const CGFloat * vals = CGColorGetComponents([color CGColor]);
 
-    NSArray *colorArray = nil;
     if (num == 2) {
         // Grayscale (white and alpha components)
-        colorArray = [NSArray arrayWithObjects:
+        self = [self initWithObjects:
            [NSNumber numberWithFloat:vals[0]],
            [NSNumber numberWithFloat:vals[0]],
            [NSNumber numberWithFloat:vals[0]],
@@ -48,7 +57,7 @@ UIColor *colorWithRGBA(float red, float green, float blue, float alpha)
            nil];
     } else {
         // Assume RGBA (as we don not use CMYK) 
-        colorArray = [NSArray arrayWithObjects:
+        self = [self initWithObjects:
            [NSNumber numberWithFloat:vals[0]],
            [NSNumber numberWithFloat:vals[1]],
            [NSNumber numberWithFloat:vals[2]],
@@ -56,7 +65,7 @@ UIColor *colorWithRGBA(float red, float green, float blue, float alpha)
            nil];
     }
 
-    return colorArray;
+    return self;
 }
 
 @end

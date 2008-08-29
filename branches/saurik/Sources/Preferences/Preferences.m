@@ -918,10 +918,9 @@
 
         [colorField setColor:color];
 
-        if ([delegate respondsToSelector:@selector(colorChanged:)]) {
-            NSArray *colorArray = [NSArray arrayWithColor:color];
-            [delegate performSelector:@selector(colorChanged:) withObject:colorArray];
-        }
+        if ([delegate respondsToSelector:@selector(colorChanged:)])
+            [delegate performSelector:@selector(colorChanged:)
+                withObject:[NSArray arrayWithColor:color]];
     }
 }
 

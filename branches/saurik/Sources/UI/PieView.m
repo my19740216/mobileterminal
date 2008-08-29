@@ -3,6 +3,9 @@
 #import <CoreGraphics/CGColor.h>
 #import <UIKit/UIControl-UIControlPrivate.h>
 #import <UIKit/UIImage-UIImageDeprecated.h>
+#import <UIKit/UIView-Geometry.h>
+#import <UIKit/UIView-Hierarchy.h>
+#import <UIKit/UIView-Rendering.h>
 
 #import "Color.h"
 #import "Constants.h"
@@ -13,6 +16,7 @@
 
 bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
 extern CGFontRef CGContextGetFont(CGContextRef);
+extern CGContextRef UIGraphicsGetCurrentContext();
 
 @implementation PieButton
 

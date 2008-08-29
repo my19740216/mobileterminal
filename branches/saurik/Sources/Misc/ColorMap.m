@@ -5,6 +5,7 @@
 #import "Color.h"
 #import "VT100Terminal.h"
 
+
 static UIColor *initWithRGB(float red, float green, float blue)
 {
     return [[UIColor alloc] initWithRed:red green:green blue:blue alpha:1];
@@ -110,10 +111,10 @@ static UIColor *initWithRGB(float red, float green, float blue)
         } else if (index < 232) {
             index -= 16;
             float components[] = {
-                (index/36) ? ((index / 36) * 40 + 55) / 256.0 : 0 ,
-        (index%36)/6 ? (((index % 36) / 6) * 40 + 55 ) / 256.0:0 ,
-                   (index%6) ? ((index % 6) * 40 + 55) / 256.0:0,
-                   1.0
+                (index / 36) ? ((index / 36) * 40 + 55) / 256.0 : 0,
+                (index % 36) / 6 ? (((index % 36) / 6) * 40 + 55 ) / 256.0 : 0,
+                (index % 6) ? ((index % 6) * 40 + 55) / 256.0 : 0,
+                1.0
             };
             color = colorWithRGBA(components[0], components[1], components[2], 1);
         } else {

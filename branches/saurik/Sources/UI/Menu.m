@@ -12,8 +12,6 @@
 #import "MobileTerminal.h"
 #import "Settings.h"
 
-#import "Debug.h"
-
 #define NUM_OF_ROWS 4
 #define NUM_OF_COLS 3
 #define NUM_OF_BUTTONS (NUM_OF_ROWS * NUM_OF_COLS)

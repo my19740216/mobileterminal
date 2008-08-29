@@ -3,7 +3,6 @@
 // Terminal
 
 #import <Foundation/NSString.h>
-#import <UIKit/UIKit.h>
 
 #import "svnversion.h"
 
@@ -45,6 +44,7 @@ enum {
 #define MENU_CMD @"cmd"
 #define MENU_TITLE @"title"
 #define MENU_SUBMENU @"submenu"
+
 
 struct StrCtrlMap
 {

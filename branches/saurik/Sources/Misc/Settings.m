@@ -11,17 +11,15 @@
 #import "Menu.h"
 #import "MobileTerminal.h"
 
-//_______________________________________________________________________________
-//_______________________________________________________________________________
 
 @implementation TerminalConfig
 
-@synthesize width;
 @synthesize autosize;
+@synthesize width;
+@synthesize font;
 @synthesize fontSize;
 @synthesize fontWidth;
-@dynamic font;
-@dynamic args;
+@synthesize args;
 @dynamic colors;
 
 - (id)init
@@ -41,41 +39,23 @@
 - (void)dealloc
 {
     for (int c = 0; c < NUM_TERMINAL_COLORS; ++c)
-        [_colors[c] release];
+        [colors_[c] release];
 
     [super dealloc];
 }
+
+#pragma mark Other
 
 - (NSString *)fontDescription
 {
     return [NSString stringWithFormat:@"%@ %d", font, fontSize];
 }
 
-- (NSString *)font
-{
-    return font;
-}
-
-- (void)setFont:(NSString *)str
-{
-    if (font != str) {
-        [font release];
-        font = [str copy];
-    }
-}
-
-- (NSString *)args { return args; }
-- (void)setArgs:(NSString *)str
-{
-    if (args != str) {
-        [args release];
-        args = [str copy];
-    }
-}
+#pragma mark Properties
 
 - (UIColor **)colors
 {
-    return _colors;
+    return colors_;
 }
 
 @end
@@ -85,32 +65,34 @@
 
 @implementation Settings
 
+@synthesize arguments;
+@synthesize terminalConfigs;
+@synthesize menu;
 @synthesize gestureFrameColor;
 @synthesize multipleTerminals;
+@synthesize swipeGestures;
 
 + (Settings *)sharedInstance
 {
     static Settings *instance = nil;
-    if (instance == nil) instance = [[Settings alloc] init];
+    if (instance == nil)
+        instance = [[Settings alloc] init];
     return instance;
 }
 
 - (id)init
 {
     self = [super init];
+    if (self) {
+        terminalConfigs = [[NSArray arrayWithObjects:
+            [[TerminalConfig alloc] init],
+            [[TerminalConfig alloc] init],
+            [[TerminalConfig alloc] init],
+            [[TerminalConfig alloc] init], nil] retain];
 
-    terminalConfigs = [[NSArray arrayWithObjects:
-        [[TerminalConfig alloc] init],
-        [[TerminalConfig alloc] init],
-        [[TerminalConfig alloc] init],
-        [[TerminalConfig alloc] init], nil] retain];
-
-    self.gestureFrameColor = colorWithRGBA(1, 1, 1, 0.05f);
-    multipleTerminals = NO;
-    menu = nil;
-    swipeGestures = nil;
-    arguments = @"";
-
+        self.gestureFrameColor = colorWithRGBA(1, 1, 1, 0.05f);
+        arguments = @"";
+    }
     return self;
 }
 
@@ -122,9 +104,15 @@
     [super dealloc];
 }
 
+#pragma mark Other
+
+- (void)setCommand:(NSString *)command forGesture:(NSString *)zone
+{
+    [swipeGestures setObject:command forKey:zone];
+}
+
 - (void)registerDefaults
 {
-    int i;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableDictionary *d = [NSMutableDictionary dictionaryWithCapacity:2];
     [d setObject:[NSNumber numberWithBool:MULTIPLE_TERMINALS] forKey:@"multipleTerminals"];
@@ -140,12 +128,11 @@
 
     NSMutableDictionary *gestures = [NSMutableDictionary dictionaryWithCapacity:16];
 
-    i = 0;
+    int i = 0;
     while (DEFAULT_SWIPE_GESTURES[i][0]) {
         [gestures setObject:DEFAULT_SWIPE_GESTURES[i][1] forKey:DEFAULT_SWIPE_GESTURES[i][0]];
         i++;
     }
-
     [d setObject:gestures forKey:@"swipeGestures"];
 
     // terminals
@@ -161,16 +148,7 @@
         [tc setObject:(i > 0 ? @"clear" : @"")forKey:@"args"];
 
         NSMutableArray *ca = [NSMutableArray arrayWithCapacity:NUM_TERMINAL_COLORS];
-        NSArray *colorValues;
-
-        switch (i) { // bg color
-            default: colorValues = [NSArray arrayWithColor:[UIColor blackColor]]; break;
-            case 1: colorValues = [NSArray arrayWithColor:colorWithRGBA(0, 0.05f, 0, 1)]; break;
-            case 2: colorValues = [NSArray arrayWithColor:colorWithRGBA(0, 0, 0.1f, 1)]; break;
-            case 3: colorValues = [NSArray arrayWithColor:colorWithRGBA(0.1f, 0, 0, 1)]; break;
-        };
-        [ca addObject:colorValues];
-
+        [ca addObject:[NSArray arrayWithColor:[UIColor blackColor]]]; // bg color
         [ca addObject:[NSArray arrayWithColor:[UIColor whiteColor]]]; // fg color
         [ca addObject:[NSArray arrayWithColor:[UIColor yellowColor]]]; // bold color
         [ca addObject:[NSArray arrayWithColor:[UIColor redColor]]]; // cursor text
@@ -187,13 +165,14 @@
     [defaults registerDefaults:d];
 }
 
+#pragma mark Read/Write methods
+
 - (void)readUserDefaults
 {
-    int i, c;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSArray *tcs = [defaults arrayForKey:@"terminals"];
 
-    for (i = 0; i < MAXTERMINALS; i++) {
+    for (int i = 0; i < MAXTERMINALS; i++) {
         TerminalConfig *config = [terminalConfigs objectAtIndex:i];
         NSDictionary *tc = [tcs objectAtIndex:i];
         config.autosize =   [[tc objectForKey:@"autosize"] boolValue];
@@ -202,8 +181,8 @@
         config.fontWidth =  [[tc objectForKey:@"fontWidth"] floatValue];
         config.font =        [tc objectForKey:@"font"];
         config.args =        [tc objectForKey:@"args"];
-        for (c = 0; c < NUM_TERMINAL_COLORS; c++) {
-            config.colors[c] = [[UIColor colorWithArray:[[tc objectForKey:@"colors"] objectAtIndex:c]] retain];
+        for (int c = 0; c < NUM_TERMINAL_COLORS; c++) {
+            config.colors[c] = [[UIColor alloc] initWithArray:[[tc objectForKey:@"colors"] objectAtIndex:c]];
             [[ColorMap sharedInstance] setTerminalColor:config.colors[c] atIndex:c termid:i];
         }
     }
@@ -232,12 +211,9 @@
         [tc setObject:config.args ? config.args : @"" forKey:@"args"];
 
         NSMutableArray *ca = [NSMutableArray arrayWithCapacity:NUM_TERMINAL_COLORS];
-        NSArray *colorValues;
 
-        for (c = 0; c < NUM_TERMINAL_COLORS; c++) {
-            colorValues = [NSArray arrayWithColor:config.colors[c]];
-            [ca addObject:colorValues];
-        }
+        for (c = 0; c < NUM_TERMINAL_COLORS; c++)
+            [ca addObject:[NSArray arrayWithColor:config.colors[c]]];
 
         [tc setObject:ca forKey:@"colors"];
         [tcs addObject:tc];
@@ -251,23 +227,11 @@
     [[[MobileTerminal menu] getArray] writeToFile:[NSHomeDirectory() stringByAppendingString:@"/Library/Preferences/com.googlecode.mobileterminal.menu.plist"] atomically:YES];
 }
 
-- (void)setCommand:(NSString *)command forGesture:(NSString *)zone
-{
-    [swipeGestures setObject:command forKey:zone];
-}
+#pragma mark Properties
 
-- (NSArray *)terminalConfigs { return terminalConfigs; }
-- (NSArray *)menu { return menu; }
-- (NSDictionary *)swipeGestures { return swipeGestures; }
-- (UIColor **)gestureFrameColorRef { return &gestureFrameColor; }
-- (NSString *)arguments { return arguments; }
-
-- (void)setArguments:(NSString *)str
+- (UIColor **)gestureFrameColorRef
 {
-    if (arguments != str) {
-        [arguments release];
-        arguments = [str copy];
-    }
+    return &gestureFrameColor;
 }
 
 @end
