@@ -2,8 +2,11 @@
 
 #import "Keyboard.h"
 
-#include <objc/runtime.h>
+#import <UIKit/CDStructures.h>
 #import <UIKit/UIDefaultKeyboardInput.h>
+#import <UIKit/UIKeyboardCandidateList-Protocol.h>
+#import <UIKit/UIKeyboardImpl.h>
+
 
 @interface TextInputHandler : UIDefaultKeyboardInput
 {
@@ -13,6 +16,8 @@
 - (id)initWithKeyboard:(ShellKeyboard *)keyboard;
 
 @end
+
+//_______________________________________________________________________________
 
 @implementation TextInputHandler
 
@@ -28,6 +33,7 @@
     return self;
 }
 
+// FIXME: is this method no longer needed?
 #if 0
 - (BOOL)webView:(id)fp8 shouldDeleteDOMRange:(id)fp12
 {
@@ -44,9 +50,8 @@
 
 - (void)insertText:(id)character
 {
-    if ([character length] != 1) {
+    if ([character length] != 1)
         [NSException raise:@"Unsupported" format:@"Unhandled multi-char insert!"];
-    }
     [shellKeyboard handleKeyPress:[character characterAtIndex:0]];
 }
 
@@ -56,6 +61,8 @@
 //_______________________________________________________________________________
 
 @implementation ShellKeyboard
+
+@synthesize inputDelegate;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -72,20 +79,20 @@
     [super dealloc];
 }
 
-- (void)setInputDelegate:(id)delegate;
-{
-    inputDelegate = delegate;
-}
-
 - (void)handleKeyPress:(unichar)c
 {
     [inputDelegate handleKeyPress:c];
 }
 
-- (void)enable
+- (void)setEnabled:(BOOL)enabled
 {
-    [self activate];
-    [[UIKeyboardImpl activeInstance] setDelegate:handler];
+    if (enabled) {
+        [self activate];
+        [[UIKeyboardImpl activeInstance] setDelegate:handler];
+    } else {
+        [[UIKeyboardImpl activeInstance] setDelegate:nil];
+        [self deactivate];
+    }
 }
 
 @end

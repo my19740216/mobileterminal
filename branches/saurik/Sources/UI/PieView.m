@@ -1,5 +1,6 @@
 #import "PieView.h"
 
+#import <CoreGraphics/CGColor.h>
 #import <UIKit/UIControl-UIControlPrivate.h>
 #import <UIKit/UIImage-UIImageDeprecated.h>
 
@@ -9,56 +10,72 @@
 #import "Menu.h"
 #import "Settings.h"
 
+
 bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
 extern CGFontRef CGContextGetFont(CGContextRef);
-extern CGFontRef CGFontCreateWithFontName(CFStringRef name);
 
 @implementation PieButton
+
+@synthesize command;
 
 - (id)initWithFrame:(CGRect)frame identifier:(int)identifier_
 {
     self = [super initWithTitle:@""];
+    if (self) {
+        identifier = identifier_;
 
-    identifier = identifier_;
+        NSBundle *bundle = [NSBundle mainBundle];
 
-    NSBundle *bundle = [NSBundle mainBundle];
-    NSString *imagePath = [bundle pathForResource:[NSString stringWithFormat:(identifier % 2 ? @"pie_gray%d" : @"pie_white%d"), (identifier+1)] ofType: @"png"];
-    UIImage *image = [[UIImage alloc] initWithContentsOfFile: imagePath];
-    [self setImage:image forState:0];
+        // Load pie button normal image
+        NSString *imagePath = [bundle pathForResource:[NSString stringWithFormat:
+            (identifier % 2 ? @"pie_gray%d" : @"pie_white%d"),
+            (identifier + 1)] ofType: @"png"];
+        UIImage *image = [[UIImage alloc] initWithContentsOfFile:imagePath];
+        [self setImage:image forState:0];
 
-    imagePath = [bundle pathForResource: [NSString stringWithFormat:@"pie_blue%d",(identifier+1)] ofType: @"png"];
-    image = [[UIImage alloc] initWithContentsOfFile: imagePath];
-    [self setImage:image forState:1];
-    [self setImage:image forState:4];
+        // Load pie button selected image
+        imagePath = [bundle pathForResource: [NSString stringWithFormat:
+            @"pie_blue%d", (identifier + 1)] ofType: @"png"];
+        image = [[UIImage alloc] initWithContentsOfFile:imagePath];
+        [self setImage:image forState:1];
+        [self setImage:image forState:4];
 
-    [self setDrawContentsCentered:YES];
-    [self setAutosizesToFit:NO];
-    [self setEnabled: YES];
-    [self setOpaque:NO];
+        [self setDrawContentsCentered:YES];
+        [self setAutosizesToFit:NO];
+        [self setEnabled:YES];
+        [self setOpaque:NO];
 
-    if (identifier % 2) {
-        // gray
-        [self setTitleColor:[UIColor whiteColor] forState:0]; // normal
-        [self setShadowColor:colorWithRGBA(.25,.25,.25,1) forState:0]; // normal
-        _shadowOffset = CGSizeMake(0.0, 1.0);
-    } else {
-        // white
-        [self setTitleColor:[UIColor blackColor] forState:0]; // normal
-        [self setShadowColor:[UIColor whiteColor] forState:0]; // normal
-        _shadowOffset = CGSizeMake(0.0, -1.0);
+        if (identifier % 2) {
+            // gray
+            [self setTitleColor:[UIColor whiteColor] forState:0]; // normal
+            [self setShadowColor:colorWithRGBA(.25,.25,.25,1) forState:0]; // normal
+            _shadowOffset = CGSizeMake(0.0, 1.0);
+        } else {
+            // white
+            [self setTitleColor:[UIColor blackColor] forState:0]; // normal
+            [self setShadowColor:[UIColor whiteColor] forState:0]; // normal
+            _shadowOffset = CGSizeMake(0.0, -1.0);
+        }
+        [self setTitleColor:[UIColor whiteColor] forState:1]; // pressed
+        [self setTitleColor:[UIColor whiteColor] forState:4]; // selected
+        [self setShadowColor:colorWithRGBA(0.1,0.1,0.7,1) forState:1]; // pressed
+        [self setShadowColor:colorWithRGBA(0.1,0.1,0.7,1) forState:4]; // selected
+
+        [self setOrigin:frame.origin];
+
+        unichar dotChar[1] = {0x2022};
+        dot = [[NSString alloc] initWithCharacters:dotChar length:1];
     }
-    [self setTitleColor:[UIColor whiteColor] forState:1]; // pressed
-    [self setTitleColor:[UIColor whiteColor] forState:4]; // selected
-    [self setShadowColor:colorWithRGBA(0.1,0.1,0.7,1) forState:1]; // pressed
-    [self setShadowColor:colorWithRGBA(0.1,0.1,0.7,1) forState:4]; // selected
-
-    [self setOrigin:frame.origin];
-
-    unichar dotChar[1] = {0x2022};
-    dot = [[NSString stringWithCharacters:dotChar length:1] retain];
-
     return self;
 }
+
+- (void)dealloc
+{
+    [dot release];
+    [super dealloc];
+}
+
+#pragma mark Other
 
 - (void)drawTitleAtPoint:(CGPoint)point width:(float)width
 {
@@ -109,12 +126,15 @@ extern CGFontRef CGFontCreateWithFontName(CFStringRef name);
 
     CGContextSetTextDrawingMode(context, kCGTextFill);
     CGContextSetFillColorWithColor(context, [[self titleColorForState:[self state]] CGColor]);
-    //if (!([self state] & kPressed))
-    CGContextSetShadowWithColor(context, (!([self state] & kPressed)) ? _shadowOffset : CGSizeMake(0.0f, 1.0f), 0.0f, [[self shadowColorForState:[self state]] CGColor]);
+    CGContextSetShadowWithColor(context,
+        (!([self state] & 4)) ? _shadowOffset : CGSizeMake(0.0f, 1.0f),
+        0.0f, [[self shadowColorForState:[self state]] CGColor]);
 
     CGPoint center = CGPointMake(-0.5f *textWidth, -0.25 *height);
     CGPoint p = CGPointApplyAffineTransform(center, transform);
-    CGContextShowGlyphsAtPoint(context, 0.5 *[self bounds].size.width + p.x, 0.5 *[self bounds].size.height + p.y, glyphs, len);
+    CGContextShowGlyphsAtPoint(context,
+        0.5 * [self bounds].size.width + p.x,
+        0.5 * [self bounds].size.height + p.y, glyphs, len);
 
     CGContextRestoreGState(context);
     CGContextSetTextMatrix(context, CGAffineTransformIdentity);
@@ -125,49 +145,51 @@ extern CGFontRef CGFontCreateWithFontName(CFStringRef name);
     return [NSString stringWithFormat:@"%@%@", dot, cmd];
 }
 
-- (NSString *)command { return command; }
+#pragma mark Properties
+
 - (void)setCommand:(NSString *)command_
 {
-    [command release];
-    command = [command_ copy];
-    [self setTitle:[self commandString]];
+    if (command != command_) {
+        [command release];
+        command = [command_ copy];
+        [self setTitle:[self commandString]];
+    }
+}
+
+static NSMutableString *convertCommandString(PieButton *button, NSString *cmd, BOOL isCommand)
+{
+    NSMutableString *s = [NSMutableString stringWithCapacity:64];
+    [s setString:cmd];
+
+    int i = 0;
+    while (STRG_CTRL_MAP[i].str) {
+        int toLength = 0;
+        while (STRG_CTRL_MAP[i].chars[toLength]) toLength++;
+        NSString *from = [button dotStringWithCommand:STRG_CTRL_MAP[i].str];
+        NSString *to = [NSString stringWithCharacters:STRG_CTRL_MAP[i].chars length:toLength];
+
+        if (isCommand)
+            // convert to command string
+            [s replaceOccurrencesOfString:to withString:from
+                options:0 range:NSMakeRange(0, [s length])];
+        else
+            // convert to command
+            [s replaceOccurrencesOfString:from withString:to
+                options:0 range:NSMakeRange(0, [s length])];
+
+        i++;
+    }
+    return s;
 }
 
 - (NSString *)commandString
 {
-    NSMutableString *str = [NSMutableString stringWithCapacity:64];
-    [str setString:[self command]];
-    int i = 0;
-    while (STRG_CTRL_MAP[i].str) {
-        int toLength = 0;
-        while (STRG_CTRL_MAP[i].chars[toLength]) toLength++;
-        NSString *from = [self dotStringWithCommand:STRG_CTRL_MAP[i].str];
-        NSString *to = [NSString stringWithCharacters:STRG_CTRL_MAP[i].chars length:toLength];
-
-        [str replaceOccurrencesOfString:to withString:from options:0 range:NSMakeRange(0, [str length])];
-
-        i++;
-    }
-    return str;
+    return convertCommandString(self, [self command], YES);
 }
 
 - (void)setCommandString:(NSString *)cmdString
 {
-    NSMutableString *cmd = [NSMutableString stringWithCapacity:64];
-    [cmd setString:cmdString];
-
-    int i = 0;
-    while (STRG_CTRL_MAP[i].str) {
-        int toLength = 0;
-        while (STRG_CTRL_MAP[i].chars[toLength]) toLength++;
-        NSString *from = [self dotStringWithCommand:STRG_CTRL_MAP[i].str];
-        NSString *to = [NSString stringWithCharacters:STRG_CTRL_MAP[i].chars length:toLength];
-
-        [cmd replaceOccurrencesOfString:from withString:to options:0 range:NSMakeRange(0, [cmd length])];
-
-        i++;
-    }
-    [self setCommand:cmd];
+    [self setCommand:convertCommandString(self, cmdString, NO)];
 }
 
 @end
@@ -177,57 +199,40 @@ extern CGFontRef CGFontCreateWithFontName(CFStringRef name);
 
 @implementation PieView
 
+@synthesize buttons;
+@synthesize delegate;
+
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
+    if (self) {
+        [self setOpaque:NO];
+        buttons = [[NSMutableArray alloc] initWithCapacity:8];
 
-    buttons = [[NSMutableArray arrayWithCapacity:8] retain];
+        NSBundle *bundle = [NSBundle mainBundle];
+        NSString *imagePath = [bundle pathForResource: @"pie_back" ofType: @"png"];
+        pie_back = [[UIImage alloc] initWithContentsOfFile: imagePath];
 
-    NSBundle *bundle = [NSBundle mainBundle];
-    NSString *imagePath = [bundle pathForResource: @"pie_back" ofType: @"png"];
-    pie_back = [[UIImage alloc] initWithContentsOfFile: imagePath];
-    int i;
+        for (int i = 0; i < 8; i++) {
+            const float x[] = { 5.0, 12.0, 69.0, 126.0, 161.0, 126.0, 69.0, 12.0};
+            const float y[] = { 73.0, 15.0, 7.0, 15.0, 73.0, 129.0, 165.0, 129.0};
 
-    for (i = 0; i < 8; i++) {
-        const float x[] = { 5.0, 12.0, 69.0, 126.0, 161.0, 126.0, 69.0, 12.0};
-        const float y[] = { 73.0, 15.0, 7.0, 15.0, 73.0, 129.0, 165.0, 129.0};
-
-        PieButton *button = [[PieButton alloc] initWithFrame:CGRectMake(x[i],y[i],0,0) identifier:i];
-        [buttons addObject:button];
-        [button addTarget:self action:@selector(buttonPressed:) forEvents:64];
-        [self addSubview:button];
+            PieButton *button = [[PieButton alloc] initWithFrame:CGRectMake(x[i],y[i],0,0) identifier:i];
+            [buttons addObject:button];
+            [button addTarget:self action:@selector(buttonPressed:) forEvents:64];
+            [self addSubview:button];
+            [button release];
+        }
     }
-
     return self;
 }
 
-- (void)buttonPressed:(PieButton *)button
+- (void)dealloc
 {
-    if (button != activeButton) {
-        if (activeButton) [activeButton setSelected:NO];
-        activeButton = button;
-        [activeButton setSelected:YES];
-        if ([self delegate] && [[self delegate] respondsToSelector:@selector(pieButtonPressed:)])
-                                  [[self delegate] performSelector:@selector(pieButtonPressed:) withObject:activeButton];
-    }
-}
+    [buttons release];
+    [pie_back release];
 
-- (void)deselectButton:(PieButton *)button
-{
-    [button setSelected:NO];
-    if (button == activeButton) activeButton = nil;
-}
-
-- (void)selectButton:(PieButton *)button
-{
-    if (activeButton) [activeButton setSelected:NO];
-    [button setSelected:YES];
-    activeButton = button;
-}
-
-- (PieButton *)buttonAtIndex:(int)index
-{
-    return [[self buttons] objectAtIndex:index];
+    [super dealloc];
 }
 
 - (void)drawRect:(CGRect)rect
@@ -235,11 +240,42 @@ extern CGFontRef CGFontCreateWithFontName(CFStringRef name);
     [pie_back compositeToPoint: CGPointMake(0.0f, 0.0f) operation: 2];
 }
 
-- (BOOL)isOpaque { return NO; }
-- (BOOL)ignoresMouseEvents { return NO; }
-- (void)setDelegate:(id)delegate_ { delegate = delegate_; }
-- (id)delegate { return delegate; }
-- (NSArray *)buttons { return buttons; }
+#pragma mark UIView methods
+
+- (BOOL)ignoresMouseEvents
+{
+    return NO;
+}
+
+#pragma mark Button-related methods
+
+- (PieButton *)buttonAtIndex:(int)index
+{
+    return [[self buttons] objectAtIndex:index];
+}
+
+- (void)selectButton:(PieButton *)button
+{
+    [activeButton setSelected:NO];
+    [button setSelected:YES];
+    activeButton = button;
+}
+
+- (void)deselectButton:(PieButton *)button
+{
+    [button setSelected:NO];
+    if (button == activeButton)
+        activeButton = nil;
+}
+
+- (void)buttonPressed:(PieButton *)button
+{
+    if (button != activeButton) {
+        [self selectButton:button];
+        if ([delegate respondsToSelector:@selector(pieButtonPressed:)])
+            [delegate performSelector:@selector(pieButtonPressed:) withObject:activeButton];
+    }
+}
 
 @end
 

@@ -1,19 +1,12 @@
-#import <CoreGraphics/CGColor.h>
-#import <CoreGraphics/CGColorSpace.h>
-#import <CoreGraphics/CGGeometry.h>
-#import <UIKit/UIKit.h>
+#import <CoreGraphics/CoreGraphics.h>
+#import <Foundation/Foundation.h>
+#import <UIKit/CDStructures.h>
 #import <UIKit/NSString-UIStringDrawing.h>
-#import <UIKit/UIImage.h>
+#import <UIKit/UIPushButton.h>
+#import <UIKit/UIView.h>
 
-typedef enum {
-    kBlue = 1,
-    kGray = 2,
-    kWhite = 3,
-    kPressed = 4
-} kButtonStatus;
 
-//_______________________________________________________________________________
-//_______________________________________________________________________________
+@class UIImage;
 
 @interface PieButton : UIPushButton
 {
@@ -22,13 +15,11 @@ typedef enum {
     int identifier;
 }
 
-- (id)initWithFrame:(CGRect)frame identifier:(int)identifier;
+@property(nonatomic, copy) NSString *command;
+@property(nonatomic, copy) NSString *commandString;
 
-- (NSString *)command;
-- (NSString *)commandString;
+- (id)initWithFrame:(CGRect)frame identifier:(int)identifier;
 - (NSString *)dotStringWithCommand:(NSString *)command;
-- (void)setCommandString:(NSString *)commandString;
-- (void)setCommand:(NSString *)command;
 
 @end
 
@@ -43,12 +34,13 @@ typedef enum {
     id delegate;
 }
 
-- (void)setDelegate:(id)delegate;
-- (id)delegate;
+@property(nonatomic, assign) id delegate;
+@property(nonatomic, readonly) NSMutableArray *buttons;
+
 - (PieButton *)buttonAtIndex:(int)index;
-- (void)deselectButton:(PieButton *)button;
 - (void)selectButton:(PieButton *)button;
-- (NSArray *)buttons;
+- (void)deselectButton:(PieButton *)button;
+
 @end
 
 /* vim: set syntax=objc sw=4 ts=4 sts=4 expandtab textwidth=80 ff=unix: */

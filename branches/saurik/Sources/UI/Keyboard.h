@@ -1,7 +1,9 @@
 // ShellKeyboard.h
 
-#import <UIKit/UIKit.h>
-#import <UIKit/UITextView.h>
+#import <CoreGraphics/CoreGraphics.h>
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKeyboard.h>
+
 
 @protocol KeyboardInputProtocol
 
@@ -9,16 +11,20 @@
 
 @end
 
+//_______________________________________________________________________________
+//_______________________________________________________________________________
+
 @interface ShellKeyboard : UIKeyboard<KeyboardInputProtocol>
 {
     id inputDelegate;
     id handler;
 }
 
+@property(nonatomic, assign) id inputDelegate;
+
 - (id)initWithFrame:(CGRect)frame;
-- (void)setInputDelegate:(id)delegate;
 - (void)handleKeyPress:(unichar)c;
-- (void)enable;
+- (void)setEnabled:(BOOL)enabled;
 
 @end
 

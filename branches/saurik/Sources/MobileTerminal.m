@@ -120,7 +120,7 @@ static MobileTerminal *application;
     [[MenuView sharedInstance] hideSlow:YES];
 
     // Input focus
-    [keyboardView enable];
+    [keyboardView setEnabled:YES];
 
     if (numTerminals > 1) {
         for (i = numTerminals-1; i >= 0; i--) {
@@ -147,7 +147,7 @@ static MobileTerminal *application;
 
     [mainView bringSubviewToFront:gestureView];
     [mainView bringSubviewToFront:[MenuView sharedInstance]];
-    [keyboardView enable];
+    [keyboardView setEnabled:YES];
 
     [self setActiveTerminal:0];
     [self updateStatusBar];
@@ -621,7 +621,7 @@ static MobileTerminal *application;
             [self createTerminals];
         }
 
-        [keyboardView enable];
+        [keyboardView setEnabled:YES];
     }
 
     CAAnimation *animation = [CATransition animation];

@@ -3,12 +3,13 @@
 // PTYTextView creates PTYTiles, which call back to PTYTextView when they
 // are asked to be drawn.
 
-#import <UIKit/UIKit.h>
-#import <UIKit/UITiledView.h>
+#import <CoreGraphics/CoreGraphics.h>
+#import <Foundation/Foundation.h>
 #import <UIKit/UITile.h>
+#import <UIKit/UITiledView.h>
 
-#include <sys/time.h>
 
+@class UIScroller;
 @class VT100Screen;
 
 @interface PTYTile : UITile

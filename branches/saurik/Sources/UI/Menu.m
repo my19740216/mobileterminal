@@ -117,8 +117,7 @@ static NSMutableString *convertCommandString(Menu *menu, NSString *cmd, BOOL isC
 
 - (NSString *)commandString
 {
-    NSMutableString *s = convertCommandString(menu, [self command], YES);
-    return s;
+    return convertCommandString(menu, [self command], YES);
 }
 
 - (void)setCommandString:(NSString *)cmdString
@@ -161,9 +160,9 @@ static NSMutableString *convertCommandString(Menu *menu, NSString *cmd, BOOL isC
     if (self) {
         items = [[NSMutableArray alloc] initWithCapacity:NUM_OF_BUTTONS];
         for (int i = 0; i < NUM_OF_BUTTONS; i++)
-        [items addObject:[[MenuItem alloc] initWithMenu:self]];
+            [items addObject:[[MenuItem alloc] initWithMenu:self]];
 
-    unichar dotChar[1] = {0x2022};
+        unichar dotChar[1] = {0x2022};
         dot = [[NSString alloc] initWithCharacters:dotChar length:1];
     }
     return self;
@@ -222,24 +221,24 @@ static NSMutableString *convertCommandString(Menu *menu, NSString *cmd, BOOL isC
 {
     self = [super initWithFrame:frame];
     if (self) {
-    CDAnonymousStruct10 buttonPieces = {
-            .left = { .origin = { .x = 0.0f, .y = 0.0f },
-                .size = { .width = 12.0f, .height = MENU_BUTTON_HEIGHT } },
-            .middle = { .origin = { .x = 12.0f, .y = 0.0f },
-                .size = { .width = 20.0f, .height = MENU_BUTTON_HEIGHT } },
-            .right = { .origin = { .x = 32.0f, .y = 0.0f },
-                .size = { .width = 12.0f, .height = MENU_BUTTON_HEIGHT } },
-    };
+        CDAnonymousStruct10 buttonPieces = {
+                .left = { .origin = { .x = 0.0f, .y = 0.0f },
+                    .size = { .width = 12.0f, .height = MENU_BUTTON_HEIGHT } },
+                .middle = { .origin = { .x = 12.0f, .y = 0.0f },
+                    .size = { .width = 20.0f, .height = MENU_BUTTON_HEIGHT } },
+                .right = { .origin = { .x = 32.0f, .y = 0.0f },
+                    .size = { .width = 12.0f, .height = MENU_BUTTON_HEIGHT } },
+        };
 
         [self setDrawContentsCentered:YES];
         [self setBackgroundSlices:buttonPieces];
-    [self setAutosizesToFit:NO];
+        [self setAutosizesToFit:NO];
         [self setEnabled:YES];
-    [self setOpaque:NO];
+        [self setOpaque:NO];
 
-    [self setTitleColor:[UIColor blackColor] forState:0]; // normal
-    [self setTitleColor:[UIColor whiteColor] forState:1]; // pressed
-    [self setTitleColor:[UIColor whiteColor] forState:4]; // selected
+        [self setTitleColor:[UIColor blackColor] forState:0]; // normal
+        [self setTitleColor:[UIColor whiteColor] forState:1]; // pressed
+        [self setTitleColor:[UIColor whiteColor] forState:4]; // selected
     }
     return self;
 }
@@ -322,8 +321,8 @@ static NSMutableString *convertCommandString(Menu *menu, NSString *cmd, BOOL isC
             NUM_OF_COLS * MENU_BUTTON_WIDTH - 4)];
     if (self) {
         history = [[NSMutableArray alloc] initWithCapacity:5];
-    visible = YES;
-    [self setOpaque:NO];
+        visible = YES;
+        [self setOpaque:NO];
     }
     return self;
 }
@@ -485,7 +484,7 @@ static NSMutableString *convertCommandString(Menu *menu, NSString *cmd, BOOL isC
         [command removeSubstring:[[MobileTerminal menu] dotStringWithCommand:@"keepmenu"]];
         [command removeSubstring:[[MobileTerminal menu] dotStringWithCommand:@"back"]];
     }
-        return command;
+    return command;
 }
 
 #pragma mark Display-related methods
@@ -527,26 +526,26 @@ static NSMutableString *convertCommandString(Menu *menu, NSString *cmd, BOOL isC
     [self stopTimer];
 
     if (!visible) {
-    activeButton = nil;
+        activeButton = nil;
         tapMode = NO;
-    [self loadMenu];
+        [self loadMenu];
 
-    CGRect frame = [[self superview] frame];
+        CGRect frame = [[self superview] frame];
 
         float lx = MIN(frame.size.width - 3.0 * MENU_BUTTON_WIDTH,
                 MAX(0, location.x - 1.5 * MENU_BUTTON_WIDTH));
         float ly = MIN(frame.size.height - 3.0 * MENU_BUTTON_HEIGHT,
                 MAX(0, location.y - 1.5 * MENU_BUTTON_HEIGHT));
 
-    [self setTransform:CGAffineTransformMakeScale(1.0f, 1.0f)];
-    [self setOrigin:CGPointMake(lx, ly)];
-    [self setAlpha: 0.0f];
+        [self setTransform:CGAffineTransformMakeScale(1.0f, 1.0f)];
+        [self setOrigin:CGPointMake(lx, ly)];
+        [self setAlpha: 0.0f];
 
-    [UIView beginAnimations:@"fadeIn"];
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector: @selector(animationDidStop:finished:context:)];
-    [UIView setAnimationDuration:MENU_FADE_IN_TIME];
-    [self setAlpha:1.0f];
+        [UIView beginAnimations:@"fadeIn"];
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDidStopSelector: @selector(animationDidStop:finished:context:)];
+        [UIView setAnimationDuration:MENU_FADE_IN_TIME];
+        [self setAlpha:1.0f];
         [UIView commitAnimations];
 
         visible = YES;
@@ -564,17 +563,17 @@ static NSMutableString *convertCommandString(Menu *menu, NSString *cmd, BOOL isC
     [self stopTimer];
 
     if (visible) {
-    [UIView beginAnimations:@"fadeOut"];
+        [UIView beginAnimations:@"fadeOut"];
         [UIView setAnimationDuration: slow ?
             MENU_SLOW_FADE_OUT_TIME : MENU_FADE_OUT_TIME];
-    [self setTransform:CGAffineTransformMakeScale(0.01f, 0.01f)];
+        [self setTransform:CGAffineTransformMakeScale(0.01f, 0.01f)];
         [self setOrigin:CGPointMake(
-                [self frame].origin.x + [self frame].size.width / 2,
-                [self frame].origin.y + [self frame].size.height / 2)];
+            [self frame].origin.x + [self frame].size.width / 2,
+            [self frame].origin.y + [self frame].size.height / 2)];
         [self setAlpha:0];
-    [UIView endAnimations];
+        [UIView endAnimations];
 
-    visible = NO;
+        visible = NO;
     }
 }
 
