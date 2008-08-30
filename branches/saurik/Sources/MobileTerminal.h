@@ -56,9 +56,6 @@
 @property int degrees;
 @property BOOL controlKeyMode;
 @property(readonly) Menu *menu;
-@property(readonly) UIView *activeView;
-@property(readonly) UIView *mainView;
-@property(readonly) GestureView *gestureView;
 @property(readonly) PTYTextView *textView;
 
 + (MobileTerminal *)application;
@@ -82,16 +79,12 @@
 - (VT100Terminal *)activeTerminal;
 - (NSArray *)textviews;
 
-- (UIView *)mainView;
-- (UIView *)activeView;
-- (GestureView *)gestureView;
-- (PTYTextView *)textView;
 - (UIScroller *)textScroller;
 - (CGRect)keyboardFrame;
 
 - (void)togglePreferences;
 
-// Invoked by GestureMenu
+// Invoked by MenuView
 - (void)hideMenu;
 - (void)showMenu:(CGPoint)point;
 - (void)handleInputFromMenu:(NSString *)input;

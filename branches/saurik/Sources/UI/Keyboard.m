@@ -6,6 +6,12 @@
 #import <UIKit/UIDefaultKeyboardInput.h>
 #import <UIKit/UIKeyboardCandidateList-Protocol.h>
 #import <UIKit/UIKeyboardImpl.h>
+#import <UIKit/UIScreen.h>
+#import <UIKit/UIView-Animation.h>
+#import <UIKit/UIView-Geometry.h>
+#import <UIKit/UIView-Rendering.h>
+
+#import "Constants.h"
 
 
 @interface TextInputHandler : UIDefaultKeyboardInput
@@ -63,12 +69,15 @@
 @implementation ShellKeyboard
 
 @synthesize inputDelegate;
+@synthesize visible;
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithDefaultRect
 {
-    self = [super initWithFrame:frame];
-    if ( self ) {
+    self = [super initWithDefaultSize];
+    if (self) {
+        [self setOrigin:CGPointMake(0, 244.0f)];
         handler = [[TextInputHandler alloc] initWithKeyboard:self];
+        visible = YES;
     }
     return self;
 }
@@ -92,6 +101,32 @@
     } else {
         [[UIKeyboardImpl activeInstance] setDelegate:nil];
         [self deactivate];
+    }
+}
+
+- (void)setVisible:(BOOL)visible_ animated:(BOOL)animated
+{
+    if (visible != visible_) {
+        CGRect frame = [self frame];
+        if (visible) {
+            // Hide the keyboard
+            frame.origin.y += frame.size.height;
+            [UIView beginAnimations:@"keyboardFadeOut"];
+            [UIView setAnimationDuration:(animated ? KEYBOARD_FADE_OUT_TIME : 0)];
+            [self setFrame:frame];
+            [self setAlpha:0.0f];
+            [UIView commitAnimations];
+        } else {
+            // Show the keyboard
+            frame.origin.y -= frame.size.height;
+            [UIView beginAnimations:@"keyboardFadeIn"];
+            [UIView setAnimationDuration:(animated ? KEYBOARD_FADE_IN_TIME : 0)];
+            [self setFrame:frame];
+            [self setAlpha:1.0f];
+            [UIView commitAnimations];
+        }
+
+        visible = !visible;
     }
 }
 

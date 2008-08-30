@@ -9,22 +9,25 @@
 #import <QuartzCore/CoreAnimation.h>
 #import <UIKit/UIView-Geometry.h>
 
-#include "ColorMap.h"
-#include "GestureView.h"
-#include "Keyboard.h"
-#include "Menu.h"
-#include "PieView.h"
-#include "Preferences.h"
-#include "PTYTextView.h"
-#include "Settings.h"
-#include "SubProcess.h"
-#include "VT100Screen.h"
-#include "VT100Terminal.h"
+#import "ColorMap.h"
+#import "GestureView.h"
+#import "Keyboard.h"
+#import "Menu.h"
+#import "PieView.h"
+#import "Preferences.h"
+#import "PTYTextView.h"
+#import "Settings.h"
+#import "SubProcess.h"
+#import "VT100Screen.h"
+#import "VT100Terminal.h"
 
 
 @implementation MobileTerminal
 
-@synthesize landscape, degrees, controlKeyMode;
+@synthesize landscape;
+@synthesize degrees;
+@synthesize controlKeyMode;
+@synthesize menu;
 
 static MobileTerminal *application;
 
@@ -88,7 +91,7 @@ static MobileTerminal *application;
         [textviews addObject:textview];
     }
 
-    keyboardView = [[[ShellKeyboard alloc] initWithFrame:CGRectMake(0.0f, 244.0f, 320.0f, 460.0f-244.0f)] retain];
+    keyboardView = [[ShellKeyboard alloc] initWithDefaultRect];
     [keyboardView setInputDelegate:self];
 
     CGRect gestureFrame = CGRectMake(0.0f, 0.0f, 240.0f, 250.0f);
@@ -131,20 +134,10 @@ static MobileTerminal *application;
     }
 }
 
-// Suspend/Resume: We have to hide then show again the keyboard view to get it
-// to properly acheive focus on suspend and resume.
+#pragma mark Application events methods
 
 - (void)applicationResume:(GSEvent *)event
 {
-    [mainView addSubview:keyboardView];
-
-    if (!keyboardShown) {
-        CGRect kbFrame = [self keyboardFrame];
-        kbFrame.origin.y += kbFrame.size.height;
-        [keyboardView setFrame:kbFrame];
-        [keyboardView setAlpha:0.0f];
-    }
-
     [mainView bringSubviewToFront:gestureView];
     [mainView bringSubviewToFront:[MenuView sharedInstance]];
     [keyboardView setEnabled:YES];
@@ -175,7 +168,7 @@ static MobileTerminal *application;
     if (activeView != mainView) // preferences active
         [self togglePreferences];
 
-    [keyboardView removeFromSuperview];
+    [keyboardView setEnabled:NO];
 
     for (i = 0; i < MAXTERMINALS; i++)
         [self removeStatusBarImageNamed:[NSString stringWithFormat:@"MobileTerminal%d", i]];
@@ -194,6 +187,8 @@ static MobileTerminal *application;
     for (i = 0; i < MAXTERMINALS; i++)
         [self removeStatusBarImageNamed:[NSString stringWithFormat:@"MobileTerminal%d", i]];
 }
+
+#pragma mark
 
 // Process output from the shell and pass it to the screen
 - (void)handleStreamOutput:(const char *)c length:(unsigned int)len identifier:(int)tid
@@ -269,6 +264,8 @@ static MobileTerminal *application;
     return [mainView convertPoint:point fromView:window];
 }
 
+#pragma mark MenuView delegate methods
+
 - (void)hideMenu
 {
     [[MenuView sharedInstance] hide];
@@ -301,26 +298,7 @@ static MobileTerminal *application;
 
 - (void)toggleKeyboard
 {
-    if (keyboardShown) {
-        keyboardShown = NO;
-
-        [UIView beginAnimations:@"keyboardFadeOut"];
-        [UIView setAnimationDuration: KEYBOARD_FADE_OUT_TIME];
-        CGRect kbFrame = [self keyboardFrame];
-        kbFrame.origin.y += kbFrame.size.height;
-        [keyboardView setFrame:kbFrame];
-        [keyboardView setAlpha:0.0f];
-        [UIView endAnimations];
-    } else {
-        keyboardShown = YES;
-
-        [UIView beginAnimations:@"keyboardFadeIn"];
-        [UIView setAnimationDuration: KEYBOARD_FADE_OUT_TIME];
-        [keyboardView setFrame:[self keyboardFrame]];
-        [keyboardView setAlpha:1.0f];
-        [UIView endAnimations];
-    }
-
+    [keyboardView setVisible:![keyboardView isVisible] animated:YES];
     [self updateFrames:NO];
 }
 
@@ -329,6 +307,8 @@ static MobileTerminal *application;
     controlKeyMode = mode;
     [[self textView] refreshCursorRow];
 }
+
+#pragma mark StatusBar delegate methods
 
 - (void)statusBarMouseUp:(GSEvent *)event
 {
@@ -349,6 +329,17 @@ static MobileTerminal *application;
     }
 }
 
+- (void)updateStatusBar
+{
+    [self setStatusBarMode: [self statusBarMode]
+               orientation: degrees
+                  duration: 0.5
+                   fenceID: 0
+                 animation: 0];
+}
+
+#pragma mark Orientation methods
+
 - (void)deviceOrientationChanged:(GSEvent *)event
 {
     switch ([UIHardware deviceOrientation:YES]) {
@@ -358,7 +349,6 @@ static MobileTerminal *application;
     }
 }
 
-//_______________________________________________________________________________
 - (void)setOrientation:(int)angle
 {
     if (degrees == angle || activeView != mainView) return;
@@ -394,15 +384,6 @@ static MobileTerminal *application;
     [self updateStatusBar];
 }
 
-- (void)updateStatusBar
-{
-    [self setStatusBarMode: [self statusBarMode]
-               orientation: degrees
-                  duration: 0.5
-                   fenceID: 0
-                 animation: 0];
-}
-
 - (void)updateColors
 {
     int i, c;
@@ -416,6 +397,7 @@ static MobileTerminal *application;
     [self updateFrames:YES];
 }
 
+// FIXME: see if this can be handled in Keyboard class
 - (CGRect)keyboardFrame
 {
     CGSize keybSize = [UIKeyboard defaultSizeForOrientation:(landscape ? 90 : 0)];
@@ -446,9 +428,8 @@ static MobileTerminal *application;
     float availableWidth = mainView.bounds.size.width;
     float availableHeight= mainView.bounds.size.height;
 
-    if (keyboardShown) {
+    if ([keyboardView isVisible])
         availableHeight -= keybSize.height;
-    }
 
     float lineHeight = [config fontSize] + TERMINAL_LINE_SPACING;
     float charWidth = [config fontSize]*[config fontWidth];
@@ -479,6 +460,8 @@ static MobileTerminal *application;
         [[self textView] updateIfNecessary];
     }
 }
+
+#pragma mark Terminal methods
 
 - (void)setActiveTerminal:(int)active
 {
@@ -531,8 +514,8 @@ static MobileTerminal *application;
             if (i != activeTerminal) [[scrollers objectAtIndex:i] removeFromSuperview];
         }
     } else if ([animationID isEqualToString:@"screenRotation"]) {
-                         [self updateFrames:YES];
-                         [keyboardView setFrame:[self keyboardFrame]];
+         [self updateFrames:YES];
+         [keyboardView setFrame:[self keyboardFrame]];
     }
 }
 
@@ -598,8 +581,6 @@ static MobileTerminal *application;
     }
 }
 
-//_______________________________________________________________________________
-
 - (void)togglePreferences
 {
     if (activeView == mainView) {
@@ -607,6 +588,7 @@ static MobileTerminal *application;
         if (landscape) [self setOrientation:0];
         [contentView transition:0 toView:[preferencesController view]];
         activeView = [preferencesController view];
+        [keyboardView setEnabled:NO];
     } else {
         [contentView transition:0 toView:mainView];
         activeView = mainView;
@@ -667,12 +649,15 @@ static MobileTerminal *application;
     return textviews;
 }
 
-- (Menu *)menu { return menu; }
-- (UIView *)mainView { return mainView; }
-- (UIView *)activeView { return activeView; }
-- (GestureView *)gestureView { return gestureView; }
-- (PTYTextView *)textView { return [textviews objectAtIndex:activeTerminal]; }
-- (UIScroller *)textScroller { return [scrollers objectAtIndex:activeTerminal]; }
+- (PTYTextView *)textView
+{
+    return [textviews objectAtIndex:activeTerminal];
+}
+
+- (UIScroller *)textScroller
+{
+    return [scrollers objectAtIndex:activeTerminal];
+}
 
 @end
 

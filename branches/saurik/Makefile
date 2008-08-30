@@ -2,6 +2,10 @@ CC = arm-apple-darwin9-gcc
 
 CFLAGS = -Wall -Os -std=gnu99 -march=armv6 -mcpu=arm1176jzf-s
 
+ifdef DEBUG
+	CFLAGS += -g -DDEBUG
+endif
+
 LDFLAGS = -march=armv6 -mcpu=arm1176jzf-s -lobjc -lcurses \
 		  -F${PKG_ROOT}/System/Library/PrivateFrameworks \
 		  -framework CoreFoundation \

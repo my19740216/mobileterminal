@@ -18,13 +18,16 @@
 {
     id inputDelegate;
     id handler;
+    BOOL visible;
 }
 
 @property(nonatomic, assign) id inputDelegate;
+@property(nonatomic, readonly, getter=isVisible) BOOL visible;
 
-- (id)initWithFrame:(CGRect)frame;
+- (id)initWithDefaultRect;
 - (void)handleKeyPress:(unichar)c;
 - (void)setEnabled:(BOOL)enabled;
+- (void)setVisible:(BOOL)visible animated:(BOOL)animated;
 
 @end
 
