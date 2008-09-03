@@ -9,9 +9,11 @@
 #import <UIKit/UIScreen.h>
 #import <UIKit/UIView-Animation.h>
 #import <UIKit/UIView-Geometry.h>
+#import <UIKit/UIView-Hierarchy.h>
 #import <UIKit/UIView-Rendering.h>
 
 #import "Constants.h"
+#import "MobileTerminal.h"
 
 
 @interface TextInputHandler : UIDefaultKeyboardInput
@@ -69,13 +71,14 @@
 @implementation ShellKeyboard
 
 @synthesize inputDelegate;
+@synthesize animationDelegate;
 @synthesize visible;
 
 - (id)initWithDefaultRect
 {
     self = [super initWithDefaultSize];
     if (self) {
-        [self setOrigin:CGPointMake(0, 244.0f)];
+        [self setOrigin:CGPointMake(0, 264.0f)];
         handler = [[TextInputHandler alloc] initWithKeyboard:self];
         visible = YES;
     }
@@ -104,15 +107,43 @@
     }
 }
 
+- (CGRect)keyboardFrame
+{
+    int orientation = [[[self superview] window] interfaceOrientation];
+    CGSize keybSize = [UIKeyboard defaultSizeForInterfaceOrientation:orientation];
+    CGSize superSize = [[self superview] bounds].size;
+    return CGRectMake(0, superSize.height - keybSize.height,
+            superSize.width, keybSize.height);
+}
+
+- (void)updateGeometry
+{
+    if ([self superview]) {
+        CGRect frame = [self keyboardFrame];
+        if (!visible)
+            frame.origin.y += frame.size.height;
+        [self setFrame:frame];
+    }
+}
+
 - (void)setVisible:(BOOL)visible_ animated:(BOOL)animated
 {
     if (visible != visible_) {
+        if (!visible)
+            // Make sure the size and position matches the orientation
+            [self updateGeometry];
+
         CGRect frame = [self frame];
         if (visible) {
             // Hide the keyboard
             frame.origin.y += frame.size.height;
             [UIView beginAnimations:@"keyboardFadeOut"];
             [UIView setAnimationDuration:(animated ? KEYBOARD_FADE_OUT_TIME : 0)];
+            [UIView setAnimationDelegate:animationDelegate];
+            [UIView setAnimationWillStartSelector:
+                @selector(keyboardWillDisappear:context:)];
+            [UIView setAnimationDidStopSelector:
+                @selector(keyboardDidDisappear:finished:context:)];
             [self setFrame:frame];
             [self setAlpha:0.0f];
             [UIView commitAnimations];
@@ -121,6 +152,11 @@
             frame.origin.y -= frame.size.height;
             [UIView beginAnimations:@"keyboardFadeIn"];
             [UIView setAnimationDuration:(animated ? KEYBOARD_FADE_IN_TIME : 0)];
+            [UIView setAnimationDelegate:animationDelegate];
+            [UIView setAnimationWillStartSelector:
+                 @selector(keyboardWillAppear:context:)];
+            [UIView setAnimationDidStopSelector:
+                 @selector(keyboardDidAppear:finished:context:)];
             [self setFrame:frame];
             [self setAlpha:1.0f];
             [UIView commitAnimations];
@@ -128,6 +164,12 @@
 
         visible = !visible;
     }
+}
+
+// NOTE: Override to prevent transform from being changed;
+//       Instead, orientation is controlled by superview
+- (void)setTransform:(CGAffineTransform)transform
+{
 }
 
 @end

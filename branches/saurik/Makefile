@@ -20,24 +20,25 @@ LDFLAGS = -march=armv6 -mcpu=arm1176jzf-s -lobjc -lcurses \
 SRCS = \
 	   Sources/main.m \
 	   Sources/MobileTerminal.m \
-	   Sources/Terminal/VT100Screen.m \
-	   Sources/Terminal/VT100Terminal.m \
-	   Sources/UI/PTYTextView.m \
 	   Sources/Misc/Color.m \
 	   Sources/Misc/ColorMap.m \
+	   Sources/Misc/Constants.m \
+	   Sources/Misc/Log.m \
 	   Sources/Misc/Settings.m \
-	   Sources/UI/Keyboard.m \
-	   Sources/Terminal/SubProcess.m \
-	   Sources/UI/GestureView.m \
-	   Sources/UI/Menu.m \
-	   Sources/UI/PieView.m \
+	   Sources/Misc/Tools.m \
 	   Sources/Preferences/ColorWidgets.m \
 	   Sources/Preferences/Preferences.m \
 	   Sources/Preferences/PreferencesGroup.m \
 	   Sources/Preferences/PreferencesDataSource.m \
-	   Sources/Misc/Constants.m \
-	   Sources/Misc/Tools.m \
-	   Sources/Misc/Log.m
+	   Sources/Terminal/SubProcess.m \
+	   Sources/Terminal/VT100Screen.m \
+	   Sources/Terminal/VT100Terminal.m \
+	   Sources/UI/GestureView.m \
+	   Sources/UI/Keyboard.m \
+	   Sources/UI/MainViewController.m \
+	   Sources/UI/Menu.m \
+	   Sources/UI/PieView.m \
+	   Sources/UI/PTYTextView.m
 
 OBJS := $(SRCS:.m=.o)
 

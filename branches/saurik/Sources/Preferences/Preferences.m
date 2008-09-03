@@ -759,8 +759,11 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     MobileTerminal *app = [MobileTerminal application];
+    // FIXME: 'textviews' was removed from main app class
+#if 0
     if (terminalIndex_ < [[app textviews] count])
         [[[app textviews] objectAtIndex:terminalIndex_] resetFont];
+#endif
 }
 
 #pragma mark Other

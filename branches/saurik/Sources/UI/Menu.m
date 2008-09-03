@@ -14,7 +14,11 @@
 
 #define NUM_OF_ROWS 4
 #define NUM_OF_COLS 3
+
 #define NUM_OF_BUTTONS (NUM_OF_ROWS * NUM_OF_COLS)
+
+#define MENU_WIDTH (NUM_OF_COLS * MENU_BUTTON_WIDTH)
+#define MENU_HEIGHT (NUM_OF_ROWS * MENU_BUTTON_HEIGHT)
 
 
 @implementation MenuItem
@@ -528,20 +532,23 @@ static NSMutableString *convertCommandString(Menu *menu, NSString *cmd, BOOL isC
         tapMode = NO;
         [self loadMenu];
 
-        CGRect frame = [[self superview] frame];
+        float statusBarHeight = [UIHardware statusBarHeight];
+        CGSize superSize = [[self superview] bounds].size;
+        superSize.height -= statusBarHeight;
 
-        float lx = MIN(frame.size.width - 3.0 * MENU_BUTTON_WIDTH,
-                MAX(0, location.x - 1.5 * MENU_BUTTON_WIDTH));
-        float ly = MIN(frame.size.height - 3.0 * MENU_BUTTON_HEIGHT,
-                MAX(0, location.y - 1.5 * MENU_BUTTON_HEIGHT));
+        float lx = MIN(superSize.width - MENU_WIDTH,
+                MAX(0, location.x - MENU_WIDTH / 2.0f));
+        float ly = MIN(superSize.height - MENU_HEIGHT,
+                MAX(0, location.y - MENU_HEIGHT / 2.0f));
 
         [self setTransform:CGAffineTransformMakeScale(1.0f, 1.0f)];
-        [self setOrigin:CGPointMake(lx, ly)];
-        [self setAlpha: 0.0f];
+        [self setOrigin:CGPointMake(lx, ly + statusBarHeight)];
+        [self setAlpha:0.0f];
 
         [UIView beginAnimations:@"fadeIn"];
         [UIView setAnimationDelegate:self];
-        [UIView setAnimationDidStopSelector: @selector(animationDidStop:finished:context:)];
+        [UIView setAnimationDidStopSelector:
+                 @selector(animationDidStop:finished:context:)];
         [UIView setAnimationDuration:MENU_FADE_IN_TIME];
         [self setAlpha:1.0f];
         [UIView commitAnimations];

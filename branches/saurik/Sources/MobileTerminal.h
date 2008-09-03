@@ -15,6 +15,7 @@
 @class VT100Terminal;
 @class GestureView;
 @class PieView;
+@class MainViewController;
 @class PreferencesController;
 @class MobileTerminal;
 @class Settings;
@@ -24,39 +25,39 @@
 {
     UIWindow *window;
 
-    ShellKeyboard *keyboardView;
-    UITransitionView *contentView;
-    UIView *mainView;
-
-    UIView *activeView;
-
-    GestureView *gestureView;
-
+    MainViewController *mainController;
     PreferencesController *preferencesController;
 
     NSMutableArray *processes;
     NSMutableArray *screens;
     NSMutableArray *terminals;
-    NSMutableArray *textviews;
-    NSMutableArray *scrollers;
 
     Settings *settings;
     Menu *menu;
 
     int numTerminals;
-    int activeTerminal;
+    int activeTerminalIndex;
 
     BOOL controlKeyMode;
-    BOOL keyboardShown;
     BOOL landscape;
-    int degrees;
+
+    @private
+        // Used to restore orientation after return from preferences
+        int viewWasLandscape_;
 }
 
 @property BOOL landscape;
-@property int degrees;
+
+@property(readonly) NSArray *scrollers;
 @property BOOL controlKeyMode;
 @property(readonly) Menu *menu;
-@property(readonly) PTYTextView *textView;
+@property(readonly) int numTerminals;
+@property(nonatomic, readonly, getter=indexOfActiveTerminal) int activeTerminalIndex;
+
+@property(nonatomic, readonly) SubProcess *activeProcess;
+@property(nonatomic, readonly) VT100Screen *activeScreen;
+@property(nonatomic, readonly) VT100Terminal *activeTerminal;
+@property(nonatomic, readonly) UIView *activeView;
 
 + (MobileTerminal *)application;
 + (Menu *)menu;
@@ -68,21 +69,12 @@
 - (void)handleStreamOutput:(const char *)c length:(unsigned int)len identifier:(int)tid;
 - (void)handleKeyPress:(unichar)c;
 
-- (void)updateStatusBar;
-- (void)updateColors;
-- (void)updateFrames:(BOOL)needsRefresh;
-- (void)setOrientation:(int)degrees;
-- (CGPoint)viewPointForWindowPoint:(CGPoint)point;
-
-- (SubProcess *)activeProcess;
-- (VT100Screen *)activeScreen;
-- (VT100Terminal *)activeTerminal;
-- (NSArray *)textviews;
-
-- (UIScroller *)textScroller;
-- (CGRect)keyboardFrame;
-
 - (void)togglePreferences;
+
+- (void)setStatusBarHidden:(BOOL)hidden duration:(double)duration;
+
+// Invoked by GestureView
+- (CGPoint)viewPointForWindowPoint:(CGPoint)point;
 
 // Invoked by MenuView
 - (void)hideMenu;
@@ -91,12 +83,12 @@
 - (void)toggleKeyboard;
 
 // Invoked by SwitcherMenu
+- (void)setActiveTerminal:(int)terminal;
+- (void)setActiveTerminal:(int)terminal direction:(int)direction;
 - (void)prevTerminal;
 - (void)nextTerminal;
 - (void)createTerminals;
 - (void)destroyTerminals;
-- (void)setActiveTerminal:(int)active;
-- (void)setActiveTerminal:(int)active direction:(int)direction;
 
 @end
 

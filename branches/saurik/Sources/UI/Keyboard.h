@@ -16,18 +16,22 @@
 
 @interface ShellKeyboard : UIKeyboard<KeyboardInputProtocol>
 {
-    id inputDelegate;
     id handler;
+    id inputDelegate;
+    id animationDelegate;
+
     BOOL visible;
 }
 
 @property(nonatomic, assign) id inputDelegate;
+@property(nonatomic, assign) id animationDelegate;
 @property(nonatomic, readonly, getter=isVisible) BOOL visible;
 
 - (id)initWithDefaultRect;
 - (void)handleKeyPress:(unichar)c;
 - (void)setEnabled:(BOOL)enabled;
 - (void)setVisible:(BOOL)visible animated:(BOOL)animated;
+- (void)updateGeometry;
 
 @end
 
