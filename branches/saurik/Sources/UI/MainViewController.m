@@ -258,13 +258,13 @@
 
 #pragma mark Keyboard animation-handling methods
 
-- (void)keyboardWillDisappear:(NSString *)animationID context:(void *)context
+- (void)keyboardDidAppear:(NSString *)animationID finished:(NSNumber *)finished
+    context:(void *)context
 {
-    // Adjust the subviews first, else mainView will be visible
     [self updateFrames:NO];
 }
 
-- (void)keyboardDidAppear:(NSString *)animationID finished:(NSNumber *)finished
+- (void)keyboardDidDisappear:(NSString *)animationID finished:(NSNumber *)finished
     context:(void *)context
 {
     [self updateFrames:NO];

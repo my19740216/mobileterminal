@@ -138,27 +138,23 @@
             // Hide the keyboard
             frame.origin.y += frame.size.height;
             [UIView beginAnimations:@"keyboardFadeOut"];
-            [UIView setAnimationDuration:(animated ? KEYBOARD_FADE_OUT_TIME : 0)];
+            [UIView setAnimationDuration:
+                (animated ? KEYBOARD_ANIMATE_OUT_TIME : 0)];
             [UIView setAnimationDelegate:animationDelegate];
-            [UIView setAnimationWillStartSelector:
-                @selector(keyboardWillDisappear:context:)];
             [UIView setAnimationDidStopSelector:
                 @selector(keyboardDidDisappear:finished:context:)];
             [self setFrame:frame];
-            [self setAlpha:0.0f];
             [UIView commitAnimations];
         } else {
             // Show the keyboard
             frame.origin.y -= frame.size.height;
             [UIView beginAnimations:@"keyboardFadeIn"];
-            [UIView setAnimationDuration:(animated ? KEYBOARD_FADE_IN_TIME : 0)];
+            [UIView setAnimationDuration:
+                (animated ? KEYBOARD_ANIMATE_IN_TIME : 0)];
             [UIView setAnimationDelegate:animationDelegate];
-            [UIView setAnimationWillStartSelector:
-                 @selector(keyboardWillAppear:context:)];
             [UIView setAnimationDidStopSelector:
                  @selector(keyboardDidAppear:finished:context:)];
             [self setFrame:frame];
-            [self setAlpha:1.0f];
             [UIView commitAnimations];
         }
 
