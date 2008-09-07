@@ -73,14 +73,8 @@
 
 - (void)setStatusBarHidden:(BOOL)hidden duration:(double)duration;
 
-// Invoked by GestureView
-- (CGPoint)viewPointForWindowPoint:(CGPoint)point;
-
 // Invoked by MenuView
-- (void)hideMenu;
-- (void)showMenu:(CGPoint)point;
 - (void)handleInputFromMenu:(NSString *)input;
-- (void)toggleKeyboard;
 
 // Invoked by SwitcherMenu
 - (void)setActiveTerminal:(int)terminal;

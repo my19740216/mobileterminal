@@ -6,8 +6,10 @@
 #import <UIKit/UIViewController.h>
 
 @class GestureView;
+@class MenuView;
 @class MobileTerminal;
 @class NSMutableArray;
+@class PieView;
 @class PTYTextView;
 @class ShellKeyboard;
 @class UIScroller;
@@ -21,6 +23,8 @@
     UIView *mainView;
     ShellKeyboard *keyboardView;
     GestureView *gestureView;
+    PieView *pieView;
+    MenuView *menuView;
 
     NSMutableArray *textviews;
     NSMutableArray *scrollers;
@@ -35,6 +39,12 @@
 @property(nonatomic, readonly) UIScroller *activeScroller;
 
 - (void)toggleKeyboard;
+
+- (void)showPie:(CGPoint)point;
+- (void)hidePie;
+
+- (void)showMenu:(CGPoint)point;
+- (void)hideMenu;
 
 - (void)addViewForTerminalScreen:(VT100Screen *)screen;
 - (void)removeViewForLastTerminal;

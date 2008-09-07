@@ -303,6 +303,7 @@ static NSMutableString *convertCommandString(Menu *menu, NSString *cmd, BOOL isC
 
 @synthesize tapMode;
 @synthesize visible;
+@synthesize activated;
 @synthesize showsEmptyButtons;
 @synthesize delegate;
 
@@ -443,91 +444,44 @@ static NSMutableString *convertCommandString(Menu *menu, NSString *cmd, BOOL isC
             [delegate performSelector:@selector(menuButtonPressed:) withObject:activeButton];
 
         if ([activeButton isMenuButton]) {
+            // Show submenu
             if ([delegate respondsToSelector:@selector(shouldLoadMenuWithButton:)])
-                if (![[self delegate] performSelector:@selector(shouldLoadMenuWithButton:) withObject:activeButton])
+                if (![delegate performSelector:@selector(shouldLoadMenuWithButton:) withObject:activeButton])
                     return;
             [self pushMenu:[activeButton.item submenu]];
+        } else {
+            if (activated) {
+                // Send command to application
+                [self hide];
+                NSMutableString *command = nil;
+                if (activeButton && ![activeButton isMenuButton]) {
+                    command = [NSMutableString stringWithCapacity:32];
+                    [command setString:[activeButton.item command]];
+                    [command removeSubstring:[[MobileTerminal menu] dotStringWithCommand:@"keepmenu"]];
+                    [command removeSubstring:[[MobileTerminal menu] dotStringWithCommand:@"back"]];
+                }
+                [[MobileTerminal application] handleInputFromMenu:command];
+            }
         }
     }
-}
-
-#pragma mark Input-tracking methods
-
-- (void)handleTrackingAt:(CGPoint)point
-{
-#if 0
-    for (int i = 0; i < [[self subviews] count]; i++) {
-        if (CGRectContainsPoint([[[self subviews] objectAtIndex:i] frame], point)) {
-                                            [self buttonPressed:[[self subviews] objectAtIndex:i]];
-                                            return;
-        }
-    }
-#endif
-    for (UIView *view in [self subviews]) {
-        if (CGRectContainsPoint([view frame], point)) {
-            [self buttonPressed:view];
-            return;
-        }
-    }
-
-    if (activeButton && ![activeButton isMenuButton]) {
-        [activeButton setSelected:NO];
-        activeButton = nil;
-    }
-}
-
-- (NSString *)handleTrackingEnd
-{
-    [self hide];
-    NSMutableString *command = nil;
-    if (activeButton && ![activeButton isMenuButton]) {
-        command = [NSMutableString stringWithCapacity:32];
-        [command setString:[activeButton.item command]];
-        [command removeSubstring:[[MobileTerminal menu] dotStringWithCommand:@"keepmenu"]];
-        [command removeSubstring:[[MobileTerminal menu] dotStringWithCommand:@"back"]];
-    }
-    return command;
 }
 
 #pragma mark Display-related methods
 
-- (void)stopTimer
-{
-    if (timer != nil) {
-        [timer invalidate];
-        timer = nil;
-    }
-}
-
-- (void)showAtPoint:(CGPoint)p
-{
-    [self showAtPoint:p delay:MENU_DELAY];
-}
-
-- (void)showAtPoint:(CGPoint)p delay:(float)delay
+- (void)showAtPoint:(CGPoint)point
 {
     if (!visible) {
-        [self stopTimer];
-        location.x = p.x;
-        location.y = p.y;
-        timer = [NSTimer scheduledTimerWithTimeInterval:delay
-            target:self selector:@selector(fadeIn) userInfo:nil repeats:NO];
+        location.x = point.x;
+        location.y = point.y;
+        [self fadeIn];
     }
-}
-
-- (void)fadeInAtPoint:(CGPoint)p
-{
-    [self stopTimer];
-    location.x = p.x;
-    location.y = p.y;
-    [self fadeIn];
 }
 
 - (void)fadeIn
 {
-    [self stopTimer];
-
     if (!visible) {
+        visible = YES;
+
         activeButton = nil;
         tapMode = NO;
         [self loadMenu];
@@ -552,8 +506,6 @@ static NSMutableString *convertCommandString(Menu *menu, NSString *cmd, BOOL isC
         [UIView setAnimationDuration:MENU_FADE_IN_TIME];
         [self setAlpha:1.0f];
         [UIView commitAnimations];
-
-        visible = YES;
     }
 }
 
@@ -565,8 +517,6 @@ static NSMutableString *convertCommandString(Menu *menu, NSString *cmd, BOOL isC
 
 - (void)hideSlow:(BOOL)slow
 {
-    [self stopTimer];
-
     if (visible) {
         [UIView beginAnimations:@"fadeOut"];
         [UIView setAnimationDuration: slow ?

@@ -13,6 +13,7 @@
 #import "Keyboard.h"
 #import "Menu.h"
 #import "MobileTerminal.h"
+#import "PieView.h"
 #import "PTYTextView.h"
 #import "Settings.h"
 #import "SubProcess.h"
@@ -45,11 +46,22 @@
     [keyboardView setInputDelegate:application];
     [keyboardView setAnimationDelegate:self];
 
+    // ------------------------------------------------------- gesture indicator
+
+    pieView = [PieView sharedInstance];
+    [pieView hide];
+
     // ----------------------------------------------------------- gesture frame
 
     gestureView = [[GestureView alloc] initWithFrame:CGRectMake(0, 0, 240.0f, 250.0f)
-        delegate:application];
+        delegate:self];
     [gestureView setBackgroundColor:[UIColor clearColor]];
+
+    // -------------------------------------------------------------- popup menu
+
+    menuView = [MenuView sharedInstance];
+    [menuView setCenter:CGPointMake(160.0f, 142.0f)];
+    [menuView setActivated:YES];
 
     // --------------------------------------------------------------- main view
  
@@ -57,13 +69,15 @@
         initWithFrame:[[UIScreen mainScreen] bounds]];
     [mainView setAutoresizingMask:WidthSizable|HeightSizable];
 
+    // NOTE: the order of the views is important, as they overlap
     [mainView addSubview:keyboardView];
+    [mainView addSubview:pieView];
     [mainView addSubview:gestureView];
-    [mainView addSubview:[MenuView sharedInstance]];
+    [mainView addSubview:menuView];
     [self setView:mainView];
 
     // Shows momentarily and hides so the user knows its there
-    [[MenuView sharedInstance] hideSlow:YES];
+    [menuView hideSlow:YES];
 
     // Enable the keyboard
     [keyboardView setEnabled:YES];
@@ -106,17 +120,12 @@
 {
     // NOTE: sometimes when resuming, the views are out-of-order
     [mainView bringSubviewToFront:gestureView];
-    [mainView bringSubviewToFront:[MenuView sharedInstance]];
+    [mainView bringSubviewToFront:menuView];
 
     [keyboardView setEnabled:YES];
 }
 
 #pragma mark Other
-
-- (void)toggleKeyboard
-{
-    [keyboardView setVisible:![keyboardView isVisible] animated:YES];
-}
 
 - (void)updateColors
 {
@@ -200,6 +209,49 @@
     [self.activeTextView willSlideIn];
 }
 
+#pragma mark Keyboard display methods
+
+- (void)toggleKeyboard
+{
+    [keyboardView setVisible:![keyboardView isVisible] animated:YES];
+}
+
+- (void)keyboardDidAppear:(NSString *)animationID finished:(NSNumber *)finished
+    context:(void *)context
+{
+    [self updateFrames:NO];
+}
+
+- (void)keyboardDidDisappear:(NSString *)animationID finished:(NSNumber *)finished
+    context:(void *)context
+{
+    [self updateFrames:NO];
+}
+
+#pragma mark Pie display methods
+
+- (void)showPie:(CGPoint)point
+{
+    [pieView showAtPoint:point];
+}
+
+- (void)hidePie
+{
+    [pieView hide];
+}
+
+#pragma mark Menu display methods
+
+- (void)showMenu:(CGPoint)point
+{
+    [menuView showAtPoint:point];
+}
+
+- (void)hideMenu
+{
+    [menuView hide];
+}
+
 #pragma mark Orientation-handling methods
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(int)orientation
@@ -254,20 +306,6 @@
     [keyboardView setAlpha:1.0f];
     [self.activeTextView setAlpha:1.0f];
     [UIView commitAnimations];
-}
-
-#pragma mark Keyboard animation-handling methods
-
-- (void)keyboardDidAppear:(NSString *)animationID finished:(NSNumber *)finished
-    context:(void *)context
-{
-    [self updateFrames:NO];
-}
-
-- (void)keyboardDidDisappear:(NSString *)animationID finished:(NSNumber *)finished
-    context:(void *)context
-{
-    [self updateFrames:NO];
 }
 
 #pragma mark Other animation-handling methods

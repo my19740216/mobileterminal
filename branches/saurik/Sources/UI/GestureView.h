@@ -6,6 +6,10 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <UIKit/UIControl.h>
 
+
+@class PieView;
+@class MenuView;
+
 struct GSPathPoint {
     char unk0;
     char unk1;
@@ -43,6 +47,8 @@ typedef struct {
 
 @protocol GestureInputProtocol
 
+- (void)showPie:(CGPoint)point;
+- (void)hidePie;
 - (void)showMenu:(CGPoint)point;
 - (void)hideMenu;
 - (void)handleInputFromMenu:(NSString *)input;
@@ -52,20 +58,22 @@ typedef struct {
 
 @interface GestureView : UIControl
 {
-    CGPoint mouseDownPos;
-    CGPoint gestureStart;
-    CGPoint gestureEnd;
-    int gestureFingers;
+    PieView *pieView;
+    MenuView *menuView;
+
+    CGPoint touchPos;
 
     id delegate;
-    BOOL gestureMode;
     BOOL menuTapped;
 
     NSTimer *toggleKeyboardTimer;
+
+    @private
+        int fingersDown_;
+        CGPoint touchInitialPoint_;
 }
 
 - (id)initWithFrame:(CGRect)rect delegate:(id)inputDelegate;
-- (void)stopToggleKeyboardTimer;
 
 @end
 

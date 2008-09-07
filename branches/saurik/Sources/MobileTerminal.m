@@ -237,24 +237,7 @@
     }
 }
 
-#pragma mark Gesture view methods
-
-- (CGPoint)viewPointForWindowPoint:(CGPoint)point
-{
-    return [window convertPoint:point toView:self.activeView];
-}
-
 #pragma mark MenuView delegate methods
-
-- (void)hideMenu
-{
-    [[MenuView sharedInstance] hide];
-}
-
-- (void)showMenu:(CGPoint)point
-{
-    [[MenuView sharedInstance] showAtPoint:point];
-}
 
 - (void)handleInputFromMenu:(NSString *)input
 {
@@ -264,7 +247,7 @@
         if (![[MobileTerminal application] controlKeyMode])
             [[MobileTerminal application] setControlKeyMode:YES];
     } else if ([input isEqualToString:@"[KEYB]"]) {
-        [[MobileTerminal application] toggleKeyboard];
+        [mainController toggleKeyboard];
     } else if ([input isEqualToString:@"[NEXT]"]) {
         [[MobileTerminal application] nextTerminal];
     } else if ([input isEqualToString:@"[PREV]"]) {
@@ -274,11 +257,6 @@
     } else {
         [[self activeProcess] write:[input UTF8String] length:[input length]];
     }
-}
-
-- (void)toggleKeyboard
-{
-    [mainController toggleKeyboard];
 }
 
 - (void)setControlKeyMode:(BOOL)mode
