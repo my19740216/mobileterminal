@@ -31,7 +31,6 @@
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         application = [MobileTerminal application];
-        orientation_ = 1;
         scrollers = [[NSMutableArray alloc] initWithCapacity:MAXTERMINALS];
         textviews = [[NSMutableArray alloc] initWithCapacity:MAXTERMINALS];
     }
@@ -256,8 +255,8 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(int)orientation
 {
-    if ( orientation_ != orientation ) {
-        orientation_ = orientation;
+    if ( [self interfaceOrientation] != orientation ) {
+        targetOrientation_ = orientation;
 
         [application setStatusBarHidden:YES duration:0.1f];
 
@@ -287,7 +286,7 @@
     //       of the UIKeyboard object, thus affecting positioning, and so these
     //       properties must be reset afterwards.
 
-    [[mainView window] _setRotatableViewOrientation:orientation_ duration:0];
+    [[mainView window] _setRotatableViewOrientation:targetOrientation_ duration:0];
 }
 
 - (void)didRotateFromInterfaceOrientation:(int)orientation
@@ -323,6 +322,11 @@
 // FIXME: should rename to standart layoutSubviews?
 - (void)updateFrames:(BOOL)needsRefresh
 {
+    // FIXME: Upon switching to preferences when not in portrait orientation,
+    //        the mainView height is reported minus the statusbar height.
+    //        This causes the text/scroller view to be misaligned.
+    //        Need to find a proper way to detect this case.
+
     TerminalConfig *config =
         [[[Settings sharedInstance] terminalConfigs]
             objectAtIndex:[application indexOfActiveTerminal]];

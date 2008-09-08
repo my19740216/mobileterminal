@@ -32,7 +32,7 @@
     int activeTerminal;
 
     @private
-        int orientation_;
+        int targetOrientation_;
 }
 
 @property(nonatomic, readonly) PTYTextView *activeTextView;

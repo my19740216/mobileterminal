@@ -340,64 +340,27 @@
 
 #pragma mark App/Preferences switching methods
 
-#if 0
-- (void)togglePreferences
-{
-    if (activeView == [mainController view]) {
-        preferencesController = [[PreferencesController alloc] init];
-        //if (landscape) [self setOrientation:0];
-        [contentView transition:0 toView:[preferencesController view]];
-        activeView = [preferencesController view];
-        //[keyboardView setEnabled:NO];
-    } else {
-        [contentView transition:0 toView:[mainController view]];
-        activeView = [mainController view];
-
-        [settings writeUserDefaults];
-        [mainController updateColors];
-        //[gestureView setNeedsDisplay];
-
-        if (numTerminals > 1 && ![settings multipleTerminals]) {
-            [self destroyTerminals];
-        } else if (numTerminals == 1 && [settings multipleTerminals]) {
-            [self createTerminals];
-        }
-
-        //[keyboardView setEnabled:YES];
-    }
-
-    CAAnimation *animation = [CATransition animation];
-    [animation performSelector:@selector(setType:) withObject:@"oglFlip"];
-    [animation performSelector:@selector(setSubtype:) withObject:(activeView == [mainController view]) ? @"fromRight" : @"fromLeft"];
-    [animation performSelector:@selector(setTransitionFlags:) withObject:[NSNumber numberWithInt:3]];
-    [animation setTimingFunction: [CAMediaTimingFunction functionWithName: @"easeInEaseOut"]];
-    [animation setSpeed: 0.25f];
-    [contentView addAnimation:(id)animation forKey:@"flip"];
-}
-#endif
-
-- (void)togglePreferences
-{
-    if (self.activeView == [mainController view]) {
-        preferencesController = [[PreferencesController alloc] init];
-        if ([self orientation] % 180 != 0) {
-            viewWasLandscape_ = [self statusBarOrientation];
-            [self setStatusBarOrientation:1 animated:YES];
-        }
-    } else {
-        if (viewWasLandscape_) {
-            [self setStatusBarOrientation:viewWasLandscape_ animated:YES];
-            viewWasLandscape_ = 0;
-        }
-    }
-
 #define fromRight 1
 #define fromLeft 2
 
+- (void)togglePreferences
+{
+    // Handle status bar and orientation
+    if (self.activeView == [mainController view]) {
+        preferencesController = [[PreferencesController alloc] init];
+        if ([window interfaceOrientation] != 1) {
+            // set orientation to portrait
+            [self setStatusBarOrientation:1 animated:YES];
+            [window _setRotatableViewOrientation:1 duration:0];
+        }
+    }
+
+    // Change the view
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:0.75f];
-    [UIView setAnimationTransition:((self.activeView == [mainController view]) ? fromRight : fromLeft)
-                           forView:window cache:YES];
+    [UIView setAnimationTransition:
+        (self.activeView == [mainController view] ? fromRight : fromLeft)
+        forView:window cache:YES];
     [UIView setAnimationDelegate:self];
 
     if (self.activeView == [mainController view]) {
@@ -413,7 +376,7 @@
 
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context
 {
-    if ([window contentView] == [mainController view]) {
+    if (self.activeView == [mainController view]) {
         // The Preferences view has just been closed, release it
         [preferencesController release];
         preferencesController = nil;
@@ -423,7 +386,6 @@
 
         // reload settings
         [mainController updateColors];
-        //[gestureView setNeedsDisplay];
 
         if (numTerminals > 1 && ![settings multipleTerminals])
             [self destroyTerminals];

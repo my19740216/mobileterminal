@@ -40,10 +40,6 @@
 
     BOOL controlKeyMode;
     BOOL landscape;
-
-    @private
-        // Used to restore orientation after return from preferences
-        int viewWasLandscape_;
 }
 
 @property BOOL landscape;
