@@ -7,6 +7,9 @@
 #import <Foundation/Foundation.h>
 #import <GraphicsServices/GraphicsServices.h>
 #import <QuartzCore/CoreAnimation.h>
+
+@protocol UIAlertViewDelegate;
+#import <UIKit/UIAlertView.h>
 #import <UIKit/UIScreen.h>
 #import <UIKit/UIView-Geometry.h>
 #import <UIKit/UIWindow.h>
@@ -106,6 +109,23 @@
         }
     }
     return ret;
+}
+
+#pragma mark Confirmation dialog methods
+
+- (void)confirmWithQuestion:(NSString *)question
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:question message:nil
+        delegate:self defaultButton:@"Yes" cancelButton:@"No" otherButtons:nil];
+    [alert show];
+    [alert release];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)index
+{
+    // NOTE: Currently only one alert view is used, so no need to ID the view
+    if (index == 0)
+        [self terminate];
 }
 
 #pragma mark Application events methods
@@ -268,11 +288,13 @@
     } else if ([input isEqualToString:@"[KEYB]"]) {
         [mainController toggleKeyboard];
     } else if ([input isEqualToString:@"[NEXT]"]) {
-        [[MobileTerminal application] nextTerminal];
+        [self nextTerminal];
     } else if ([input isEqualToString:@"[PREV]"]) {
-        [[MobileTerminal application] prevTerminal];
+        [self prevTerminal];
     } else if ([input isEqualToString:@"[CONF]"]) {
-        [[MobileTerminal application] togglePreferences];
+        [self togglePreferences];
+    } else if ([input isEqualToString:@"[QUIT]"]) {
+        [self confirmWithQuestion:@"Quit Terminal?"];
     } else {
         [[self activeProcess] write:[input UTF8String] length:[input length]];
     }
