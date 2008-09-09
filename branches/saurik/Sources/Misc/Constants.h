@@ -6,9 +6,14 @@
 
 #import "svnversion.h"
 
+#define TERMINATION_DELAY 0.7f
+
 #define MULTIPLE_TERMINALS YES
 #define MAXTERMINALS 4
 #define NUM_TERMINAL_COLORS 5
+#define DEFAULT_TERMINAL_WIDTH 80
+#define DEFAULT_TERMINAL_HEIGHT 25
+#define TERMINAL_LINE_SPACING 3.0f
 
 #define TAP_DELAY 0.30f
 
@@ -24,10 +29,6 @@
 #define KEYBOARD_ANIMATE_OUT_TIME 0.5f
 #define KEYBOARD_ANIMATE_IN_TIME 0.5f
 
-#define DEFAULT_TERMINAL_WIDTH 80
-#define DEFAULT_TERMINAL_HEIGHT 25
-
-#define TERMINAL_LINE_SPACING 3.0f
 
 // gesture pie zones
 enum {

@@ -49,46 +49,43 @@ int start_process(const char *path, char *const args[], char *const env[])
 - (id)initWithDelegate:(id)inputDelegate identifier:(int)tid
 {
     self = [super init];
+    if (self) {
+        delegate = inputDelegate;
+        termid = tid;
 
-    fd = 0;
-    delegate = inputDelegate;
+        // Clean up when ^C is pressed during debugging from a console
+        signal(SIGINT, &signal_handler);
 
-    termid = tid;
-    closed = 0;
+        TerminalConfig *config = [[[Settings sharedInstance] terminalConfigs] objectAtIndex:tid];
 
-    // Clean up when ^C is pressed during debugging from a console
-    signal(SIGINT, &signal_handler);
+        struct winsize win;
+        win.ws_col = [config width];
+        win.ws_row = DEFAULT_TERMINAL_HEIGHT;
 
-    struct winsize win;
-
-    TerminalConfig *config = [[[Settings sharedInstance] terminalConfigs] objectAtIndex:tid];
-
-    win.ws_col = [config width];
-    win.ws_row = DEFAULT_TERMINAL_HEIGHT;
-
-    pid = forkpty(&fd, NULL, NULL, &win);
-    if (pid == -1) {
-        log(@"[Failed to fork child process] %d", pid);
-        perror("forkpty");
-        [self failure:@"[Failed to fork child process]"];
-        //exit(0); // sometimes a fork fails. if we exit here, the app hangs -kodi
-        return self;
-    } else if (pid == 0) {
-        // First try to use /bin/login since its a little nicer. Fall back to
-        // /bin/sh if that is available.
-        char *login_args[] = { "login", "-fp", "mobile", (char *)0, };
-        char *sh_args[] = { "sh", (char *)0, };
-        char *env[] = { "TERM=vt100", (char *)0 };
-        // NOTE: These should never return if successful
-        start_process("/usr/bin/login", login_args, env);
-        start_process("/bin/login", login_args, env);
-        start_process("/bin/sh", sh_args, env);
-        exit(0);
+        pid = forkpty(&fd, NULL, NULL, &win);
+        if (pid == -1) {
+            log(@"[Failed to fork child process] %d", pid);
+            perror("forkpty");
+            [self failure:@"[Failed to fork child process]"];
+            //exit(0); // sometimes a fork fails. if we exit here, the app hangs -kodi
+            return self;
+        } else if (pid == 0) {
+            // First try to use /bin/login since its a little nicer. Fall back to
+            // /bin/sh if that is available.
+            char *login_args[] = { "login", "-fp", "mobile", (char *)0, };
+            char *sh_args[] = { "sh", (char *)0, };
+            char *env[] = { "TERM=vt100", (char *)0 };
+            // NOTE: These should never return if successful
+            start_process("/usr/bin/login", login_args, env);
+            start_process("/bin/login", login_args, env);
+            start_process("/bin/sh", sh_args, env);
+            exit(0);
+        }
+        log(@"Child process id: %d", pid);
+        [NSThread detachNewThreadSelector:@selector(startIOThread:)
+                                 toTarget:self
+                               withObject:delegate];
     }
-    log(@"Child process id: %d", pid);
-    [NSThread detachNewThreadSelector:@selector(startIOThread:)
-                             toTarget:self
-                           withObject:delegate];
     return self;
 }
 
@@ -165,11 +162,14 @@ int start_process(const char *path, char *const args[], char *const env[])
             [self close];
             if(!closed)
                 [self failure:@"[Process error]"];
+                [self didExitWithCode:1];
             return;
         } else if (nread == 0) {
             [self close];
-            if(!closed)
+            if(!closed) {
                 [self failure:@"[Process completed]"];
+                [self didExitWithCode:0];
+            }
             return;
         }
         [inputDelegate handleStreamOutput:buf length:nread identifier:termid];
@@ -201,6 +201,14 @@ int start_process(const char *path, char *const args[], char *const env[])
 - (void)setIdentifier:(int)tid
 {
     termid = tid;
+}
+
+#pragma Delegate methods
+
+- (void)didExitWithCode:(int)code
+{
+    if ([delegate respondsToSelector:@selector(process:didExitWithCode:)])
+       [delegate process:self didExitWithCode:code];
 }
 
 @end

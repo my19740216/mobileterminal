@@ -94,6 +94,20 @@
     }
 }
 
+#pragma mark Other
+
+- (BOOL)shouldTerminate
+{
+    BOOL ret = YES;
+    for (SubProcess *sp in processes) {
+        if ([sp isRunning]) {
+            ret = NO;
+            break;
+        }
+    }
+    return ret;
+}
+
 #pragma mark Application events methods
 
 - (void)applicationResume:(GSEvent *)event
@@ -107,16 +121,8 @@
 {
     [settings writeUserDefaults];
 
-    BOOL shouldQuit = YES;
-    for (SubProcess *sp in processes) {
-        if ([sp isRunning]) {
-            shouldQuit = NO;
-            break;
-        }
-    }
-
-    if (shouldQuit) {
-        exit(0);
+    if ([self shouldTerminate]) {
+        [self terminate];
     } else {
         // FIXME: seems to not handle statusbar correctly
         if (self.activeView != [mainController view]) // preferences active
@@ -137,6 +143,19 @@
 
     for (int i = 0; i < MAXTERMINALS; i++)
         [self removeStatusBarImageNamed:[NSString stringWithFormat:@"MobileTerminal%d", i]];
+}
+
+#pragma mark SubProcess delegate methods
+
+- (void)process:(SubProcess *)process didExitWithCode:(int)code
+{
+    // Add delay so as not to jar user
+    [NSThread sleepForTimeInterval:TERMINATION_DELAY];
+
+    if ([self shouldTerminate])
+        [self terminate];
+    else
+        [self nextTerminal];
 }
 
 #pragma mark IO handling methods
