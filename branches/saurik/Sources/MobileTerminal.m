@@ -28,6 +28,33 @@
 #import "VT100Terminal.h"
 
 
+@implementation Terminal
+
+@synthesize identifier;
+@synthesize process, screen, terminal;
+
+- (id)initWithIdentifier:(int)identifier_ delegate:(id)delegate
+{
+    self = [super init];
+    if (self) {
+        identifier = identifier_;
+
+        screen = [[VT100Screen alloc] initWithIdentifier:identifier];
+        terminal = [[VT100Terminal alloc] init];
+        [screen setTerminal:terminal];
+        [terminal setScreen:screen];
+
+        process = [[SubProcess alloc]
+            initWithDelegate:delegate identifier:identifier];
+    }
+    return self;
+}
+
+@end
+
+//_______________________________________________________________________________
+//_______________________________________________________________________________
+
 @implementation MobileTerminal
 
 @synthesize scrollers;
@@ -61,26 +88,14 @@
 
     // --------------------------------------------------------- setup terminals
 
-    processes = [[NSMutableArray arrayWithCapacity: MAXTERMINALS] retain];
-    screens = [[NSMutableArray arrayWithCapacity: MAXTERMINALS] retain];
     terminals = [[NSMutableArray arrayWithCapacity: MAXTERMINALS] retain];
 
     for (numTerminals = 0; numTerminals < ([settings multipleTerminals] ? MAXTERMINALS : 1); numTerminals++) {
-        VT100Screen *screen = [[VT100Screen alloc] initWithIdentifier: numTerminals];
-        [screens addObject: screen];
-
-        VT100Terminal *terminal = [[VT100Terminal alloc] init];
+        Terminal *terminal = [[Terminal alloc]
+            initWithIdentifier:numTerminals delegate:self];
         [terminals addObject:terminal];
-        [screen setTerminal:terminal];
-        [terminal setScreen:screen];
-        [terminal release];
 
-        SubProcess *process = [[SubProcess alloc] initWithDelegate:self identifier:numTerminals];
-        [processes addObject:process];
-        [process release];
-
-        [mainController addViewForTerminalScreen:screen];
-        [screen release];
+        [mainController addViewForTerminal:terminal];
     }
 
     // ------------------------------------------------------------- setup views
@@ -102,8 +117,8 @@
 - (BOOL)shouldTerminate
 {
     BOOL ret = YES;
-    for (SubProcess *sp in processes) {
-        if ([sp isRunning]) {
+    for (Terminal *terminal in terminals) {
+        if ([terminal.process isRunning]) {
             ret = NO;
             break;
         }
@@ -158,8 +173,8 @@
 {
     [settings writeUserDefaults];
 
-    for (SubProcess *sp in processes)
-        [sp close];
+    for (Terminal *terminal in terminals)
+        [terminal.process close];
 
     for (int i = 0; i < MAXTERMINALS; i++)
         [self removeStatusBarImageNamed:[NSString stringWithFormat:@"MobileTerminal%d", i]];
@@ -167,7 +182,7 @@
 
 #pragma mark SubProcess delegate methods
 
-- (void)process:(SubProcess *)process didExitWithCode:(int)code
+- (void)process:(SubProcess *)process didExitWithCode:(NSInteger)code
 {
     // Add delay so as not to jar user
     [NSThread sleepForTimeInterval:TERMINATION_DELAY];
@@ -183,27 +198,25 @@
 // Process output from the shell and pass it to the screen
 - (void)handleStreamOutput:(const char *)c length:(unsigned int)len identifier:(int)tid
 {
-    if (tid < 0 || tid >= [terminals count]) {
+    if (tid < 0 || tid >= [terminals count])
         return;
-    }
 
-    VT100Terminal *terminal = [terminals objectAtIndex: tid];
-    VT100Screen *screen = [screens objectAtIndex: tid];
+    Terminal *terminal = [terminals objectAtIndex: tid];
 
-    [terminal putStreamData:c length:len];
+    [terminal.terminal putStreamData:c length:len];
 
     // Now that we've got the raw data from the sub process, write it to the
     // terminal. We get back tokens to display on the screen and pass the
     // update in the main thread.
     VT100TCC token;
-    while((token = [terminal getNextToken]),
+    while((token = [terminal.terminal getNextToken]),
             token.type != VT100_WAIT && token.type != VT100CC_NULL) {
         // process token
         if (token.type != VT100_SKIP) {
             if (token.type == VT100_NOTSUPPORT) {
                 NSLog(@"%s(%d):not support token", __FILE__ , __LINE__);
             } else {
-                [screen putToken:token];
+                [terminal.screen putToken:token];
             }
         } else {
             NSLog(@"%s(%d):skip token", __FILE__ , __LINE__);
@@ -246,7 +259,7 @@
     }
     char simple_char = (char)c;
 
-    [[self activeProcess] write:&simple_char length:1];
+    [self.activeTerminal.process write:&simple_char length:1];
 }
 
 #pragma mark StatusBar methods
@@ -296,7 +309,7 @@
     } else if ([input isEqualToString:@"[QUIT]"]) {
         [self confirmWithQuestion:@"Quit Terminal?"];
     } else {
-        [[self activeProcess] write:[input UTF8String] length:[input length]];
+        [self.activeTerminal.process write:[input UTF8String] length:[input length]];
     }
 }
 
@@ -339,27 +352,30 @@
     }
 }
 
+- (void)createTerminalWithIdentifier:(int)identifier
+{
+    Terminal *terminal = [[Terminal alloc]
+        initWithIdentifier:numTerminals delegate:self];
+    [terminals addObject:terminal];
+
+    [mainController addViewForTerminal:terminal];
+}
+
 - (void)createTerminals
 {
-    for (numTerminals = 1; numTerminals < MAXTERMINALS; numTerminals++) {
-        VT100Terminal *terminal = [[VT100Terminal alloc] init];
-        VT100Screen *screen = [[VT100Screen alloc] initWithIdentifier: numTerminals];
-        SubProcess *process = [[SubProcess alloc] initWithDelegate:self identifier: numTerminals];
-
-        [screens addObject: screen];
-        [terminals addObject: terminal];
-        [processes addObject: process];
-        // FIXME: why was this being added twice? necessary?
-        //[processes addObject: process];
-
-        [screen setTerminal:terminal];
-        [terminal setScreen:screen];
-
-        [mainController addViewForTerminalScreen:screen];
-        [screen release];
-    }
+    for (numTerminals = 1; numTerminals < MAXTERMINALS; numTerminals++)
+        [self createTerminalWithIdentifier:numTerminals];
 
     [self addStatusBarImageNamed:[NSString stringWithFormat:@"MobileTerminal0"] removeOnAbnormalExit:YES];
+}
+
+- (void)destroyTerminalAtIndex:(int)index
+{
+    Terminal *terminal = [terminals objectAtIndex:index];
+    [terminal.process closeSession];
+
+    [mainController resetViewForTerminal:index];
+    [terminals removeObject:terminal];
 }
 
 - (void)destroyTerminals
@@ -368,15 +384,8 @@
 
     [self removeStatusBarImageNamed:[NSString stringWithFormat:@"MobileTerminal0"]];
 
-    for (numTerminals = MAXTERMINALS; numTerminals > 1; numTerminals--) {
-        SubProcess *process = [processes lastObject];
-        [process closeSession];
-
-        [screens removeLastObject];
-        [terminals removeLastObject];
-        [processes removeLastObject];
-        [mainController removeViewForLastTerminal];
-    }
+    for (numTerminals = MAXTERMINALS; numTerminals > 1; numTerminals--)
+        [self destroyTerminalAtIndex:numTerminals];
 }
 
 #pragma mark App/Preferences switching methods
@@ -437,17 +446,7 @@
 
 #pragma mark Properties
 
-- (SubProcess *)activeProcess
-{
-    return [processes objectAtIndex:activeTerminalIndex];
-}
-
-- (VT100Screen *)activeScreen
-{
-    return [screens objectAtIndex:activeTerminalIndex];
-}
-
-- (VT100Terminal *)activeTerminal
+- (Terminal *)activeTerminal
 {
     return [terminals objectAtIndex:activeTerminalIndex];
 }

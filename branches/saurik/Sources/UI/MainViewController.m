@@ -141,15 +141,22 @@
 
 #pragma mark Terminal view methods
 
-- (void)addViewForTerminalScreen:(VT100Screen *)screen
+- (void)addViewForTerminal:(Terminal *)terminal
 {
     PTYTextView *textview = [[PTYTextView alloc]
         initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 244.0f)
-               source:screen identifier:application.numTerminals];
+               source:terminal.screen identifier:terminal.identifier];
     [textview setBackgroundColor:[[ColorMap sharedInstance]
         colorForCode:BG_COLOR_CODE termid:[application numTerminals]]];
     [textviews addObject:textview];
     [textview release];
+}
+
+- (void)resetViewForTerminal:(int)index
+{
+    // FIXME: this method has not been properly defined yet
+    [[[textviews objectAtIndex:index] tiledView] removeFromSuperview];
+    [textviews removeObjectAtIndex:index];
 }
 
 - (void)removeViewForLastTerminal
@@ -353,8 +360,9 @@
     [gestureView setFrame:gestureFrame];
     [gestureView setNeedsDisplay];
 
-    [application.activeProcess setWidth:columns height:rows];
-    [application.activeScreen resizeWidth:columns height:rows];
+    Terminal *terminal = [application activeTerminal];
+    [terminal.process setWidth:columns height:rows];
+    [terminal.screen resizeWidth:columns height:rows];
 
     if (needsRefresh) {
         [self.activeTextView.tiledView refresh];

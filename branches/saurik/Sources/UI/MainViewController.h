@@ -12,8 +12,8 @@
 @class PieView;
 @class PTYTextView;
 @class ShellKeyboard;
+@class Terminal;
 @class UIView;
-@class VT100Screen;
 
 @interface MainViewController : UIViewController
 {
@@ -43,7 +43,8 @@
 - (void)showMenu:(CGPoint)point;
 - (void)hideMenu;
 
-- (void)addViewForTerminalScreen:(VT100Screen *)screen;
+- (void)addViewForTerminal:(Terminal *)terminal;
+- (void)resetViewForTerminal:(int)index;
 - (void)removeViewForLastTerminal;
 - (void)switchToTerminal:(int)terminal direction:(int)direction;
 

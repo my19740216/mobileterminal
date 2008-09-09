@@ -8,6 +8,7 @@
 #import "Constants.h"
 #import "Log.h"
 
+
 @class PTYTextView;
 @class ShellKeyboard;
 @class SubProcess;
@@ -20,6 +21,27 @@
 @class MobileTerminal;
 @class Settings;
 @class Menu;
+
+@interface Terminal : NSObject
+{
+    int identifier;
+
+    SubProcess *process;
+    VT100Screen *screen;
+    VT100Terminal *terminal;
+}
+
+@property(nonatomic, readonly) int identifier;
+@property(nonatomic, readonly) SubProcess *process;
+@property(nonatomic, readonly) VT100Screen *screen;
+@property(nonatomic, readonly) VT100Terminal *terminal;
+
+- (id)initWithIdentifier:(int)identifier delegate:(id)delegate;
+
+@end
+
+//_______________________________________________________________________________
+//_______________________________________________________________________________
 
 @interface MobileTerminal : UIApplication
 {
@@ -50,9 +72,7 @@
 @property(readonly) int numTerminals;
 @property(nonatomic, readonly, getter=indexOfActiveTerminal) int activeTerminalIndex;
 
-@property(nonatomic, readonly) SubProcess *activeProcess;
-@property(nonatomic, readonly) VT100Screen *activeScreen;
-@property(nonatomic, readonly) VT100Terminal *activeTerminal;
+@property(nonatomic, readonly) Terminal *activeTerminal;
 @property(nonatomic, readonly) UIView *activeView;
 
 + (MobileTerminal *)application;

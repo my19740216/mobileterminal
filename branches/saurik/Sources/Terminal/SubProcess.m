@@ -95,6 +95,17 @@ int start_process(const char *path, char *const args[], char *const env[])
     [super dealloc];
 }
 
+#pragma mark Delegate methods
+
+- (void)didExitWithCode:(int)code
+{
+    if ([delegate respondsToSelector:@selector(process:didExitWithCode:)])
+        [delegate performSelector:@selector(process:didExitWithCode:)
+            withObject:self withObject:[NSNumber numberWithInt:code]];
+}
+
+#pragma mark Other
+
 - (void)closeSession { // this is invoked when the user closes that terminal session
     closed = 1;
     kill(pid, SIGHUP);
@@ -201,14 +212,6 @@ int start_process(const char *path, char *const args[], char *const env[])
 - (void)setIdentifier:(int)tid
 {
     termid = tid;
-}
-
-#pragma Delegate methods
-
-- (void)didExitWithCode:(int)code
-{
-    if ([delegate respondsToSelector:@selector(process:didExitWithCode:)])
-       [delegate process:self didExitWithCode:code];
 }
 
 @end
