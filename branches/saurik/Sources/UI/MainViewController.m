@@ -31,7 +31,6 @@
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         application = [MobileTerminal application];
-        scrollers = [[NSMutableArray alloc] initWithCapacity:MAXTERMINALS];
         textviews = [[NSMutableArray alloc] initWithCapacity:MAXTERMINALS];
     }
     return self;
@@ -89,7 +88,6 @@
     [keyboardView release];
 
     [textviews release];
-    [scrollers release];
 
     [super dealloc];
 }
@@ -133,10 +131,10 @@
         for (int c = 0; c < NUM_TERMINAL_COLORS; c++)
             [[ColorMap sharedInstance] setTerminalColor:config.colors[c] atIndex:c termid:i];
         // FIXME: this does not appear to be getting set properly
-        [[scrollers objectAtIndex:i] setBackgroundColor:[[ColorMap sharedInstance] colorForCode:BG_COLOR_CODE termid:i]];
-        [[textviews objectAtIndex:i] setNeedsDisplay];
+        [[textviews objectAtIndex:i] setBackgroundColor:[[ColorMap sharedInstance] colorForCode:BG_COLOR_CODE termid:i]];
+        [[[textviews objectAtIndex:i] tiledView] setNeedsDisplay];
     }
-    [mainView setBackgroundColor:[self.activeScroller backgroundColor]];
+    [mainView setBackgroundColor:[self.activeTextView backgroundColor]];
 
     [self updateFrames:YES];
 }
@@ -145,41 +143,35 @@
 
 - (void)addViewForTerminalScreen:(VT100Screen *)screen
 {
-    UIScroller *scroller = [[UIScroller alloc] init];
-    [scroller setBackgroundColor:[[ColorMap sharedInstance]
-        colorForCode:BG_COLOR_CODE termid:[application numTerminals]]];
-    [scrollers addObject: scroller];
-
     PTYTextView *textview = [[PTYTextView alloc]
         initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 244.0f)
-               source:screen scroller:scroller identifier:application.numTerminals];
-    [scroller release];
-
+               source:screen identifier:application.numTerminals];
+    [textview setBackgroundColor:[[ColorMap sharedInstance]
+        colorForCode:BG_COLOR_CODE termid:[application numTerminals]]];
     [textviews addObject:textview];
     [textview release];
 }
 
 - (void)removeViewForLastTerminal
 {
-    [scrollers removeLastObject];
-    [[textviews lastObject] removeFromSuperview];
+    [[[textviews lastObject] tiledView] removeFromSuperview];
     [textviews removeLastObject];
 }
 
 - (void)switchToTerminal:(int)terminal direction:(int)direction
 {
-    [self.activeTextView willSlideOut];
+    [self.activeTextView.tiledView willSlideOut];
 
     if (direction) {
         [UIView beginAnimations:@"slideOut"];
         [UIView setAnimationDelegate:self];
         [UIView setAnimationDidStopSelector:
               @selector(activeViewDidChange:finished:context:)];
-        [self.activeScroller setTransform:
+        [self.activeTextView setTransform:
             CGAffineTransformMakeTranslation(-direction * [mainView frame].size.width, 0)];
         [UIView commitAnimations];
     } else {
-        [self.activeScroller setTransform:CGAffineTransformMakeTranslation(-[mainView frame].size.width,0)];
+        [self.activeTextView setTransform:CGAffineTransformMakeTranslation(-[mainView frame].size.width,0)];
     }
 
     if (application.numTerminals > 1) {
@@ -188,24 +180,24 @@
             removeOnAbnormalExit:YES];
     }
     activeTerminal = terminal;
-    [mainView insertSubview:self.activeScroller below:keyboardView];
-    [mainView setBackgroundColor:[self.activeScroller backgroundColor]];
+    [mainView insertSubview:self.activeTextView below:keyboardView];
+    [mainView setBackgroundColor:[self.activeTextView backgroundColor]];
 
     CGAffineTransform transform = CGAffineTransformMakeTranslation(0, 0);
     if (direction) {
-        [self.activeScroller setTransform:
+        [self.activeTextView setTransform:
             CGAffineTransformMakeTranslation(direction * [mainView frame].size.width, 0)];
 
         [UIView beginAnimations:@"slideIn"];
-        [self.activeScroller setTransform:transform];
+        [self.activeTextView setTransform:transform];
         [UIView commitAnimations];
     } else {
-        [self.activeScroller setTransform:transform];
+        [self.activeTextView setTransform:transform];
     }
 
     [self updateFrames:YES];
 
-    [self.activeTextView willSlideIn];
+    [self.activeTextView.tiledView willSlideIn];
 }
 
 #pragma mark Keyboard display methods
@@ -267,7 +259,7 @@
         [UIView setAnimationDidStopSelector:
             @selector(viewDidFadeOut:finished:context:)];
         [keyboardView setAlpha:0.0f];
-        [self.activeTextView setAlpha:0.0f];
+        [self.activeTextView.tiledView setAlpha:0.0f];
         [UIView commitAnimations];
     }
 
@@ -303,7 +295,7 @@
     [UIView beginAnimations:nil];
     [UIView setAnimationDuration:0.1f];
     [keyboardView setAlpha:1.0f];
-    [self.activeTextView setAlpha:1.0f];
+    [self.activeTextView.tiledView setAlpha:1.0f];
     [UIView commitAnimations];
 }
 
@@ -314,7 +306,7 @@
 {
     for (int i = 0; i < application.numTerminals; i++)
         if (i != activeTerminal)
-            [[scrollers objectAtIndex:i] removeFromSuperview];
+            [[textviews objectAtIndex:i] removeFromSuperview];
 }
 
 #pragma mark Geometry methods
@@ -352,11 +344,12 @@
     [self.activeTextView setFrame:textFrame];
 
     CGRect textScrollerFrame = CGRectMake(0, statusBarHeight, availableWidth, availableHeight);
-    [self.activeScroller setFrame:textScrollerFrame];
-    [self.activeScroller setContentSize:textFrame.size];
+    [self.activeTextView setFrame:textScrollerFrame];
+    [self.activeTextView setContentSize:textFrame.size];
 
+    CGFloat tiledViewWidth = [self.activeTextView.tiledView bounds].size.width;
     CGRect gestureFrame = CGRectMake(0, statusBarHeight, availableWidth - 40.0f,
-            availableHeight - (columns * charWidth > availableWidth ? 40.0f : 0));
+            availableHeight - (tiledViewWidth > availableWidth ? 40.0f : 0));
     [gestureView setFrame:gestureFrame];
     [gestureView setNeedsDisplay];
 
@@ -364,8 +357,8 @@
     [application.activeScreen resizeWidth:columns height:rows];
 
     if (needsRefresh) {
-        [self.activeTextView refresh];
-        [self.activeTextView updateIfNecessary];
+        [self.activeTextView.tiledView refresh];
+        [self.activeTextView.tiledView updateIfNecessary];
     }
 }
 
@@ -374,11 +367,6 @@
 - (PTYTextView *)activeTextView
 {
     return [textviews objectAtIndex:activeTerminal];
-}
-
-- (UIScroller *)activeScroller
-{
-    return [scrollers objectAtIndex:activeTerminal];
 }
 
 @end

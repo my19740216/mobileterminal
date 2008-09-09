@@ -12,7 +12,6 @@
 @class PieView;
 @class PTYTextView;
 @class ShellKeyboard;
-@class UIScroller;
 @class UIView;
 @class VT100Screen;
 
@@ -27,7 +26,6 @@
     MenuView *menuView;
 
     NSMutableArray *textviews;
-    NSMutableArray *scrollers;
 
     int activeTerminal;
 
@@ -36,7 +34,6 @@
 }
 
 @property(nonatomic, readonly) PTYTextView *activeTextView;
-@property(nonatomic, readonly) UIScroller *activeScroller;
 
 - (void)toggleKeyboard;
 

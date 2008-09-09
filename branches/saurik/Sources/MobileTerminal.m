@@ -172,7 +172,7 @@
     }
 
     if (tid == activeTerminalIndex) {
-        [[mainController activeTextView] performSelectorOnMainThread:@selector(updateAndScrollToEnd)
+        [[mainController activeTextView].tiledView performSelectorOnMainThread:@selector(updateAndScrollToEnd)
                                           withObject:nil
                                        waitUntilDone:NO];
     }
@@ -262,7 +262,7 @@
 - (void)setControlKeyMode:(BOOL)mode
 {
     controlKeyMode = mode;
-    [[mainController activeTextView] refreshCursorRow];
+    [[mainController activeTextView].tiledView refreshCursorRow];
 }
 
 #pragma mark Terminal methods

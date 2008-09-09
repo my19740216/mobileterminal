@@ -470,7 +470,7 @@ static __inline__ screen_char_t *incrementLinePointer(
 
     // An immediate refresh is needed so that the size of TEXTVIEW can be
     // adjusted to fit the new size
-    [display setNeedsDisplay];
+    [display.tiledView setNeedsDisplay];
 }
 
 - (void)reset
@@ -822,7 +822,7 @@ static __inline__ screen_char_t *incrementLinePointer(
 
     [self releaseLock];
     [self setDirty];
-    [display setNeedsDisplay];
+    [display.tiledView setNeedsDisplay];
 }
 
 - (void)saveBuffer
@@ -1744,7 +1744,8 @@ static __inline__ screen_char_t *incrementLinePointer(
 - (void)setDirty
 {
     memset(dirty, 1, WIDTH *HEIGHT *sizeof(char));
-    [display updateIfNecessary];
+    // FIXME: should be done as via delegate/protocol
+    [display.tiledView updateIfNecessary];
 }
 
 - (int)newWidth

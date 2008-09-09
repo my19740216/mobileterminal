@@ -26,7 +26,7 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
 
 - (void)drawRect:(CGRect)rect
 {
-    [(PTYTextView *)[self superview] drawTileFrame:[self frame] tileRect:rect];
+    [[self superview] drawTileFrame:[self frame] tileRect:rect];
 }
 
 @end
@@ -34,7 +34,7 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
 //_______________________________________________________________________________
 //_______________________________________________________________________________
 
-@implementation PTYTextView
+@implementation PTYTiledView
 
 + (Class)tileClass
 {
@@ -46,24 +46,14 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
            scroller:(UIScroller *)scroller
          identifier:(int)identifier
 {
-    termid = identifier;
-
     self = [super initWithFrame:frame];
     if (self) {
         [self setPositionsTilesFromOrigin:YES];
         [self setTileOrigin:CGPointMake(0,0)];
 
+        termid = identifier;
         dataSource = screen;
-
         textScroller = scroller;
-        [textScroller addSubview:self];
-        [textScroller setAllowsRubberBanding:YES];
-        [textScroller setBottomBufferHeight:0.0];
-        [textScroller setBounces:YES];
-        [textScroller setContentSize:frame.size];
-        [textScroller setScrollerIndicatorStyle:2];
-        [textScroller displayScrollerIndicators];
-        [textScroller setAdjustForContentSizeChange:YES];
 
         [self refresh];
 
@@ -390,6 +380,42 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
         theLine[cursorX].fg_color = cursorSaveColor;
 
     [dataSource releaseLock];
+}
+
+@end
+
+//_______________________________________________________________________________
+//_______________________________________________________________________________
+
+@implementation PTYTextView
+
+@synthesize tiledView;
+
+- (id)initWithFrame:(CGRect)frame source:(VT100Screen *)screen
+    identifier:(int)identifier
+{
+    self = [super init];
+    if (self) {
+        terminalId = identifier;
+        tiledView = [[PTYTiledView alloc] initWithFrame:frame
+            source:screen scroller:self identifier:identifier];
+        [self addSubview:tiledView];
+
+        [self setAllowsRubberBanding:YES];
+        [self setBottomBufferHeight:0.0];
+        [self setBounces:YES];
+        [self setContentSize:frame.size];
+        [self setScrollerIndicatorStyle:2];
+        [self displayScrollerIndicators];
+        [self setAdjustForContentSizeChange:YES];
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    [tiledView release];
+    [super dealloc];
 }
 
 @end
