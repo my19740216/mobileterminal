@@ -83,6 +83,7 @@
 
 - (id)initWithFrame:(CGRect)frame source:(VT100Screen *)screen
     identifier:(int)identifier;
+- (void)updateFrame:(CGRect)frame;
 
 @end
 

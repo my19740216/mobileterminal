@@ -404,7 +404,7 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
         [self setAllowsRubberBanding:YES];
         [self setBottomBufferHeight:0.0];
         [self setBounces:YES];
-        [self setContentSize:frame.size];
+        [self setContentSize:[tiledView bounds].size];
         [self setScrollerIndicatorStyle:2];
         [self displayScrollerIndicators];
         [self setAdjustForContentSizeChange:YES];
@@ -416,6 +416,31 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
 {
     [tiledView release];
     [super dealloc];
+}
+
+// FIXME: due to a bug in VT100Screen, overriding setFrame causes the program
+//        to crash at startup. For now, we use a different method name.
+- (void)updateFrame:(CGRect)frame
+{
+    TerminalConfig *config =
+        [[[Settings sharedInstance] terminalConfigs]
+            objectAtIndex:[[MobileTerminal application] indexOfActiveTerminal]];
+
+    // Calculate text parameters
+    float lineHeight = [config fontSize] + TERMINAL_LINE_SPACING;
+    float charWidth = [config fontSize] * [config fontWidth];
+    int rows = frame.size.height / lineHeight;
+    int columns = [config autosize] ? frame.size.width / charWidth : [config width];
+
+    // Adjust the content view
+    [tiledView setFrame:CGRectMake(0, 0, columns * charWidth, rows * lineHeight)];
+
+    [super setFrame:frame];
+    [self setContentSize:[tiledView bounds].size];
+
+    Terminal *terminal = [[MobileTerminal application] activeTerminal];
+    [terminal.process setWidth:columns height:rows];
+    [terminal.screen resizeWidth:columns height:rows];
 }
 
 @end

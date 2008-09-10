@@ -983,6 +983,9 @@ static __inline__ screen_char_t *incrementLinePointer(
         }
 
         screenIdx = CURSOR_Y *WIDTH;
+        // FIXME: when overriding PTYTextView's setFrame method, CURSOR_Y = -1
+        //        gets passed to the following method, causing its contained
+        //        assertion to fail
         aLine = [self getLineAtScreenIndex: CURSOR_Y];
 
         if ([TERMINAL insertMode]) {

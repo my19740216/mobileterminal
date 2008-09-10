@@ -326,10 +326,6 @@
     //        This causes the text/scroller view to be misaligned.
     //        Need to find a proper way to detect this case.
 
-    TerminalConfig *config =
-        [[[Settings sharedInstance] terminalConfigs]
-            objectAtIndex:[application indexOfActiveTerminal]];
-
     // Calculate the available width and height
     float statusBarHeight = [UIHardware statusBarHeight];
     float availableWidth = mainView.bounds.size.width;
@@ -340,29 +336,14 @@
         availableHeight -= keybSize.height;
     }
 
-    // Calculate text parameters
-    float lineHeight = [config fontSize] + TERMINAL_LINE_SPACING;
-    float charWidth = [config fontSize] * [config fontWidth];
-    int rows = availableHeight / lineHeight;
-    int columns = [config autosize] ? availableWidth / charWidth : [config width];
-
-    // Adjust the subviews
-    CGRect textFrame = CGRectMake(0, 0, columns * charWidth, rows * lineHeight);
-    [self.activeTextView setFrame:textFrame];
-
     CGRect textScrollerFrame = CGRectMake(0, statusBarHeight, availableWidth, availableHeight);
-    [self.activeTextView setFrame:textScrollerFrame];
-    [self.activeTextView setContentSize:textFrame.size];
+    [self.activeTextView updateFrame:textScrollerFrame];
 
     CGFloat tiledViewWidth = [self.activeTextView.tiledView bounds].size.width;
     CGRect gestureFrame = CGRectMake(0, statusBarHeight, availableWidth - 40.0f,
             availableHeight - (tiledViewWidth > availableWidth ? 40.0f : 0));
     [gestureView setFrame:gestureFrame];
     [gestureView setNeedsDisplay];
-
-    Terminal *terminal = [application activeTerminal];
-    [terminal.process setWidth:columns height:rows];
-    [terminal.screen resizeWidth:columns height:rows];
 
     if (needsRefresh) {
         [self.activeTextView.tiledView refresh];
