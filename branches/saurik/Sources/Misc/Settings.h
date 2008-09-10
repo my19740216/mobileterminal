@@ -31,6 +31,8 @@
 @property int width;
 @property(copy) NSString *args;
 
++ (TerminalConfig *)configForActiveTerminal;
++ (TerminalConfig *)configForTerminal:(int)i;
 - (NSString *)fontDescription;
 - (UIColor **)colors;
 

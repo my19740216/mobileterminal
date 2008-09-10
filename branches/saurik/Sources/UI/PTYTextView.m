@@ -183,7 +183,7 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
 {
     CGRect frame = [self frame];
 
-    TerminalConfig *config = [[[Settings sharedInstance] terminalConfigs] objectAtIndex:termid];
+    TerminalConfig *config = [TerminalConfig configForTerminal:termid];
     lineHeight = [config fontSize] + TERMINAL_LINE_SPACING;
     charWidth = [config fontSize] * [config fontWidth];
 
@@ -215,7 +215,7 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
 - (void)setupTextForContext:(CGContextRef)context
 {
     if (!fontRef) {
-        TerminalConfig *config = [[[Settings sharedInstance] terminalConfigs] objectAtIndex:termid];
+        TerminalConfig *config = [TerminalConfig configForTerminal:termid];
         const char *font = [config.font UTF8String];
         // First time through: cache the fontRef. This lookup is expensive.
         fontSize = config.fontSize;
@@ -422,9 +422,7 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
 //        to crash at startup. For now, we use a different method name.
 - (void)updateFrame:(CGRect)frame
 {
-    TerminalConfig *config =
-        [[[Settings sharedInstance] terminalConfigs]
-            objectAtIndex:[[MobileTerminal application] indexOfActiveTerminal]];
+    TerminalConfig *config = [TerminalConfig configForActiveTerminal];
 
     // Calculate text parameters
     float lineHeight = [config fontSize] + TERMINAL_LINE_SPACING;

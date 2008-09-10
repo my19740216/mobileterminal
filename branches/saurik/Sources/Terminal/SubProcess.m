@@ -56,7 +56,7 @@ int start_process(const char *path, char *const args[], char *const env[])
         // Clean up when ^C is pressed during debugging from a console
         signal(SIGINT, &signal_handler);
 
-        TerminalConfig *config = [[[Settings sharedInstance] terminalConfigs] objectAtIndex:tid];
+        TerminalConfig *config = [TerminalConfig configForTerminal:tid];
 
         struct winsize win;
         win.ws_col = [config width];
@@ -136,7 +136,7 @@ int start_process(const char *path, char *const args[], char *const env[])
 {
     [[NSAutoreleasePool alloc] init];
 
-    TerminalConfig *config = [[[Settings sharedInstance] terminalConfigs] objectAtIndex:termid];
+    TerminalConfig *config = [TerminalConfig configForTerminal:termid];
     NSString *arg = [config args];
 
     if (termid == 0) {

@@ -127,7 +127,7 @@
 - (void)updateColors
 {
     for (int i = 0; i < application.numTerminals; i++) {
-        TerminalConfig *config = [[[Settings sharedInstance] terminalConfigs] objectAtIndex:i];
+        TerminalConfig *config = [TerminalConfig configForTerminal:i];
         for (int c = 0; c < NUM_TERMINAL_COLORS; c++)
             [[ColorMap sharedInstance] setTerminalColor:config.colors[c] atIndex:c termid:i];
         // FIXME: this does not appear to be getting set properly

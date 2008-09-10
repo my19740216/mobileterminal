@@ -692,9 +692,7 @@
         // for the selected terminal
         terminalIndex_ =
             [(PreferencesController *)[self navigationController] terminalIndex];
-        config_ = [[[Settings sharedInstance] terminalConfigs]
-            objectAtIndex:terminalIndex_];
-
+        config_ = [TerminalConfig configForTerminal:terminalIndex_];
     }
     return self;
 }
@@ -977,7 +975,8 @@
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         [self setTitle:[NSString stringWithFormat:@"Terminal %d", index + 1]];
-        config = [[[Settings sharedInstance] terminalConfigs] objectAtIndex:index];
+        config = [TerminalConfig configForTerminal:index];
+
     }
     return self;
 }

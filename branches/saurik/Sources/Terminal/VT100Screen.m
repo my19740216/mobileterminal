@@ -161,7 +161,7 @@ static __inline__ screen_char_t *incrementLinePointer(
 
     termid = identifier;
 
-    TerminalConfig *config = [[[Settings sharedInstance] terminalConfigs] objectAtIndex:termid];
+    TerminalConfig *config = [TerminalConfig configForTerminal:termid];
     [self initScreenWithWidth:[config width] Height:DEFAULT_TERMINAL_HEIGHT];
 
     return self;

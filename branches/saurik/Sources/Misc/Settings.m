@@ -22,6 +22,17 @@
 @synthesize args;
 @dynamic colors;
 
++ (TerminalConfig *)configForActiveTerminal
+{
+    return [[[Settings sharedInstance] terminalConfigs]
+        objectAtIndex:[[MobileTerminal application] indexOfActiveTerminal]];
+}
+
++ (TerminalConfig *)configForTerminal:(int)i
+{
+    return [[[Settings sharedInstance] terminalConfigs] objectAtIndex:i];
+}
+
 - (id)init
 {
     self = [super init];
