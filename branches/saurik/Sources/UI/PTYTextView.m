@@ -223,10 +223,9 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
         fontRef = CGContextGetFont(context);
         if (fontRef != NULL)
             fontRef = (CGFontRef)CFRetain(fontRef);
-    } else {
+    } else
         CGContextSetFont(context, fontRef);
-        CGContextSetFontSize(context, fontSize);
-    }
+    CGContextSetFontSize(context, fontSize);
 
     CGContextSetRGBFillColor(context, 1, 1, 1, 1);
     CGContextSetTextDrawingMode(context, kCGTextFill);
