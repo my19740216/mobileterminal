@@ -1,7 +1,10 @@
 #import "MainViewController.h"
 
 #import <CoreGraphics/CoreGraphics.h>
+#import <QuartzCore/QuartzCore.h>
 #import <UIKit/UIColor.h>
+#import <UIKit/UIImage.h>
+#import <UIKit/UIImageView.h>
 #import <UIKit/UIScreen.h>
 #import <UIKit/UIView.h>
 #import <UIKit/UIView-Geometry.h>
@@ -23,6 +26,11 @@
 #define WidthSizable 2
 #define HeightSizable 16
 
+// Functions for capturing image of a view
+extern void UIGraphicsBeginImageContext(CGSize size);
+extern CGContextRef UIGraphicsGetCurrentContext();
+extern UIImage* UIGraphicsGetImageFromCurrentImageContext();
+extern void UIGraphicsEndImageContext(); 
 
 @implementation MainViewController
 
@@ -167,43 +175,70 @@
 
 - (void)switchToTerminal:(int)terminal direction:(int)direction
 {
-    [self.activeTextView.tiledView willSlideOut];
+    PTYTextView *oldTerm = self.activeTextView;
+    PTYTextView *newTerm = [textviews objectAtIndex:terminal];
+    if (newTerm == oldTerm)
+        return;
+
+    [oldTerm.tiledView willSlideOut];
+
+    CGFloat width = [mainView bounds].size.width;
+    CGPoint center = [oldTerm center];
 
     if (direction) {
-        [UIView beginAnimations:@"slideOut"];
+        // Capture image of current view and store to a buffer
+        UIGraphicsBeginImageContext([oldTerm bounds].size);
+        [oldTerm.layer renderInContext:UIGraphicsGetCurrentContext()];
+        id image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+
+        backBuffer_ = [[UIImageView alloc] initWithImage:image];
+        [backBuffer_ setCenter:center];
+        [mainView insertSubview:backBuffer_ aboveSubview:oldTerm];
+
+        // Ignore user input while transitioning
+        //[gestureView setUserInteractionEnabled:NO];
+
+        // Prepare new terminal by adding as subview and placing offscreen
+        [newTerm setCenter:CGPointMake(center.x + (direction * width), center.y)];
+        [mainView insertSubview:newTerm belowSubview:keyboardView];
+
+        // Animate the switch
+        [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDelegate:self];
         [UIView setAnimationDidStopSelector:
               @selector(activeViewDidChange:finished:context:)];
-        [self.activeTextView setTransform:
-            CGAffineTransformMakeTranslation(-direction * [mainView frame].size.width, 0)];
+        [UIView setAnimationTransition:0 forView:mainView cache:NO];
+        [UIView setAnimationCurve:3]; // linear
+        [backBuffer_ setCenter:CGPointMake(center.x + (-direction * width), center.y)];
+        [newTerm setCenter:center];
         [UIView commitAnimations];
     } else {
-        [self.activeTextView setTransform:CGAffineTransformMakeTranslation(-[mainView frame].size.width,0)];
+        [newTerm setCenter:center];
+        [mainView insertSubview:newTerm belowSubview:keyboardView];
     }
+    [oldTerm removeFromSuperview];
 
     if (application.numTerminals > 1) {
         [application setStatusIconVisible:NO forTerminal:activeTerminal];
         [application setStatusIconVisible:YES forTerminal:terminal];
     }
     activeTerminal = terminal;
-    [mainView insertSubview:self.activeTextView below:keyboardView];
+    //[oldTerm removeFromSuperview];
     [mainView setBackgroundColor:[self.activeTextView backgroundColor]];
-
-    CGAffineTransform transform = CGAffineTransformMakeTranslation(0, 0);
-    if (direction) {
-        [self.activeTextView setTransform:
-            CGAffineTransformMakeTranslation(direction * [mainView frame].size.width, 0)];
-
-        [UIView beginAnimations:@"slideIn"];
-        [self.activeTextView setTransform:transform];
-        [UIView commitAnimations];
-    } else {
-        [self.activeTextView setTransform:transform];
-    }
 
     [self updateFrames:YES];
 
-    [self.activeTextView.tiledView willSlideIn];
+    [newTerm.tiledView willSlideIn];
+}
+
+- (void)activeViewDidChange:(NSString *)animationID finished:(NSNumber *)finished
+    context:(void *)context
+{
+    [gestureView setUserInteractionEnabled:YES];
+    [backBuffer_ removeFromSuperview];
+    [backBuffer_ release];
+    backBuffer_ = nil;
 }
 
 #pragma mark Keyboard display methods
@@ -303,16 +338,6 @@
     [keyboardView setAlpha:1.0f];
     [self.activeTextView.tiledView setAlpha:1.0f];
     [UIView commitAnimations];
-}
-
-#pragma mark Other animation-handling methods
-
-- (void)activeViewDidChange:(NSString *)animationID finished:(NSNumber *)finished
-    context:(void *)context
-{
-    for (int i = 0; i < application.numTerminals; i++)
-        if (i != activeTerminal)
-            [[textviews objectAtIndex:i] removeFromSuperview];
 }
 
 #pragma mark Geometry methods

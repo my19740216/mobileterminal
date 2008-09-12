@@ -13,6 +13,7 @@
 @class PTYTextView;
 @class ShellKeyboard;
 @class Terminal;
+@class UIImageView;
 @class UIView;
 
 @interface MainViewController : UIViewController
@@ -31,6 +32,7 @@
 
     @private
         int targetOrientation_;
+        UIImageView *backBuffer_;
 }
 
 @property(nonatomic, readonly) PTYTextView *activeTextView;
