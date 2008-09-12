@@ -98,6 +98,7 @@
 - (void)setActiveTerminal:(int)terminal direction:(int)direction;
 - (void)prevTerminal;
 - (void)nextTerminal;
+- (void)createTerminalWithIdentifier:(int)identifier;
 - (void)createTerminals;
 - (void)destroyTerminals;
 

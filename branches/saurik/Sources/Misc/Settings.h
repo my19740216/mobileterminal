@@ -44,7 +44,6 @@
     NSArray *terminalConfigs;
     NSArray *menu;
     UIColor *gestureFrameColor;
-    BOOL multipleTerminals;
     NSMutableDictionary *swipeGestures;
 }
 
@@ -53,7 +52,6 @@
 @property(nonatomic, readonly) NSArray* terminalConfigs;
 @property(nonatomic, readonly) NSArray* menu;
 @property(nonatomic, retain) UIColor *gestureFrameColor;
-@property(nonatomic) BOOL multipleTerminals;
 @property(nonatomic, readonly) NSDictionary *swipeGestures;
 
 + (Settings *)sharedInstance;

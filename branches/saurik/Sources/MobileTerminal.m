@@ -88,9 +88,9 @@
 
     // --------------------------------------------------------- setup terminals
 
-    terminals = [[NSMutableArray alloc] initWithCapacity:MAXTERMINALS];
+    terminals = [[NSMutableArray alloc] initWithCapacity:MAX_TERMINALS];
 
-    for (numTerminals = 0; numTerminals < ([settings multipleTerminals] ? MAXTERMINALS : 1); numTerminals++)
+    for (numTerminals = 0; numTerminals < MAX_TERMINALS; numTerminals++)
         [self createTerminalWithIdentifier:numTerminals];
 
     // ------------------------------------------------------------- setup views
@@ -364,14 +364,6 @@
     [terminal release];
 }
 
-- (void)createTerminals
-{
-    for (numTerminals = 1; numTerminals < MAXTERMINALS; numTerminals++)
-        [self createTerminalWithIdentifier:numTerminals];
-
-    [self setStatusIconVisible:YES forTerminal:activeTerminalIndex];
-}
-
 - (void)destroyTerminalAtIndex:(int)index
 {
     Terminal *terminal = [terminals objectAtIndex:index];
@@ -379,16 +371,6 @@
 
     [mainController resetViewForTerminal:index];
     [terminals removeObject:terminal];
-}
-
-- (void)destroyTerminals
-{
-    [self setActiveTerminal:0];
-
-    [self setStatusIconVisible:NO forTerminal:activeTerminalIndex];
-
-    for (numTerminals = MAXTERMINALS; numTerminals > 1; numTerminals--)
-        [self destroyTerminalAtIndex:numTerminals];
 }
 
 #pragma mark App/Preferences switching methods
@@ -439,11 +421,6 @@
 
         // reload settings
         [mainController updateColors];
-
-        if (numTerminals > 1 && ![settings multipleTerminals])
-            [self destroyTerminals];
-        else if (numTerminals == 1 && [settings multipleTerminals])
-            [self createTerminals];
     }
 }
 

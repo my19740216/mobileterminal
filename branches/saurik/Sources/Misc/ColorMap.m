@@ -46,7 +46,7 @@ static UIColor *initWithRGB(float red, float green, float blue)
         table[15] = initWithRGB(1, 1, 1); // white
 
         int i;
-        for (i = 0; i < MAXTERMINALS; i++) {
+        for (i = 0; i < MAX_TERMINALS; i++) {
             int ti = i *NUM_TERMINAL_COLORS;
             switch (i) { // bg color
                 case 1: table[BG_COLOR+ti] = initWithRGB(0.1, 0, 0); break;

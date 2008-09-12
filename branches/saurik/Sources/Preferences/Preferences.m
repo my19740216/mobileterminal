@@ -1219,10 +1219,7 @@
     PreferencesGroup *terminalGroup;
 
     int terminalIndex;
-    UIPreferencesTextTableCell *terminalButton1;
-    UIPreferencesTextTableCell *terminalButton2;
-    UIPreferencesTextTableCell *terminalButton3;
-    UIPreferencesTextTableCell *terminalButton4;
+    UIPreferencesTextTableCell *terminalButton[MAX_TERMINALS];
 }
 
 @end
@@ -1260,34 +1257,15 @@
 
     terminalGroup = [PreferencesGroup groupWithTitle:@"Terminals" icon:nil];
 
-    BOOL multi = [[Settings sharedInstance] multipleTerminals];
-
-    if (MULTIPLE_TERMINALS) {
-        [terminalGroup addSwitch:@"Multiple Terminals"
-                              on:multi
-                          target:self
-                          action:@selector(multipleTerminalsSwitched:)];
-    }
-
-    terminalButton1 = [terminalGroup addPageButton:@"Terminal 1"];
-
-    if (MULTIPLE_TERMINALS) {
-        terminalButton2 = [terminalGroup addPageButton:@"Terminal 2"];
-        terminalButton3 = [terminalGroup addPageButton:@"Terminal 3"];
-        terminalButton4 = [terminalGroup addPageButton:@"Terminal 4"];
-
-        if (!multi) {
-            [terminalGroup removeCell:terminalButton2];
-            [terminalGroup removeCell:terminalButton3];
-            [terminalGroup removeCell:terminalButton4];
-        }
-    }
+    for (int i = 0; i < MAX_TERMINALS; i++)
+        terminalButton[i] = [terminalGroup addPageButton:
+            [NSString stringWithFormat:@"Terminal %d", i + 1]];
 
     [prefSource addGroup:terminalGroup];
 
     // ------------------------------------------------------------------- about
 
-    group = [PreferencesGroup groupWithTitle:nil icon:nil];
+    group = [PreferencesGroup groupWithTitle:@"Other" icon:nil];
     [group addPageButton:@"About"];
     [prefSource addGroup:group];
 
@@ -1317,25 +1295,6 @@
     [table selectRow:-1 byExtendingSelection:NO withFade:animated];
 }
 
-#pragma mark Other
-
-- (void)multipleTerminalsSwitched:(UISwitch *)control
-{
-    BOOL multi = [control isOn];
-    [[Settings sharedInstance] setMultipleTerminals:multi];
-
-    if (!multi) {
-        [terminalGroup removeCell:terminalButton2];
-        [terminalGroup removeCell:terminalButton3];
-        [terminalGroup removeCell:terminalButton4];
-    } else {
-        [terminalGroup addCell:terminalButton2];
-        [terminalGroup addCell:terminalButton3];
-        [terminalGroup addCell:terminalButton4];
-    }
-    [table reloadData];
-}
-
 #pragma mark Delegate methods
 
 - (void)tableRowSelected:(NSNotification *)notification
@@ -1358,7 +1317,7 @@
 #endif
         else if ([title isEqualToString:@"About"])
             vc = [[AboutPage alloc] init];
-        else if (![title isEqualToString:@"Multiple Terminals"]) {
+        else {
             // Must be a Terminal cell
             terminalIndex = [[title substringFromIndex:9] intValue] - 1;
             vc = [[TerminalPrefsPage alloc] initWithIndex:terminalIndex];

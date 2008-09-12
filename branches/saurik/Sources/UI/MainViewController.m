@@ -39,7 +39,7 @@ extern void UIGraphicsEndImageContext();
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         application = [MobileTerminal application];
-        textviews = [[NSMutableArray alloc] initWithCapacity:MAXTERMINALS];
+        textviews = [[NSMutableArray alloc] initWithCapacity:MAX_TERMINALS];
     }
     return self;
 }

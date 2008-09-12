@@ -15,7 +15,7 @@ enum {
     FG_COLOR_BOLD,
     FG_COLOR_CURSOR,
     BG_COLOR_CURSOR,
-    NUM_COLORS = BG_COLOR + MAXTERMINALS *NUM_TERMINAL_COLORS,
+    NUM_COLORS = BG_COLOR + MAX_TERMINALS * NUM_TERMINAL_COLORS,
 };
 
 //_______________________________________________________________________________

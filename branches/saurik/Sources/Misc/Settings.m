@@ -80,7 +80,6 @@
 @synthesize terminalConfigs;
 @synthesize menu;
 @synthesize gestureFrameColor;
-@synthesize multipleTerminals;
 @synthesize swipeGestures;
 
 + (Settings *)sharedInstance
@@ -126,7 +125,6 @@
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableDictionary *d = [NSMutableDictionary dictionaryWithCapacity:2];
-    [d setObject:[NSNumber numberWithBool:MULTIPLE_TERMINALS] forKey:@"multipleTerminals"];
 
     // menu buttons
 
@@ -148,8 +146,8 @@
 
     // terminals
 
-    NSMutableArray *tcs = [NSMutableArray arrayWithCapacity:MAXTERMINALS];
-    for (i = 0; i < MAXTERMINALS; i++) {
+    NSMutableArray *tcs = [NSMutableArray arrayWithCapacity:MAX_TERMINALS];
+    for (i = 0; i < MAX_TERMINALS; i++) {
         NSMutableDictionary *tc = [NSMutableDictionary dictionaryWithCapacity:10];
         [tc setObject:[NSNumber numberWithBool:YES] forKey:@"autosize"];
         [tc setObject:[NSNumber numberWithInt:45] forKey:@"width"];
@@ -183,7 +181,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSArray *tcs = [defaults arrayForKey:@"terminals"];
 
-    for (int i = 0; i < MAXTERMINALS; i++) {
+    for (int i = 0; i < MAX_TERMINALS; i++) {
         TerminalConfig *config = [terminalConfigs objectAtIndex:i];
         NSDictionary *tc = [tcs objectAtIndex:i];
         config.autosize =   [[tc objectForKey:@"autosize"] boolValue];
@@ -198,7 +196,6 @@
         }
     }
 
-    multipleTerminals = MULTIPLE_TERMINALS && [defaults boolForKey:@"multipleTerminals"];
     menu = [[defaults arrayForKey:@"menu"] retain];
     swipeGestures = [[NSMutableDictionary dictionaryWithCapacity:24] retain];
     [swipeGestures setDictionary:[defaults objectForKey:@"swipeGestures"]];
@@ -209,9 +206,9 @@
 {
     int i, c;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableArray *tcs = [NSMutableArray arrayWithCapacity:MAXTERMINALS];
+    NSMutableArray *tcs = [NSMutableArray arrayWithCapacity:MAX_TERMINALS];
 
-    for (i = 0; i < MAXTERMINALS; i++) {
+    for (i = 0; i < MAX_TERMINALS; i++) {
         TerminalConfig *config = [terminalConfigs objectAtIndex:i];
         NSMutableDictionary *tc = [NSMutableDictionary dictionaryWithCapacity:10];
         [tc setObject:[NSNumber numberWithBool:config.autosize] forKey:@"autosize"];
@@ -230,7 +227,6 @@
         [tcs addObject:tc];
     }
     [defaults setObject:tcs forKey:@"terminals"];
-    [defaults setBool:multipleTerminals forKey:@"multipleTerminals"];
     [defaults setObject:[[MobileTerminal menu] getArray] forKey:@"menu"];
     [defaults setObject:swipeGestures forKey:@"swipeGestures"];
     [defaults setObject:[NSArray arrayWithColor:gestureFrameColor] forKey:@"gestureFrameColor"];
