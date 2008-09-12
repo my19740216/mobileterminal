@@ -88,15 +88,10 @@
 
     // --------------------------------------------------------- setup terminals
 
-    terminals = [[NSMutableArray arrayWithCapacity: MAXTERMINALS] retain];
+    terminals = [[NSMutableArray alloc] initWithCapacity:MAXTERMINALS];
 
-    for (numTerminals = 0; numTerminals < ([settings multipleTerminals] ? MAXTERMINALS : 1); numTerminals++) {
-        Terminal *terminal = [[Terminal alloc]
-            initWithIdentifier:numTerminals delegate:self];
-        [terminals addObject:terminal];
-
-        [mainController addViewForTerminal:terminal];
-    }
+    for (numTerminals = 0; numTerminals < ([settings multipleTerminals] ? MAXTERMINALS : 1); numTerminals++)
+        [self createTerminalWithIdentifier:numTerminals];
 
     // ------------------------------------------------------------- setup views
  
@@ -110,20 +105,6 @@
     } else {
         [mainController updateFrames:YES];
     }
-}
-
-#pragma mark Other
-
-- (BOOL)shouldTerminate
-{
-    BOOL ret = YES;
-    for (Terminal *terminal in terminals) {
-        if ([terminal.process isRunning]) {
-            ret = NO;
-            break;
-        }
-    }
-    return ret;
 }
 
 #pragma mark Confirmation dialog methods
@@ -145,39 +126,49 @@
 
 #pragma mark Application events methods
 
-- (void)applicationResume:(GSEvent *)event
+- (BOOL)shouldTerminate
 {
-    // FIXME: why not set to activeTerminalIndex?
-    //        why switch at all?
-    [self setActiveTerminal:0];
+    BOOL ret = YES;
+    for (Terminal *terminal in terminals) {
+        if ([terminal.process isRunning]) {
+            ret = NO;
+            break;
+        }
+    }
+    return ret;
 }
 
-- (void)applicationSuspend:(GSEvent *)event
+- (void)applicationDidResume
+{
+    [self setStatusIconVisible:YES forTerminal:activeTerminalIndex];
+}
+
+- (void)applicationWillSuspend
 {
     [settings writeUserDefaults];
 
-    if ([self shouldTerminate]) {
-        [self terminate];
-    } else {
-        // FIXME: seems to not handle statusbar correctly
-        if (self.activeView != [mainController view]) // preferences active
-            [self togglePreferences];
+    // FIXME: seems to not handle statusbar correctly
+    if (self.activeView != [mainController view]) // preferences active
+        [self togglePreferences];
 
-        for (int i = 0; i < MAXTERMINALS; i++)
-            [self removeStatusBarImageNamed:
-                 [NSString stringWithFormat:@"MobileTerminal%d", i]];
-    }
+    [self setStatusIconVisible:NO forTerminal:activeTerminalIndex];
 }
 
-- (void)applicationExited:(GSEvent *)event
+// NOTE: must override this method to prevent application termination
+- (void)applicationSuspend:(GSEvent *)event
+{
+    if ([self shouldTerminate])
+        [self terminate];
+}
+
+- (void)applicationWillTerminate
 {
     [settings writeUserDefaults];
 
     for (Terminal *terminal in terminals)
         [terminal.process close];
 
-    for (int i = 0; i < MAXTERMINALS; i++)
-        [self removeStatusBarImageNamed:[NSString stringWithFormat:@"MobileTerminal%d", i]];
+    [self setStatusIconVisible:NO forTerminal:activeTerminalIndex];
 }
 
 #pragma mark SubProcess delegate methods
@@ -270,6 +261,17 @@
     [self setStatusBarHidden:hidden animated:NO];
 }
 
+- (void)setStatusIconVisible:(BOOL)visible forTerminal:(int)index
+{
+    if (visible)
+        [self addStatusBarImageNamed:
+            [NSString stringWithFormat:@"MobileTerminal%d", index]
+            removeOnAbnormalExit:YES];
+    else
+        [self removeStatusBarImageNamed:
+            [NSString stringWithFormat:@"MobileTerminal%d", index]];
+}
+
 - (void)statusBarMouseUp:(GSEvent *)event
 {
     if (numTerminals > 1) {
@@ -359,6 +361,7 @@
     [terminals addObject:terminal];
 
     [mainController addViewForTerminal:terminal];
+    [terminal release];
 }
 
 - (void)createTerminals
@@ -366,7 +369,7 @@
     for (numTerminals = 1; numTerminals < MAXTERMINALS; numTerminals++)
         [self createTerminalWithIdentifier:numTerminals];
 
-    [self addStatusBarImageNamed:[NSString stringWithFormat:@"MobileTerminal0"] removeOnAbnormalExit:YES];
+    [self setStatusIconVisible:YES forTerminal:activeTerminalIndex];
 }
 
 - (void)destroyTerminalAtIndex:(int)index
@@ -382,7 +385,7 @@
 {
     [self setActiveTerminal:0];
 
-    [self removeStatusBarImageNamed:[NSString stringWithFormat:@"MobileTerminal0"]];
+    [self setStatusIconVisible:NO forTerminal:activeTerminalIndex];
 
     for (numTerminals = MAXTERMINALS; numTerminals > 1; numTerminals--)
         [self destroyTerminalAtIndex:numTerminals];

@@ -80,14 +80,15 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification;
 - (void)applicationSuspend:(GSEvent *)event;
-- (void)applicationResume:(GSEvent *)event;
 
 - (void)handleStreamOutput:(const char *)c length:(unsigned int)len identifier:(int)tid;
 - (void)handleKeyPress:(unichar)c;
 
 - (void)togglePreferences;
 
+// StatusBar methods
 - (void)setStatusBarHidden:(BOOL)hidden duration:(double)duration;
+- (void)setStatusIconVisible:(BOOL)visible forTerminal:(int)index;
 
 // Invoked by MenuView
 - (void)handleInputFromMenu:(NSString *)input;

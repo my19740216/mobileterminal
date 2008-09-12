@@ -182,9 +182,8 @@
     }
 
     if (application.numTerminals > 1) {
-        [application removeStatusBarImageNamed:[NSString stringWithFormat:@"MobileTerminal%d", activeTerminal]];
-        [application addStatusBarImageNamed:[NSString stringWithFormat:@"MobileTerminal%d", terminal]
-            removeOnAbnormalExit:YES];
+        [application setStatusIconVisible:NO forTerminal:activeTerminal];
+        [application setStatusIconVisible:YES forTerminal:terminal];
     }
     activeTerminal = terminal;
     [mainView insertSubview:self.activeTextView below:keyboardView];
