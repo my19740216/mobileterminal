@@ -400,7 +400,7 @@ bool CGFontGetGlyphsForUnichars(CGFontRef, unichar[], CGGlyph[], size_t);
             source:screen scroller:self identifier:identifier];
         [self addSubview:tiledView];
 
-        [self setAllowsRubberBanding:YES];
+        [self setAllowsRubberBanding:NO];
         [self setBottomBufferHeight:0.0];
         [self setBounces:YES];
         [self setContentSize:[tiledView bounds].size];

@@ -183,10 +183,10 @@
  
     table = [[UIPreferencesTable alloc]
         initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+    [table setAllowsRubberBanding:NO];
     [table setDataSource:prefSource];
     [table setDelegate:self];
     [table reloadData];
-    [table setScrollingEnabled:NO];
     [self setView:table];
 
     // Select the first button in the button grid
@@ -458,6 +458,7 @@
 
     table = [[UIPreferencesTable alloc]
         initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+    [table setAllowsRubberBanding:NO];
     [table setDataSource:prefSource];
     [table setDelegate:self];
     [table reloadData];
@@ -735,6 +736,7 @@
     table = [[UIPreferencesTable alloc]
         initWithFrame:[[UIScreen mainScreen] applicationFrame]];
     [table addSubview:fontChooser];
+    [table setAllowsRubberBanding:NO];
     [table setDataSource:prefSource];
     [table reloadData];
     [self setView:table];
@@ -880,6 +882,7 @@
 
     table = [[UIPreferencesTable alloc]
         initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+    [table setAllowsRubberBanding:NO];
     [table setDataSource:prefSource];
     [table reloadData];
     [self setView:table];
