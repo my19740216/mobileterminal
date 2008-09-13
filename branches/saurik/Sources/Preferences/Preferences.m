@@ -1366,6 +1366,12 @@
     }
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    // Save the settings to disk
+    [[Settings sharedInstance] writeUserDefaults];
+}
+
 #pragma mark UINavigationBar delegate methods
 
 - (void)navigationBar:(id)bar buttonClicked:(int)button

@@ -145,8 +145,6 @@
 
 - (void)applicationWillSuspend
 {
-    [settings writeUserDefaults];
-
     // FIXME: seems to not handle statusbar correctly
     if (self.activeView != [mainController view]) // preferences active
         [self togglePreferences];
@@ -163,8 +161,6 @@
 
 - (void)applicationWillTerminate
 {
-    [settings writeUserDefaults];
-
     for (Terminal *terminal in terminals)
         [terminal.process close];
 
@@ -415,9 +411,6 @@
         // The Preferences view has just been closed, release it
         [preferencesController release];
         preferencesController = nil;
-
-        // FIXME: put this in preferences
-        [settings writeUserDefaults];
 
         // reload settings
         [mainController updateColors];

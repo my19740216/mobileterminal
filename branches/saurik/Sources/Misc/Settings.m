@@ -204,11 +204,10 @@
 
 - (void)writeUserDefaults
 {
-    int i, c;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableArray *tcs = [NSMutableArray arrayWithCapacity:MAX_TERMINALS];
 
-    for (i = 0; i < MAX_TERMINALS; i++) {
+    for (int i = 0; i < MAX_TERMINALS; i++) {
         TerminalConfig *config = [terminalConfigs objectAtIndex:i];
         NSMutableDictionary *tc = [NSMutableDictionary dictionaryWithCapacity:10];
         [tc setObject:[NSNumber numberWithBool:config.autosize] forKey:@"autosize"];
@@ -220,7 +219,7 @@
 
         NSMutableArray *ca = [NSMutableArray arrayWithCapacity:NUM_TERMINAL_COLORS];
 
-        for (c = 0; c < NUM_TERMINAL_COLORS; c++)
+        for (int c = 0; c < NUM_TERMINAL_COLORS; c++)
             [ca addObject:[NSArray arrayWithColor:config.colors[c]]];
 
         [tc setObject:ca forKey:@"colors"];
