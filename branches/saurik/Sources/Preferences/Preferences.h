@@ -8,8 +8,6 @@
 
 @interface PreferencesController : UINavigationController 
 {
-    MobileTerminal *application;
-    UIViewController *prefsPage;
     int terminalIndex;
 }
 

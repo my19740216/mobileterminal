@@ -1340,6 +1340,7 @@
 
 @implementation PreferencesController
 
+// FIXME: This is not updated properly
 @synthesize terminalIndex;
 
 - (id)init
@@ -1347,26 +1348,15 @@
     self = [super init];
     if (self) {
         [[self navigationBar] setBarStyle:1];
+        [self pushViewController:
+            [[[PreferencesPage alloc] init] autorelease] animated:NO];
     }
     return self;
 }
 
-- (void)dealloc
-{
-    [prefsPage release];
-    [super dealloc];
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
-    // TODO: Confirm that this method is only called once, on initial view;
-    //       if so, it is not necessary to store the pointer as an instance
-    //       member
-    if (prefsPage == nil) {
-        prefsPage = [[PreferencesPage alloc] init];
-        [self pushViewController:prefsPage animated:NO];
-        [super viewWillAppear:animated];
-    }
+    [super viewWillAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
