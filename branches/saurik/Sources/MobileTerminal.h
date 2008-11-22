@@ -99,8 +99,6 @@
 - (void)prevTerminal;
 - (void)nextTerminal;
 - (void)createTerminalWithIdentifier:(int)identifier;
-- (void)createTerminals;
-- (void)destroyTerminals;
 
 @end
 
