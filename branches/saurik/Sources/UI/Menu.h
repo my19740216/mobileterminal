@@ -4,7 +4,6 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
-#import <UIKit/CDStructures.h>
 #import <UIKit/UIThreePartButton.h>
 #import <UIKit/UIView.h>
 

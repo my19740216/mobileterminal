@@ -2,7 +2,6 @@
 
 #import "Keyboard.h"
 
-#import <UIKit/CDStructures.h>
 #import <UIKit/UIDefaultKeyboardInput.h>
 #import <UIKit/UIKeyboardCandidateList-Protocol.h>
 #import <UIKit/UIKeyboardImpl.h>

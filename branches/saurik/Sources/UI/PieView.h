@@ -1,6 +1,5 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
-#import <UIKit/CDStructures.h>
 #import <UIKit/NSString-UIStringDrawing.h>
 #import <UIKit/UIPushButton.h>
 #import <UIKit/UIView.h>

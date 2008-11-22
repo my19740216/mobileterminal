@@ -5,7 +5,6 @@
 
 #import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
-#import <UIKit/CDStructures.h>
 #import <UIKit/UIScroller.h>
 #import <UIKit/UITile.h>
 #import <UIKit/UITiledView.h>
