@@ -2,14 +2,7 @@
 
 #import <CoreGraphics/CoreGraphics.h>
 #import <QuartzCore/QuartzCore.h>
-#import <UIKit/UIColor.h>
-#import <UIKit/UIImage.h>
-#import <UIKit/UIImageView.h>
-#import <UIKit/UIScreen.h>
-#import <UIKit/UIView.h>
-#import <UIKit/UIView-Geometry.h>
-#import <UIKit/UIView-Hierarchy.h>
-#import <UIKit/UIView-Rendering.h>
+#import <UIKit/UIKit.h>
 
 #import "ColorMap.h"
 #import "GestureView.h"

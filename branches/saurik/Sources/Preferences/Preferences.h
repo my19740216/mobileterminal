@@ -2,7 +2,7 @@
 //  Preferences.h
 //  Terminal
 
-#import <UIKit/UINavigationController.h>
+#import <UIKit/UIKit.h>
 
 @class MobileTerminal;
 

@@ -3,7 +3,7 @@
 // Terminal
 
 #import <CoreGraphics/CGGeometry.h>
-#import <UIKit/UIViewController.h>
+#import <UIKit/UIKit.h>
 
 @class GestureView;
 @class MenuView;
