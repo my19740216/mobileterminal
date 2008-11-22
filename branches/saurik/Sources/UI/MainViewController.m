@@ -279,7 +279,7 @@ extern void UIGraphicsEndImageContext();
 
 #pragma mark Orientation-handling methods
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(int)orientation
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orientation
 {
     if ( [self interfaceOrientation] != orientation ) {
         targetOrientation_ = orientation;
