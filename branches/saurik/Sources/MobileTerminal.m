@@ -153,7 +153,7 @@
 }
 
 // NOTE: must override this method to prevent application termination
-- (void)applicationSuspend:(GSEvent *)event
+- (void)applicationSuspend:(GSEventRef)event
 {
     if ([self shouldTerminate])
         [self terminate];
@@ -268,7 +268,7 @@
             [NSString stringWithFormat:@"MobileTerminal%d", index]];
 }
 
-- (void)statusBarMouseUp:(GSEvent *)event
+- (void)statusBarMouseUp:(GSEventRef)event
 {
     if (numTerminals > 1) {
         CGPoint pos = GSEventGetLocationInWindow(event).origin;

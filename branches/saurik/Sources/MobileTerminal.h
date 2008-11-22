@@ -79,7 +79,7 @@
 + (Menu *)menu;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification;
-- (void)applicationSuspend:(GSEvent *)event;
+- (void)applicationSuspend:(GSEventRef)event;
 
 - (void)handleStreamOutput:(const char *)c length:(unsigned int)len identifier:(int)tid;
 - (void)handleKeyPress:(unichar)c;
