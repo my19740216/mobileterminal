@@ -1,7 +1,7 @@
 #import "MainViewController.h"
 
 #import <CoreGraphics/CoreGraphics.h>
-#import <QuartzCore/QuartzCore.h>
+#import <QuartzCore/CALayer.h>
 #import <UIKit/UIKit.h>
 
 #import "ColorMap.h"

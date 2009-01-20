@@ -6,7 +6,6 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
 #import <GraphicsServices/GraphicsServices.h>
-#import <QuartzCore/CoreAnimation.h>
 
 @protocol UIAlertViewDelegate;
 #import <UIKit/UIAlertView.h>
@@ -259,13 +258,16 @@
 
 - (void)setStatusIconVisible:(BOOL)visible forTerminal:(int)index
 {
-    if (visible)
-        [self addStatusBarImageNamed:
-            [NSString stringWithFormat:@"MobileTerminal%d", index]
-            removeOnAbnormalExit:YES];
-    else
+    if (visible) {
+        NSString *name = [NSString stringWithFormat:@"MobileTerminal%d", index];
+        if ([self respondsToSelector:@selector(addStatusBarImageNamed:removeOnExit:)])
+            [self addStatusBarImageNamed:name removeOnExit:YES];
+        else
+            [self addStatusBarImageNamed:name removeOnAbnormalExit:YES];
+    } else {
         [self removeStatusBarImageNamed:
             [NSString stringWithFormat:@"MobileTerminal%d", index]];
+    }
 }
 
 - (void)statusBarMouseUp:(GSEventRef)event
