@@ -1,5 +1,7 @@
 #summary Frequently Asked Questions about running the iPhone Terminal app (under iPhone OS release 1.1.4).
 
+Status: <font color="red">OBSOLETE</font>  This page is outdated and needs to be updated.
+
 = Frequently Asked Questions (for running MobileTerminal under 1.1.4) =
 
 Some questions seem to come back over and over again so I thought I'd try to summarize them...
