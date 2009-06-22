@@ -1,6 +1,9 @@
 #summary How to install the Terminal.app package on your iPhone
 #labels Featured
 
+Status: <font color="red">OBSOLETE</font>  This page is outdated and needs to be updated.
+
+
 = Introduction =
 
 This page describes the process of installing Terminal.app on your iPhone.  This assumes you have already downloaded the latest mobileterminal binary, or built it from source (see Building).  You should also have already probably should have installed sshd on your iphone, and have an executable /bin/sh or /bin/login (chmod +x /bin/sh /bin/login).
