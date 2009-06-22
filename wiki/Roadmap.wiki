@@ -1,6 +1,8 @@
 #summary Roadmap
 #labels Phase-Design
 
+Status: <font color=red>OBSOLETE</font>  This page is outdated and needs to be updated.
+
 = Introduction =
 
 This document is a proposal for current plans for MobileTerminal development, to provide some visibility into what people are working on.   This document should be updated occasionally with the current state of the project, with some short term milestones.  File a feature request in the Issues section if you'd like to see some features that aren't on this list, or if you would like to get status updates on a particular feature.
