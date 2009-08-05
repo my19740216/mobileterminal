@@ -1,27 +1,50 @@
 #summary Roadmap
 #labels Phase-Design
 
-Status: <font color="red">OBSOLETE</font>  This page is outdated and needs to be updated.
+Status: <font color="green">CURRENT</font>  as of 2009-08-04
 
 = Introduction =
 
 This document is a proposal for current plans for MobileTerminal development, to provide some visibility into what people are working on.   This document should be updated occasionally with the current state of the project, with some short term milestones.  File a feature request in the Issues section if you'd like to see some features that aren't on this list, or if you would like to get status updates on a particular feature.
 
-= Planned Features =
+= Apple SDK =
 
-  * Make compatible with the official Apple SDK if possible, when released.
-  * `[Done]` Preferences - Font, size, width/height of the terminal
-  * `[Done]` Preferences for custom meta keys
-  * `[Done]` Landscape keyboard layout as well as keyboard hiding (full screen).
+MobileTerminal was started before apple released an official SDK, and therefore uses a lot of undocumented headers.  The effort required to build the project is too much for almost everyone, except for a handful of developers who are all very busy and have a lot on their plate.  To address this issue, an effort has been started to port mobile terminal to the official SDK, which should allow anyone interested to hack on it.  This is taking place in the =applesdk= branch.
 
-`[Done]` as of latest Cydia version.
+It is against the apple terms of service to use the SDK to release jail broken applications, and it is not likely that MobileTerminal would ever be accepted into the App-Store since it does things not allowed on the phone such as forking sub-processes.  That said, someone out there can still probably build it with their own toolchain, and having the code compatible with the offical SDK will make it easier to share the code with other projects such as an SSH client. 
 
+== Porting Goals ==
 
+When porting code to the new SDK, keep in mind the following goals:
 
+  * Break code into independentmodules and reduce dependencies
+  * Write unit tests when possible 
+  * Stay feature compatible
+  * Stay compatible with old configuration file formats
+  * Improve usability
+
+== Porting Steps ==
+
+  * `[Done]` Forked SubProcess routines, simplified I/O routines
+  * `[In Progress]` VT100 subsystem
+    * `[Done]` Simple VT100 text view control
+    * `[Not Started]` Improve efficiency of text view drawing (its pretty dumb, slower than trunk)
+    * `[Not Started]` Fix bugs in the VT100Screen/VT100Terminal -- commands like "top" are broken
+  * `[In Progress]` Preferences
+    * `[In Progress]` Persistence layer.  allen.porter started on this, but it isn't compatible with the old format and probably should be.
+    * `[Done]` Main preferences page
+    * `[Not Started]` Menu preferences
+    * `[Not Started]` Gesture preferences
+    * `[Not Started]` Terminal settings preferences (and simplify the font settings)
+    * `[Not Started]` About page (names of contributors, link to website, etc)
+  * `[In Progress]` Gestures
+    * `[Done]` Keyboard show/hide
+    * `[Done]` Landscape mode/rotation
+    * `[Not Started]` Directional gestures
+  * `[In Progress]` Shortcut Menu
+    * `[Done]` Basic UITableView menu as a proof of concept
+    * `[Not Started]` Better UI for the menu (possibly hiding the keyboard and using more space)
  
- 
- 
- 
- 
+  
  
  
