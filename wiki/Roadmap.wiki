@@ -1,5 +1,5 @@
 #summary Roadmap
-#labels Phase-Design
+#labels Phase-Design,Featured
 
 Status: <font color="green">CURRENT</font>  as of 2009-08-04
 
