@@ -41,6 +41,7 @@ When porting code to the new SDK, keep in mind the following goals:
     * `[Done]` Keyboard show/hide
     * `[Done]` Landscape mode/rotation
     * `[Not Started]` Directional gestures
+    * `[Done]` Copy and Paste (though could probably use some improvement)
   * `[In Progress]` Shortcut Menu
     * `[Done]` Basic UITableView menu as a proof of concept
     * `[Not Started]` Better UI for the menu (possibly hiding the keyboard and using more space)
