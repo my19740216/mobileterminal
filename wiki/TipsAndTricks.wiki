@@ -1,6 +1,8 @@
 #summary Tips and Tricks for working with Mobile Terminal.
 #labels Featured
 
+<font color=red>OBSOLETE: This page is out of date and needs to be updated.  It does not reflect v426.</font>
+
 = Introduction =
 
 This page is a collection of tips and tricks that people have found useful. Please feel free to leave your own in the comments, but put feature requests in the Issues section.
