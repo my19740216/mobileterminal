@@ -5,7 +5,7 @@ Status: <font color="green">CURRENT</font>  as of 2009-08-04
 
 = Introduction =
 
-This document is a proposal for current plans for MobileTerminal development, to provide some visibility into what people are working on.   This document should be updated occasionally with the current state of the project, with some short term milestones.  File a feature request in the Issues section if you'd like to see some features that aren't on this list, or if you would like to get status updates on a particular feature.
+This document is a proposal for current plans for MobileTerminal development, to provide some visibility into what people are working on.   This document should be updated occasionally with the current state of the project, with some short term milestones.  File a feature request in the Issues section if you'd like to see some features that aren't on this list.  Feel free to email the google group if you would like to discuss the current status of a particular feature, or work on it yourself.
 
 = Apple SDK =
 
@@ -19,8 +19,6 @@ When porting code to the new SDK, keep in mind the following goals:
 
   * Break code into independentmodules and reduce dependencies
   * Write unit tests when possible 
-  * Stay feature compatible
-  * Stay compatible with old configuration file formats
   * Improve usability
 
 == Porting Steps ==
@@ -29,7 +27,7 @@ When porting code to the new SDK, keep in mind the following goals:
   * `[In Progress]` VT100 subsystem
     * `[Done]` Simple VT100 text view control
     * `[Not Started]` Improve efficiency of text view drawing (its pretty dumb, slower than trunk)
-    * `[Not Started]` Fix bugs in the VT100Screen/VT100Terminal -- commands like "top" are broken
+    * `[Not Started]` Fix bugs in the VT100Screen/VT100Terminal emulation
   * `[In Progress]` Preferences
     * `[In Progress]` Persistence layer.  allen.porter started on this, but it isn't compatible with the old format and probably should be.
     * `[Done]` Main preferences page
