@@ -3,6 +3,11 @@
 
 = CHANGELOG =
 
+== r426 ==
+  * complete rewrite
+  * missing tons of features, but we can at least compile it now
+  * runs on iPad
+
 == r296 ==
 
   * unstable branch merged into the trunk
