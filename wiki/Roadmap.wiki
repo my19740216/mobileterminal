@@ -29,7 +29,7 @@ When porting code to the new SDK, keep in mind the following goals:
     * `[Not Started]` Improve efficiency of text view drawing (its pretty dumb, slower than trunk)
     * `[Not Started]` Fix bugs in the VT100Screen/VT100Terminal emulation
   * `[In Progress]` Preferences
-    * `[In Progress]` Persistence layer.  allen.porter started on this, but it isn't compatible with the old format and probably should be.
+    * `[Done]` Persistence layer.  Not compatible with old format.
     * `[Done]` Main preferences page
     * `[Done]` Menu preferences
     * `[Not Started]` Gesture preferences
