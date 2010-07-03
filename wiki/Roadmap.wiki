@@ -1,7 +1,7 @@
 #summary Roadmap
 #labels Phase-Design,Featured
 
-Status: <font color="green">CURRENT</font>  as of 2009-08-04
+Status: <font color="green">CURRENT</font>  as of 2010-07-03
 
 = Introduction =
 
@@ -31,7 +31,7 @@ When porting code to the new SDK, keep in mind the following goals:
   * `[In Progress]` Preferences
     * `[In Progress]` Persistence layer.  allen.porter started on this, but it isn't compatible with the old format and probably should be.
     * `[Done]` Main preferences page
-    * `[Not Started]` Menu preferences
+    * `[Done]` Menu preferences
     * `[Not Started]` Gesture preferences
     * `[Not Started]` Terminal settings preferences (and simplify the font settings)
     * `[Not Started]` About page (names of contributors, link to website, etc)
