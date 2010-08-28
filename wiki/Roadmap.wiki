@@ -28,18 +28,22 @@ When porting code to the new SDK, keep in mind the following goals:
     * `[Done]` Simple VT100 text view control
     * `[Not Started]` Improve efficiency of text view drawing (its pretty dumb, slower than trunk)
     * `[Not Started]` Fix bugs in the VT100Screen/VT100Terminal emulation
+    * `[Not Started]` Scrolling support
   * `[In Progress]` Preferences
     * `[Done]` Persistence layer.  Not compatible with old format.
     * `[Done]` Main preferences page
     * `[Done]` Menu preferences
-    * `[Not Started]` Gesture preferences
-    * `[Not Started]` Terminal settings preferences (and simplify the font settings)
+    * `[Done]` Gesture preferences
+    * `[Not Started]` Control characters in menu prefs
+    * `[In Progress]` Terminal settings preferences (and simplify the font settings)
     * `[Not Started]` About page (names of contributors, link to website, etc)
   * `[In Progress]` Gestures
     * `[Done]` Keyboard show/hide
     * `[Done]` Landscape mode/rotation
-    * `[Not Started]` Directional gestures
+    * `[Done]` Directional gestures
     * `[Done]` Copy and Paste (though could probably use some improvement)
+    * `[Done]` Configurable gestures "actions"
+    * `[In Progress]` More gesture actions (key presses, menu shortcuts, etc)
   * `[In Progress]` Shortcut Menu
     * `[Done]` Basic UITableView menu as a proof of concept
     * `[Not Started]` Better UI for the menu (possibly hiding the keyboard and using more space)
