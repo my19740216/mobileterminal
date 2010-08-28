@@ -1,7 +1,7 @@
 #summary Roadmap
 #labels Phase-Design,Featured
 
-Status: <font color="green">CURRENT</font>  as of 2010-07-03
+Status: <font color="green">CURRENT</font>  as of 2010-08-28
 
 = Introduction =
 
