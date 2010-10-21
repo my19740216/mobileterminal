@@ -1,0 +1,31 @@
+#labels Phase-Deploy,Featured
+#Tutorial on how to install MobileTerminal
+= Introduction =
+The version of MobileTerminal already on Cydia doesn't work on iOS 4.0 or greater.
+The beta versions on this site are re-written by allen.porter, which do work on iOS 4.0, but aren't on Cydia because they are still in beta stages.
+As stated in issue 220, there's no clear-cut tutorial on how to install the iOS 4.0 compatible beta, so hopefully this should help some people :)
+
+== Easy Install (using Cydia auto-install) ==
+This method is the easiest and fastest, recommended for novices.
+This guide currently only covers Windows users, since most people use that.
+Here are the steps:
+  # [http://www.mediafire.com/?x5b6vh1xz4tjllq Download this *.deb file (r475)]
+  # [http://www.i-funbox.com/ Windows users should download iFunbox]
+  # Extract the file you just downloaded using the method of your choice (the Windows built-in method is right-clicking and selecting "extract")
+  # Double-click on the extracted file iFunbox.exe icon, which should look like this: http://i54.tinypic.com/255jdcj.png
+  # Connect your iPhone/iPod/iPad using your USB cable (the same one used for iTunes)
+  # Look on the left side of the iFunbox screen for http://i51.tinypic.com/21pbk.png and click on it
+  # Search the top bar of the iFunbox screen for http://i52.tinypic.com/2f0gd2s.png and click it
+  # Select the `*`.deb file you downloaded in step one, which may have an icon looking like this on Windows 7: http://i51.tinypic.com/1zvfh1.png
+  # Start Cydia on your iDevice and MobileTerminal should automatically be installed
+
+== Manual Install ==
+This method assumes familiarity with using a command prompt/SSH.
+This is an overview of the steps to installing the latest MobileTerminal from the `*`.zip on GoogleCode:
+  # Copy the contents of the `*`.zip archive on the downloads page to /Applications
+  # Change ownerships on /Applications/Terminal.app to root:admin
+  # Change permissions (recursively) on /Applications/Terminal.app to 644
+  # Change permissions on /Applications/Terminal.app/Terminal 755
+  # Regenerate the SpringBoard icon cache (the `uicache` command has to be run as user mobile) or reboot
+Mac and Linux users can use SCP over wireless, although Ubuntu Linux has built-in support for USB iDevice file transfer using usbmuxd.
+Windows users have iFunbox, as mentioned above.
