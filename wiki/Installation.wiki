@@ -26,6 +26,7 @@ This is an overview of the steps to installing the latest MobileTerminal from th
   # Change ownerships on /Applications/Terminal.app to root:admin
   # Change permissions (recursively) on /Applications/Terminal.app to 644
   # Change permissions on /Applications/Terminal.app/Terminal 755
+  # Change permissions on /Applications/Terminal.app 755
   # Regenerate the SpringBoard icon cache (the `uicache` command has to be run as user mobile) or reboot
 Mac and Linux users can use SCP over wireless, although Ubuntu Linux has built-in support for USB iDevice file transfer using usbmuxd.
 Windows users have iFunbox, as mentioned above.
