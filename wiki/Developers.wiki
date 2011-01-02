@@ -35,3 +35,7 @@ Running MobileTerminal on the device from inside XCode copies it to <b>~/Applica
 The simplest way to run MobileTerminal is to copy the build output (such as <b>build/Debug-iphoneos/Terminal.app</b>) directly to the <b>/Applications/</b>.  Typically you have to use scp or some other file transfer mechanishm.
 
 TODO(allen): We need some instructions for building .deb packages.
+
+= Adding Features / Fixing Bugs =
+
+See [http://code.google.com/p/mobileterminal/wiki/Roadmap Roadmap] for the latest proposed direction of the project.
