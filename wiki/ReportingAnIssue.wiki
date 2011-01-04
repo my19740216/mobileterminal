@@ -5,7 +5,7 @@
 
 Many people have reported issues like "The command sudo wasn't found" and so on.
 This guide helps you differ issues which are not related to MobileTerminal and therefore can't be fixed by the project members.
-It's unnecessairy what version of MobileTerminal you have installed, but in order to gain full advantage of this tutorial, please install [cydia://package/openssh OpenSSH] too.
+It's unnecessairy what version of MobileTerminal you have installed, but in order to gain full advantage of this tutorial, please install OpenSSH (cydia://package/openssh) too.
 
 = Details =
 
