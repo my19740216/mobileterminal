@@ -7,9 +7,23 @@ As stated in issue 220, there's no clear-cut tutorial on how to install the iOS 
 
 == Easy Install (using Cydia auto-install) ==
 This method is the easiest and fastest, recommended for novices.
-This guide currently only covers Windows users, since most people use that.
-Here are the steps:
-  # [http://www.mediafire.com/?x5b6vh1xz4tjllq Download this *.deb file (r475)]
+
+=== For Mac users: ===
+  # Download the latest `*`.deb file [http://www.mediafire.com/?x5b6vh1xz4tjllq here]
+  # Download and install on your Mac the latest version of [http://cyberduck.ch/ Cyberduck]
+  # Make sure your Mac and iDevice both have a Wi-Fi connection on the same network
+  # On your iDevice, open Settings: General: Wi-Fi, tap the blue right-arrow on your connected network, and note the IP Address
+  # Open Cyberduck on your Mac, select Open Connection, and select “SFTP (SSH File Transfer Protocol)”
+  # Enter the iDevice’s IP Address into “Server,” with Username “root” and your password (the default password is “alpine”), and press Connect {_NB: It will take some time to make the initial connection_}
+  # Navigate to /private/var/root/Media/Cydia/AutoInstall {_NB: If the AutoInstall folder does not exist, create it, paying attention to capital A and I_}
+  # Drag the MobileTerminal .deb file from your Mac into the AutoInstall folder
+  # Quit Cyberduck and reboot the iDevice
+
+_NB: If, after rebooting, MobileTerminal does not appear on your Springboard, respring (not reboot) the iDevice_
+
+=== For Windows users: ===
+
+  # [http://www.mediafire.com/?x5b6vh1xz4tjllq Download the *.deb file (r475)]
   # [http://www.i-funbox.com/ Windows users should download iFunbox]
   # Extract the file you just downloaded using the method of your choice (the Windows built-in method is right-clicking and selecting "extract")
   # Double-click on the extracted file iFunbox.exe icon, which should look like this: http://i54.tinypic.com/255jdcj.png
