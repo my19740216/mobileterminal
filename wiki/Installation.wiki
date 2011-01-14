@@ -15,7 +15,7 @@ This method is the easiest and fastest, recommended for novices.
   # On your iDevice, open Settings: General: Wi-Fi, tap the blue right-arrow on your connected network, and note the IP Address
   # Open Cyberduck on your Mac, select Open Connection, and select “SFTP (SSH File Transfer Protocol)”
   # Enter the iDevice’s IP Address into “Server,” with Username “root” and your password (the default password is “alpine”), and press Connect {_NB: It will take some time to make the initial connection_}
-  # Navigate to /private/var/root/Media/Cydia/AutoInstall {_NB: If the AutoInstall folder does not exist, create it, paying attention to capital A and I_}
+  # Navigate to /private/var/root/Media/Cydia/AutoInstall {_NB: If the AutoInstall folder does not exist, create it, paying attention to the capitals A and I_}
   # Drag the MobileTerminal .deb file from your Mac into the AutoInstall folder
   # Quit Cyberduck and reboot the iDevice
 
