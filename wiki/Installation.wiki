@@ -8,12 +8,14 @@ As stated in issue 220, there's no clear-cut tutorial on how to install the iOS 
 == Easy Install (using Cydia auto-install) ==
 This method is the easiest and fastest, recommended for novices.
 
-  # . Launch Cydia on your device, and allow it to fully load up.
-  # . Now tap on the ”Manage” tab on the bottom, then tap on “Sources” located in the middle.
-  # . Once your sources have loaded, tap “Edit” at the top right, then “Add” at the top left.
-  # . Lastly, enter http://YourCydiaRepo.org and tap “Add Source”.
-  # . Allow Cydia to do the rest of the work.
-  # . Now that you have added this repository, do a search for "MobileTerminal", and download it from Your Cydia Repo.
+  # Launch Cydia on your device, and allow it to fully load up.
+  # Now tap on the ”Manage” tab on the bottom, then tap on “Sources” located in the middle.
+  # Once your sources have loaded, tap “Edit” at the top right, then “Add” at the top left.
+  # Lastly, enter http://YourCydiaRepo.org and tap “Add Source”.
+  # Allow Cydia to do the rest of the work.
+  # Now that you have added this repository, do a search for "MobileTerminal", and download it from Your Cydia Repo.
+
+If you need additional help with this Cydia repository, you can visit http://YourCydiaRepo.org
 
 === For Mac users: ===
   # Download the latest `*`.deb file [http://www.mediafire.com/?x5b6vh1xz4tjllq here]
