@@ -18,7 +18,7 @@ This method is the easiest and fastest, recommended for novices.
 If you need additional help with this Cydia repository, you can visit http://YourCydiaRepo.org
 
 === For Mac users: ===
-  # Download the latest `*`.deb file [http://www.mediafire.com/?x5b6vh1xz4tjllq here]
+  # Download the latest `*`.deb file [http://code.google.com/p/mobileterminal/downloads/detail?name=MobileTerminal_520-1_iphoneos-arm.deb here]
   # Download and install on your Mac the latest version of [http://cyberduck.ch/ Cyberduck]
   # Make sure your Mac and iDevice both have a Wi-Fi connection on the same network
   # On your iDevice, open Settings: General: Wi-Fi, tap the blue right-arrow on your connected network, and note the IP Address
