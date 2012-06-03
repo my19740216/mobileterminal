@@ -1,21 +1,12 @@
 #labels Phase-Deploy,Featured
 #Tutorial on how to install MobileTerminal
 = Introduction =
-The version of MobileTerminal already on Cydia doesn't work on iOS 4.0 or greater.
-The beta versions on this site are re-written by allen.porter, which do work on iOS 4.0, and can be found on Cydia, on an additonal repository.
-As stated in issue 220, there's no clear-cut tutorial on how to install the iOS 4.0 compatible beta, so hopefully this should help some people :)
 
 == Easy Install (using Cydia auto-install) ==
-This method is the easiest and fastest, recommended for novices.
 
-  # Launch Cydia on your device, and allow it to fully load up.
-  # Now tap on the ”Manage” tab on the bottom, then tap on “Sources” located in the middle.
-  # Once your sources have loaded, tap “Edit” at the top right, then “Add” at the top left.
-  # Lastly, enter http://YourCydiaRepo.org and tap “Add Source”.
-  # Allow Cydia to do the rest of the work.
-  # Now that you have added this repository, do a search for "MobileTerminal", and download it from Your Cydia Repo.
+We have submitted the latest version of mobileterminal to the bigboss repository, so that its easy to install through the default Cydia sources.
 
-If you need additional help with this Cydia repository, you can visit http://YourCydiaRepo.org
+The older versions of MobileTerminal (less than v520) already on Cydia doesn't work on iOS 4.0 or greater.
 
 === For Mac users: ===
   # Download the latest `*`.deb file [http://mobileterminal.googlecode.com/files/MobileTerminal_520-1_iphoneos-arm.deb here]
